@@ -3,6 +3,7 @@
 #include <bitset>
 Board::Board()
 {
+   // m_possible_moves.empty();
     // aqui deberia de ser suficiente :)
     m_possible_moves[Pieces::KNIGHT] = {
         {2, 1}, // up right

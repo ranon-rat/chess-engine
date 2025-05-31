@@ -31,14 +31,23 @@ public:
     BitWiseBoard MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board); // i make reference to the board in that specific square
     // so this one, will be used to getting general information from the board :)
     TypePiece GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &board);
-    
-    bool AttackableSquares(BoardCoordinates from,const BitWiseBoard&board);
-    bool UtilizedSquares(BoardCoordinates from, const BitWiseBoard&board);
-    
-    void LineMoves(Pieces piece, BoardCoordinates origin, BitWiseBoard &board, std::vector<BoardCoordinates> &);
 
+    bool AttackableSquares(BoardCoordinates from,const BitWiseBoard&board);
+    bool FriendSquares(BoardCoordinates from, const BitWiseBoard&board);
+    
+    enum TypeFilter{
+        Legal=0,
+        Defendable,
+        Possible
+    };
 private:
-    std::array<std::vector<Move>, Pieces::PIECE_COUNT> m_possible_moves; // this is the vector of possible moves
+
+    
+    void LineMoves(Pieces piece, BoardCoordinates origin, BitWiseBoard &board, std::vector<BoardCoordinates> &moves,TypeFilter filter=Legal);
+    void OneLineMoves(Pieces piece,BoardCoordinates origin, BitWiseBoard &board,std::vector<BoardCoordinates> &moves,TypeFilter filter=Legal);
+    void PawnMove(BoardCoordinates origin,const BitWiseBoard&board,std::vector<BoardCoordinates> &moves,TypeFilter filter=TypeFilter::Legal);
+    void AlterLongMove(BoardCoordinates origin, BitWiseBoard&board);
+     std::array<std::vector<Move>, Pieces::PIECE_COUNT> m_possible_moves; // this is the vector of possible moves
 };
 
 #endif

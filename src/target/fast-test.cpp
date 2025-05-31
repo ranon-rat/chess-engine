@@ -14,5 +14,8 @@ int main(){
         }
     }
     for_loop_break:
+    for(int i=-1;i<=1;i+=2){
+        std::cout<<i<<"\n";
+    }
     return 0;
 }

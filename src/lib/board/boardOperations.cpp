@@ -1,6 +1,7 @@
 #include "board.h++"
 #include <iostream>
 #include <bitset>
+#include <cmath>
 
 bool Board::AttackableSquares(BoardCoordinates from, const BitWiseBoard &board)
 {
@@ -8,7 +9,7 @@ bool Board::AttackableSquares(BoardCoordinates from, const BitWiseBoard &board)
     uint64_t enemy_mask = board.white_to_move ? board.black_pieces : board.white_pieces;
     return (piece_mask & enemy_mask) > 0;
 }
-bool Board::UtilizedSquares(BoardCoordinates from, const BitWiseBoard &board)
+bool Board::FriendSquares(BoardCoordinates from, const BitWiseBoard &board)
 {
     uint64_t piece_mask = 1ULL << ((from.y * 8) + from.x);
     uint64_t friend_mask = board.white_to_move ? board.white_pieces : board.black_pieces;
@@ -54,9 +55,11 @@ TypePiece Board::GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &bo
 BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board)
 {
     BitWiseBoard new_board = board;
-    if(from.x==to.x&&from.y==to.y){
+    if (from.x == to.x && from.y == to.y)
+    {
         return new_board;
     }
+
     // First i need to check if the piece is a legal move,
     // thats all :) XD
 
@@ -65,17 +68,25 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     // now we have to check the kinds
     uint64_t occupied_squares = board.white_to_move ? board.white_pieces : board.black_pieces;
     // if we are not part of the utilized squares, or the piece is part of the attackable squares then we shouldnt continue :)
-    if (!UtilizedSquares(from, board) || AttackableSquares(from, board))
+    if (!FriendSquares(from, board) || AttackableSquares(from, board))
     { // if its not in one of our pieces then just return 0 :)
         std::cout << "this isnt your piece" << "\n";
         return new_board;
     }
+    new_board.enpassant = initialize_board; // we reset this before we have to alter it :);
     TypePiece origin_piece = GetPieceFromCoord(from, board);
     switch (origin_piece.piece) // this will write the pieces position :)
     {
     case Pieces::PAWN:
         new_board.pawns &= ~piece_mask;
         new_board.pawns |= target_mask;
+        new_board.right_long_move &= ~piece_mask;
+        if(abs(from.y-to.y)==2){
+            std::cout<<"EN PASSANT\n";
+            uint64_t enpassant_mask=1ULL<<(from.y+1)+from.x;
+            new_board.enpassant|=enpassant_mask;
+        }
+        // new_board.enpassant;// do something here
         break;
     case Pieces::KNIGHT:
         new_board.knights &= ~piece_mask;
@@ -101,18 +112,16 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
         break;
     }
     TypePiece target_piece = GetPieceFromCoord(to, board);
-    std::cout << "it seems that we are getting the correct value right?\n"
-                  << target_piece.piece << " " << origin_piece.piece << "\n";
 
     if (AttackableSquares(to, board) && target_piece.piece != origin_piece.piece)
     {
-        std::cout << "it seems that we are getting the correct value right?\n"
-                  << target_piece.piece << " " << origin_piece.piece << "\n";
 
         switch (target_piece.piece)
         {
         case Pieces::PAWN:
             new_board.pawns &= ~target_mask;
+            new_board.right_long_move &= ~target_mask;
+
             break;
         case Pieces::KNIGHT:
             new_board.knights &= ~target_mask;
@@ -154,7 +163,9 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
 
     return new_board;
 }
-
+void Board::AlterLongMove(BoardCoordinates origin, BitWiseBoard &board)
+{
+}
 std::vector<BoardCoordinates> Board::legalMoves(BoardCoordinates piece, BitWiseBoard &board)
 {
 
@@ -165,34 +176,40 @@ std::vector<BoardCoordinates> Board::legalMoves(BoardCoordinates piece, BitWiseB
     std::vector<BoardCoordinates> moves;
     // hmmm
     // first lets check if the piece is one of us
-
-    if (!(piece_mask & occupied_squares))
-    {                 // if its not in one of our pieces then just return 0 :)
-        return moves; // an empty vector
+    if (!(FriendSquares(piece, board)))
+    {
+        return moves;
     }
+
     // avaible pieces
     // uint64_t avaible_pieces=0;
-    if (piece_mask & board.pawns)
+    TypePiece piece_info = GetPieceFromCoord(piece, board);
+    switch (piece_info.piece)
     {
-    }
-    else if (piece_mask & board.knights)
-    {
-    }
-    else if (piece_mask & board.bishops)
-    {
+    case Pieces::PAWN:
+        break;
+    case Pieces::KNIGHT:
+        OneLineMoves(KNIGHT, piece, board, moves);
+        break;
+    case Pieces::BISHOP:
         LineMoves(BISHOP, piece, board, moves);
-    }
-    else if (piece_mask & board.rooks)
-    {
+        break;
+    case Pieces::ROOK:
         LineMoves(ROOK, piece, board, moves);
-    }
-    else if (piece_mask & board.queens)
-    {
+
+        break;
+    case Pieces::QUEEN:
         LineMoves(QUEEN, piece, board, moves);
+
+        break;
+    case Pieces::KING:
+        OneLineMoves(KING, piece, board, moves);
+
+        break;
+    default:
+        break;
     }
-    else if (piece_mask & board.kings)
-    {
-    }
+
     return moves;
 }
 uint64_t generateBitBoard(uint64_t &bitBoard, uint8_t x, uint8_t y)
@@ -205,12 +222,10 @@ uint64_t ThereIsSomething(int x, int y)
 {
     return 0;
 }
-void Board::LineMoves(Pieces piece, BoardCoordinates origin, BitWiseBoard &board, std::vector<BoardCoordinates> &moves)
+void Board::LineMoves(Pieces piece, BoardCoordinates origin, BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
 {
     // this is only for the queen
     // the rook and the bishop
-    uint64_t attackable_squares = board.white_to_move ? board.black_pieces : board.white_pieces;
-    uint64_t not_attackable_squares = board.white_to_move ? board.white_pieces : board.black_pieces;
     for (auto move : m_possible_moves[piece])
     { // i first create the vector
 
@@ -219,23 +234,95 @@ void Board::LineMoves(Pieces piece, BoardCoordinates origin, BitWiseBoard &board
             for (int x = origin.x; x < 8 && x >= 0; x += move.x)
             {
 
-                uint64_t mask = 1ULL << ((y * 8) + x);
-                if (not_attackable_squares & mask)
-                {
-                    goto finished_line;
-                }
-
-                BoardCoordinates new_move{
+                BoardCoordinates coords = {
                     .x = x,
                     .y = y,
                 };
-                moves.push_back(new_move);
-                if (attackable_squares & mask)
+                if (FriendSquares(coords, board))
+                {
+                    switch (filter)
+                    {
+                    case Defendable:
+                        moves.emplace_back(coords);
+                    case Legal:
+                        goto finished_line;
+                        break;
+                    default:
+                        break;
+                    }
+                }
+
+                moves.emplace_back(coords);
+                if (AttackableSquares(coords, board) && (filter == Legal))
                 {
                     goto finished_line;
                 }
             }
         }
     finished_line:
+    }
+}
+
+void Board::OneLineMoves(Pieces piece, BoardCoordinates origin, BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
+{
+
+    // this is only for the queen
+    // the rook and the bishop
+    for (auto move : m_possible_moves[piece])
+    { // i first create the vector
+        const int new_x = origin.x + move.x;
+        const int new_y = origin.y + move.y;
+        if (new_x < 0 || new_x > 8 || new_y < 0 || new_y > 8)
+        {
+            continue;
+        }
+        BoardCoordinates coords = {
+            .x = new_x,
+            .y = new_y,
+        };
+        if (FriendSquares(coords, board) && (filter == Legal))
+        {
+            continue;
+        }
+
+        moves.emplace_back(coords);
+    }
+}
+
+void Board::PawnMove(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
+{
+    int direction = board.white_to_move ? -1 : 1; // this is important :)
+    uint64_t pawn_mask = 1ULL << ((origin.y * 8) + origin.x);
+    bool long_move_right = (pawn_mask & board.right_long_move) > 0;
+    int advance=long_move_right?2:1;
+    // attack position :)
+    for (int i = -1; i <= 1; i += 2)
+    {
+        const BoardCoordinates new_coords = {
+            .x = origin.x + i,
+            .y = origin.y + direction};
+
+        const uint64_t attack_mask = board.enpassant & 1ULL << ((new_coords.y * 8) + new_coords.x);
+        const bool enpassant = (board.enpassant & attack_mask) > 0;
+
+        if (!AttackableSquares(new_coords, board) && !enpassant && filter == TypeFilter::Legal)
+        {
+            continue;
+        }
+        moves.emplace_back(new_coords);
+    }
+
+    // now advance position
+    for (int i = 1; i <= advance; i++)
+    {
+        const BoardCoordinates new_coords = {
+            .x = origin.x,
+            .y = origin.y + i * direction,
+        };
+        if (AttackableSquares(new_coords, board) || FriendSquares(new_coords, board))
+        {
+            break;
+        }
+        moves.emplace_back(new_coords);
     }
 }
