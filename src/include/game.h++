@@ -16,7 +16,7 @@ private:
     double lastClickTime = 0.0;
     double clickCooldown = 0.2;
     std::array<TypePiece, 64> pieces;
-
+    std::vector<BoardCoordinates> possible_moves;
 public:
     ChessGame(std::string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     void Update();

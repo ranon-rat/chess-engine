@@ -18,6 +18,11 @@ void ChessGame::DrawCheckBoardSquares()
     void ChessGame::DrawInitialPos(){
         if(!not_selected){
             DrawCircle(from.x*50+25,from.y*50+25,25,RED);
+           possible_moves=board.GetMoves(from,bitwise_board);
+           for(BoardCoordinates &v :possible_moves){
+                        DrawCircle(v.x*50+25,v.y*50+25,25,RED);
+
+           }
         }
     }
 
