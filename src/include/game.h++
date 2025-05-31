@@ -23,6 +23,7 @@ public:
     void DrawCheckBoardSquares();
     void DrawBoardPieces();
     void SelectPieces();
+    void DrawInitialPos();
     void ShowBasicInformation();
 };
 #endif

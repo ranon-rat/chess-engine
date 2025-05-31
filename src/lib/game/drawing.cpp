@@ -15,6 +15,12 @@ void ChessGame::DrawCheckBoardSquares()
         }
     }
 }
+    void ChessGame::DrawInitialPos(){
+        if(!not_selected){
+            DrawCircle(from.x*50+25,from.y*50+25,25,RED);
+        }
+    }
+
 void ChessGame::DrawBoardPieces()
 {
 
@@ -30,34 +36,34 @@ void ChessGame::DrawBoardPieces()
             case Pieces::PAWN:
                 // now i need to make moves
 
-                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.color ? WHITE : BLACK);
-                DrawText("P", i * 50 + 20, j * 50 + 20, 20, piece.color ? BLACK : WHITE);
+                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
+                DrawText("P", i * 50 + 20, j * 50 + 20, 20, piece.isWhite ? BLACK : WHITE);
 
                 break;
             case Pieces::KNIGHT:
 
-                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.color ? WHITE : BLACK);
-                DrawText("N", i * 50 + 20, j * 50 + 20, 20, piece.color ? BLACK : WHITE);
+                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
+                DrawText("N", i * 50 + 20, j * 50 + 20, 20, piece.isWhite ? BLACK : WHITE);
                 break;
             case Pieces::BISHOP:
 
-                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.color ? WHITE : BLACK);
-                DrawText("B", i * 50 + 20, j * 50 + 20, 20, piece.color ? BLACK : WHITE);
+                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
+                DrawText("B", i * 50 + 20, j * 50 + 20, 20, piece.isWhite ? BLACK : WHITE);
                 break;
             case Pieces::ROOK:
 
-                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.color ? WHITE : BLACK);
-                DrawText("R", i * 50 + 20, j * 50 + 20, 20, piece.color ? BLACK : WHITE);
+                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
+                DrawText("R", i * 50 + 20, j * 50 + 20, 20, piece.isWhite ? BLACK : WHITE);
                 break;
             case Pieces::QUEEN:
 
-                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.color ? WHITE : BLACK);
-                DrawText("Q", i * 50 + 20, j * 50 + 20, 20, piece.color ? BLACK : WHITE);
+                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
+                DrawText("Q", i * 50 + 20, j * 50 + 20, 20, piece.isWhite ? BLACK : WHITE);
                 break;
             case Pieces::KING:
 
-                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.color ? WHITE : BLACK);
-                DrawText("K", i * 50 + 20, j * 50 + 20, 20, piece.color ? BLACK : WHITE);
+                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
+                DrawText("K", i * 50 + 20, j * 50 + 20, 20, piece.isWhite ? BLACK : WHITE);
                 break;
             default:
                 break;

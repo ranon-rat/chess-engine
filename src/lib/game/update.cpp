@@ -8,6 +8,7 @@ void ChessGame::Update()
     ClearBackground(RAYWHITE);
     DrawCheckBoardSquares();
     // Draw the board
+    DrawInitialPos();
     DrawBoardPieces();
     SelectPieces();
     ShowBasicInformation();

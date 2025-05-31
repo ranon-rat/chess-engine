@@ -11,7 +11,7 @@
 struct TypePiece
 {
     Pieces piece;
-    bool color; // true for white, false for black
+    bool isWhite; // true for white, false for black
 };
 struct BoardCoordinates
 {
@@ -29,7 +29,13 @@ public:
     BitWiseBoard BuildFromFEN(std::string fen);
     std::vector<BoardCoordinates> legalMoves(BoardCoordinates piece, BitWiseBoard &board);        // esto deberia de retornarme un uint64_t con los movimientos legales de la pieza
     BitWiseBoard MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board); // i make reference to the board in that specific square
-    void LineMoves(Pieces piece, BoardCoordinates origin, BitWiseBoard &board,std::vector<BoardCoordinates>&);
+    // so this one, will be used to getting general information from the board :)
+    TypePiece GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &board);
+    
+    bool AttackableSquares(BoardCoordinates from,const BitWiseBoard&board);
+    bool UtilizedSquares(BoardCoordinates from, const BitWiseBoard&board);
+    
+    void LineMoves(Pieces piece, BoardCoordinates origin, BitWiseBoard &board, std::vector<BoardCoordinates> &);
 
 private:
     std::array<std::vector<Move>, Pieces::PIECE_COUNT> m_possible_moves; // this is the vector of possible moves
