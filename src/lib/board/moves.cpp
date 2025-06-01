@@ -52,35 +52,37 @@ void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard 
     // the rook and the bishop
     for (auto move : m_possible_moves[piece])
     { // i first create the vector
-        std::cout<<"move :)"<<"\n";
-        for (int y = origin.y+move.y; y < 8 && y >= 0; y += move.y)
+        std::cout << "move :)" << "\n";
+
+        for (int x = origin.x + move.x,
+                 y = origin.y + move.y;
+             x < 8 && x >= 0 &&
+             y < 8 && y >= 0;
+             x += move.x, y += move.y)
         {
-            for (int x = origin.x+move.x; x < 8 && x >= 0; x += move.x)
+
+            BoardCoordinates coords = {
+                .x = x,
+                .y = y,
+            };
+            if (FriendSquares(coords, board))
             {
-
-                BoardCoordinates coords = {
-                    .x = x,
-                    .y = y,
-                };
-                if (FriendSquares(coords, board))
+                switch (filter)
                 {
-                    switch (filter)
-                    {
-                    case Defendable:
-                        moves.emplace_back(coords);
-                    case Legal:
-                        goto finished_line;
-                        break;
-                    default:
-                        break;
-                    }
-                }
-
-                moves.emplace_back(coords);
-                if (EnemySquares(coords, board) && (filter == Legal))
-                {
+                case Defendable:
+                    moves.emplace_back(coords);
+                case Legal:
                     goto finished_line;
+                    break;
+                default:
+                    break;
                 }
+            }
+
+            moves.emplace_back(coords);
+            if (EnemySquares(coords, board) && (filter == Legal))
+            {
+                break;
             }
         }
     finished_line:
