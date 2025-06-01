@@ -52,6 +52,12 @@ private:
     // Castling
     void CastlingMoves(BoardCoordinates origin,const BitWiseBoard&board,std::vector<BoardCoordinates> &moves);
 private:
+    void MoveRook(BoardCoordinates from,BoardCoordinates to,BitWiseBoard&new_board,const BitWiseBoard&board,uint64_t initial_mask,uint64_t target_mask);
+    void MovePawn(BoardCoordinates from,BoardCoordinates to,BitWiseBoard&new_board,const BitWiseBoard&board,uint64_t initial_mask,uint64_t target_mask,int direction);
+        void EatPawnEnPassant(BoardCoordinates from,BoardCoordinates to,BitWiseBoard&new_board,const BitWiseBoard&board,uint64_t initial_mask,uint64_t target_mask,int direction);
+
+    private:
+
     std::array<std::vector<Move>, Pieces::PIECE_COUNT> m_possible_moves; // this is the vector of possible moves
 };
 

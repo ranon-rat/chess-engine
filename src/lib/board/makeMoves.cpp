@@ -33,19 +33,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     switch (origin_piece.piece) // this will write the pieces position :)
     {
     case Pieces::PAWN:
-        new_board.pawns &= ~piece_mask;
-        new_board.pawns |= target_mask;
-        // once you make a move you lost the right to make a move in that specific part :)
-        new_board.right_long_move &= ~piece_mask;
-        // this is only for the en passant :)
-        if (abs(from.y - to.y) == 2)
-        {
-            std::cout << "EN PASSANT\n";
-            uint64_t enpassant_mask = 1ULL << ((from.y + direction) * 8 + from.x);
-            std::cout << std::bitset<64>(enpassant_mask) << "\n";
-            new_board.enpassant |= enpassant_mask;
-        }
-        // new_board.enpassant;// do something here
+        MovePawn(from, to, new_board, board, piece_mask, target_mask, direction);
         break;
     case Pieces::KNIGHT:
         new_board.knights &= ~piece_mask;
@@ -56,32 +44,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
         new_board.bishops |= target_mask;
         break;
     case Pieces::ROOK:
-
-        // queen side
-        if (to.x == 8)
-        {
-            if (board.white_to_move)
-            {
-                new_board.white_can_castle_kingside = false;
-            }
-            else
-            {
-                new_board.black_can_castle_kingside = false;
-            }
-        }// king side
-        else if (to.x == 0)
-        {
-            if (board.white_to_move)
-            {
-                new_board.white_can_castle_queenside = false;
-            }
-            else
-            {
-                new_board.black_can_castle_queenside = false;
-            }
-        }
-        new_board.rooks &= ~piece_mask;
-        new_board.rooks |= target_mask;
+        MoveRook(from, to, new_board, board, piece_mask, target_mask);
         break;
     case Pieces::QUEEN:
         new_board.queens &= ~piece_mask;
@@ -149,27 +112,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
             new_board.kings &= ~target_mask;
             break;
         case Pieces::NONE:
-            if (origin_piece.piece != Pieces::PAWN)
-            {
-                break;
-            }
-            std::cout << "something interesting\n";
-            enemy_coords = {
-                .x = to.x,
-                .y = to.y - direction,
-            };
-
-            enemy_piece = GetPieceFromCoord(enemy_coords, board);
-            if (enemy_piece.piece != PAWN || !EnemySquares(enemy_coords, board))
-            {
-                break;
-            }
-            std::cout << "something interesting2\n";
-
-            enemy_pawn_mask = 1ULL << ((enemy_coords.y * 8) + enemy_coords.x);
-            std::cout << std::bitset<64>(enemy_pawn_mask) << "\n";
-
-            new_board.pawns &= ~enemy_pawn_mask;
+           EatPawnEnPassant(from,to,new_board,board,piece_mask,target_mask,direction);
             break;
 
         default:
@@ -195,4 +138,73 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     new_board.white_to_move = !board.white_to_move;
 
     return new_board;
+}
+
+void Board::MoveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask)
+{
+    // queen side
+    if (to.x == 8)
+    {
+        if (board.white_to_move)
+        {
+            new_board.white_can_castle_kingside = false;
+        }
+        else
+        {
+            new_board.black_can_castle_kingside = false;
+        }
+    } // king side
+    else if (to.x == 0)
+    {
+        if (board.white_to_move)
+        {
+            new_board.white_can_castle_queenside = false;
+        }
+        else
+        {
+            new_board.black_can_castle_queenside = false;
+        }
+    }
+    new_board.rooks &= ~initial_mask;
+    new_board.rooks |= target_mask;
+}
+
+void Board::MovePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int direction)
+{
+    new_board.pawns &= ~initial_mask;
+    new_board.pawns |= target_mask;
+    // once you make a move you lost the right to make a move in that specific part :)
+    new_board.right_long_move &= ~initial_mask;
+    // this is only for the en passant :)
+    if (abs(from.y - to.y) == 2)
+    {
+        std::cout << "EN PASSANT\n";
+        uint64_t enpassant_mask = 1ULL << ((from.y + direction) * 8 + from.x);
+        std::cout << std::bitset<64>(enpassant_mask) << "\n";
+        new_board.enpassant |= enpassant_mask;
+    }
+}
+
+void Board::EatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int direction)
+{
+    const TypePiece origin_piece=GetPieceFromCoord(from,board);
+    if (origin_piece.piece != Pieces::PAWN)
+    {
+        return;
+    }
+    std::cout << "something interesting\n";
+    BoardCoordinates enemy_coords = {
+        .x = to.x,
+        .y = to.y - direction,
+    };
+
+    const TypePiece enemy_piece = GetPieceFromCoord(enemy_coords, board);
+    if (enemy_piece.piece != PAWN || !EnemySquares(enemy_coords, board))
+    {
+        return;
+    }
+    
+    uint64_t enemy_pawn_mask = 1ULL << ((enemy_coords.y * 8) + enemy_coords.x);
+    
+    new_board.pawns &= ~enemy_pawn_mask;
 }
