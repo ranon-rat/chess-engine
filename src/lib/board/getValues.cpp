@@ -1,6 +1,6 @@
 #include "board.h++"
 
-bool Board::AttackableSquares(BoardCoordinates from, const BitWiseBoard &board)
+bool Board::EnemySquares(BoardCoordinates from, const BitWiseBoard &board)
 {
     uint64_t piece_mask = 1ULL << ((from.y * 8) + from.x);
     uint64_t enemy_mask = board.white_to_move ? board.black_pieces : board.white_pieces;
@@ -13,6 +13,10 @@ bool Board::FriendSquares(BoardCoordinates from, const BitWiseBoard &board)
     return (piece_mask & friend_mask) > 0;
 }
 
+bool Board::OcuppiedSquares(BoardCoordinates from, const BitWiseBoard&board){
+    uint64_t piece_mask = 1ULL << ((from.y * 8) + from.x);
+    return (piece_mask&board.utilized_squares)>0;
+}
 TypePiece Board::GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &board)
 {
     uint64_t piece_mask = 1ULL << ((from.y * 8) + from.x);

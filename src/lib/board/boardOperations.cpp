@@ -3,7 +3,6 @@
 #include <bitset>
 #include <cmath>
 
-
 BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board)
 {
     BitWiseBoard new_board = board;
@@ -18,7 +17,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     // now we have to check the kinds
     uint64_t occupied_squares = board.white_to_move ? board.white_pieces : board.black_pieces;
     // if we are not part of the utilized squares, or the piece is part of the attackable squares then we shouldnt continue :)
-    if (!FriendSquares(from, board) || AttackableSquares(from, board))
+    if (!FriendSquares(from, board) || EnemySquares(from, board))
     { // if its not in one of our pieces then just return 0 :)
         std::cout << "this isnt your piece" << "\n";
         return new_board;
@@ -57,6 +56,30 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
         new_board.bishops |= target_mask;
         break;
     case Pieces::ROOK:
+
+        // queen side
+        if (to.x == 8)
+        {
+            if (board.white_to_move)
+            {
+                new_board.white_can_castle_kingside = false;
+            }
+            else
+            {
+                new_board.black_can_castle_kingside = false;
+            }
+        }// king side
+        else if (to.x == 0)
+        {
+            if (board.white_to_move)
+            {
+                new_board.white_can_castle_queenside = false;
+            }
+            else
+            {
+                new_board.black_can_castle_queenside = false;
+            }
+        }
         new_board.rooks &= ~piece_mask;
         new_board.rooks |= target_mask;
         break;
@@ -77,7 +100,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     TypePiece enemy_piece = {.piece = NONE, .isWhite = false};
     BoardCoordinates enemy_coords;
 
-    if ((AttackableSquares(to, board)||target_piece.piece==Pieces::NONE) && target_piece.piece != origin_piece.piece)
+    if ((EnemySquares(to, board) || target_piece.piece == Pieces::NONE) && target_piece.piece != origin_piece.piece)
     {
 
         switch (target_piece.piece)
@@ -94,6 +117,28 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
             new_board.bishops &= ~target_mask;
             break;
         case Pieces::ROOK:
+            if (to.x == 8)
+            {
+                if (board.white_to_move)
+                {
+                    new_board.black_can_castle_kingside = false;
+                }
+                else
+                {
+                    new_board.white_can_castle_kingside = false;
+                }
+            }
+            else if (to.x == 0)
+            {
+                if (board.white_to_move)
+                {
+                    new_board.black_can_castle_queenside = false;
+                }
+                else
+                {
+                    new_board.white_can_castle_queenside = false;
+                }
+            }
             new_board.rooks &= ~target_mask;
 
             break;
@@ -115,7 +160,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
             };
 
             enemy_piece = GetPieceFromCoord(enemy_coords, board);
-            if (enemy_piece.piece != PAWN || !AttackableSquares(enemy_coords, board))
+            if (enemy_piece.piece != PAWN || !EnemySquares(enemy_coords, board))
             {
                 break;
             }

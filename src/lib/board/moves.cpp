@@ -1,5 +1,6 @@
 #include "board.h++"
-std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, BitWiseBoard &board,TypeFilter filter )
+#include <iostream>
+std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, BitWiseBoard &board, TypeFilter filter)
 {
 
     // checking to//
@@ -20,25 +21,23 @@ std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, BitWiseBoa
     switch (piece_info.piece)
     {
     case Pieces::PAWN:
-    PawnMoves(piece,board,moves,filter);
+        PawnMoves(piece, board, moves, filter);
         break;
     case Pieces::KNIGHT:
-        OneLineMoves(KNIGHT, piece, board, moves,filter);
+        OneLineMoves(KNIGHT, piece, board, moves, filter);
         break;
     case Pieces::BISHOP:
-        LineMoves(BISHOP, piece, board, moves,filter);
+        LineMoves(BISHOP, piece, board, moves, filter);
         break;
     case Pieces::ROOK:
-        LineMoves(ROOK, piece, board, moves,filter);
-
+        LineMoves(ROOK, piece, board, moves, filter);
         break;
     case Pieces::QUEEN:
-        LineMoves(QUEEN, piece, board, moves,filter);
-
+        LineMoves(QUEEN, piece, board, moves, filter);
         break;
     case Pieces::KING:
-        OneLineMoves(KING, piece, board, moves,filter);
-
+        OneLineMoves(KING, piece, board, moves, filter);
+        CastlingMoves(piece, board, moves);
         break;
     default:
         break;
@@ -53,10 +52,10 @@ void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard 
     // the rook and the bishop
     for (auto move : m_possible_moves[piece])
     { // i first create the vector
-
-        for (int y = origin.y; y < 8 && y >= 0; y += move.y)
+        std::cout<<"move :)"<<"\n";
+        for (int y = origin.y+move.y; y < 8 && y >= 0; y += move.y)
         {
-            for (int x = origin.x; x < 8 && x >= 0; x += move.x)
+            for (int x = origin.x+move.x; x < 8 && x >= 0; x += move.x)
             {
 
                 BoardCoordinates coords = {
@@ -78,7 +77,7 @@ void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard 
                 }
 
                 moves.emplace_back(coords);
-                if (AttackableSquares(coords, board) && (filter == Legal))
+                if (EnemySquares(coords, board) && (filter == Legal))
                 {
                     goto finished_line;
                 }
@@ -130,7 +129,7 @@ void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::v
         const uint64_t attack_mask = board.enpassant & 1ULL << ((new_coords.y * 8) + new_coords.x);
         const bool enpassant = (board.enpassant & attack_mask) > 0;
 
-        if (!AttackableSquares(new_coords, board) && !enpassant && filter == TypeFilter::Legal)
+        if (!EnemySquares(new_coords, board) && !enpassant && filter == TypeFilter::Legal)
         {
             continue;
         }
@@ -144,10 +143,64 @@ void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::v
             .x = origin.x,
             .y = origin.y + i * direction,
         };
-        if (AttackableSquares(new_coords, board) || FriendSquares(new_coords, board))
+        if (EnemySquares(new_coords, board) || FriendSquares(new_coords, board))
         {
             break;
         }
         moves.emplace_back(new_coords);
+    }
+}
+
+void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves)
+{
+    bool can_castle = board.white_to_move ? board.white_can_castle : board.black_can_castle;
+    if (!can_castle)
+    {
+        return;
+    }
+    // i should check first the
+    // i should check first the queen side or what? :///
+    struct CastlingRight
+    {
+        int dx;
+        bool castling_right;
+    };
+    std::array<CastlingRight, 2> castling = {
+        CastlingRight{
+
+            .dx = 1,
+            .castling_right = board.white_to_move ? board.white_can_castle_kingside : board.black_can_castle_kingside,
+        },
+        CastlingRight{
+            .dx = (-1),
+            .castling_right = board.white_to_move ? board.white_can_castle_queenside : board.black_can_castle_queenside,
+
+        },
+    };
+    for (CastlingRight &v : castling)
+    {
+        if (!v.castling_right)
+        {
+            continue;
+        }
+        // 0 check 1 not check but the line is attacked 2 the destiny is attacked, you will be on check :)
+        for (int i = 0; i <= 2; i++)
+        {
+            int new_x = origin.x + v.dx * i;
+            uint64_t mask = 1ULL << ((origin.y * 8) + new_x);
+            BoardCoordinates new_coords = {
+                .x = new_x,
+                .y = origin.y,
+            };
+            if ((board.attacked_squares & mask) > 0 || OcuppiedSquares(new_coords, board))
+            {
+                break;
+            }
+            if (i != 2)
+            {
+                continue;
+            }
+            moves.emplace_back(new_coords);
+        }
     }
 }

@@ -37,10 +37,11 @@ public:
     BitWiseBoard MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board);                   // i make reference to the board in that specific square
     // so this one, will be used to getting general information from the board :)
     TypePiece GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &board);
+public:
     // obviously this is information is useful for knowing what its happening here :)
-    bool AttackableSquares(BoardCoordinates from, const BitWiseBoard &board);
+    bool EnemySquares(BoardCoordinates from, const BitWiseBoard &board);
     bool FriendSquares(BoardCoordinates from, const BitWiseBoard &board);
-
+    bool OcuppiedSquares(BoardCoordinates from, const BitWiseBoard&board);
 private:
     // this is for the rook, bishop, and queen
     void LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter = Legal);
@@ -48,7 +49,8 @@ private:
     void OneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter = Legal);
     // only for the pawn
     void PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter = TypeFilter::Legal);
-
+    // Castling
+    void CastlingMoves(BoardCoordinates origin,const BitWiseBoard&board,std::vector<BoardCoordinates> &moves);
 private:
     std::array<std::vector<Move>, Pieces::PIECE_COUNT> m_possible_moves; // this is the vector of possible moves
 };

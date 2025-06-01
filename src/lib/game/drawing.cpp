@@ -15,16 +15,17 @@ void ChessGame::DrawCheckBoardSquares()
         }
     }
 }
-    void ChessGame::DrawInitialPos(){
-        if(!not_selected){
-            DrawCircle(from.x*50+25,from.y*50+25,25,RED);
-           possible_moves=board.GetMoves(from,bitwise_board);
-           for(BoardCoordinates &v :possible_moves){
-                        DrawCircle(v.x*50+25,v.y*50+25,25,RED);
-
-           }
+void ChessGame::DrawInitialPos()
+{
+    if (!not_selected)
+    {
+        DrawCircle(from.x * 50 + 25, from.y * 50 + 25, 25, RED);
+        for (BoardCoordinates &v : possible_moves)
+        {
+            DrawCircle(v.x * 50 + 25, v.y * 50 + 25, 25, RED);
         }
     }
+}
 
 void ChessGame::DrawBoardPieces()
 {
@@ -98,6 +99,8 @@ void ChessGame::SelectPieces()
                     {
                         from.x = x % 8;
                         from.y = x / 8;
+                        possible_moves = board.GetMoves(from, bitwise_board);
+
                         not_selected = false;
                     }
                     else
@@ -114,9 +117,8 @@ void ChessGame::SelectPieces()
         }
     }
 }
-void ChessGame::ShowBasicInformation(){
-    float x_offset=8*50+10;
-    DrawText(bitwise_board.white_to_move?"white move":"black move",x_offset,10,10,BLACK);
-
-
+void ChessGame::ShowBasicInformation()
+{
+    float x_offset = 8 * 50 + 10;
+    DrawText(bitwise_board.white_to_move ? "white move" : "black move", x_offset, 10, 10, BLACK);
 }
