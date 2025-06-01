@@ -71,10 +71,12 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     default:
         break;
     }
+    /*this is only for the enpassant case :)*/
     TypePiece target_piece = GetPieceFromCoord(to, board);
     uint64_t enemy_pawn_mask = 0;
     TypePiece enemy_piece = {.piece = NONE, .isWhite = false};
     BoardCoordinates enemy_coords;
+
     if ((AttackableSquares(to, board)||target_piece.piece==Pieces::NONE) && target_piece.piece != origin_piece.piece)
     {
 
