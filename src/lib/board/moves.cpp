@@ -1,5 +1,4 @@
 #include "board.h++"
-#include <iostream>
 std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, BitWiseBoard &board, TypeFilter filter)
 {
 
@@ -52,13 +51,12 @@ void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard 
     // the rook and the bishop
     for (auto move : m_possible_moves[piece])
     { // i first create the vector
-        std::cout << "move :)" << "\n";
 
         for (int x = origin.x + move.x,
                  y = origin.y + move.y;
-             x < 8 && x >= 0 &&
-             y < 8 && y >= 0;
-             x += move.x, y += move.y)
+            x < 8 && x >= 0 &&
+            y < 8 && y >= 0;
+                 x += move.x, y += move.y)
         {
 
             BoardCoordinates coords = {
