@@ -26,6 +26,19 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     uint64_t piece_mask = 1ULL << ((from.y * 8) + from.x);
     uint64_t target_mask = 1ULL << ((to.y * 8) + to.x);
     // en passant part to reset everything
+    std::vector<BoardCoordinates> legal_moves=GetMoves(from,board);
+    // SO THIS IS JUT TO FILTER ANY KIND OF BULLSHIT SO I DONT HAVE TO LOSE ANY TIME CALCULATING SHIT :)
+    bool is_legal=false;
+    for(BoardCoordinates move:legal_moves){
+        if(move.x==to.x&&move.y==to.y){
+            is_legal=true;
+            break;
+        }
+    }
+    if(!is_legal){
+        return new_board;
+    }
+    //
     new_board.enpassant = initialize_board; // we reset this before we have to alter it :);
     int direction = board.white_to_move ? -1 : 1;
 

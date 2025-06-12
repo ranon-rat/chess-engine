@@ -1,6 +1,6 @@
 #include "board.h++"
 #include <iostream>
-std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, BitWiseBoard &board, TypeFilter filter)
+std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, const BitWiseBoard &board, TypeFilter filter)
 {
     std::cout << "THE FUCK" << std::endl;
     // checking to//
@@ -20,6 +20,7 @@ std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, BitWiseBoa
     // uint64_t avaible_pieces=0;
     TypePiece piece_info = GetPieceFromCoord(piece, board);
     std::cout << "HAHA MAKING MOVES\n";
+    std::cout<<piece.y<<"\n";
     switch (piece_info.piece)
     {
     case Pieces::PAWN:
@@ -120,11 +121,11 @@ void Board::OneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
 void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
 {
     std::cout << "\n"
-              << origin.x << "COÑO" << origin.y << "\n";
+              << origin.x << " " << origin.y << "\n";
 
     int direction = board.white_to_move ? -1 : 1; // this is important :)
     uint64_t pawn_mask = 1ULL << ((origin.y * 8) + origin.x);
-    bool long_move_right = (pawn_mask& pawn_positions)>0;
+    bool long_move_right = (pawn_mask & pawn_positions) > 0;
     int advance = long_move_right ? 2 : 1;
 
     // attack position :)
@@ -151,6 +152,7 @@ void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::v
             .x = origin.x,
             .y = origin.y + i * direction,
         };
+        if (new_coords.y >= 8)break;
         if (EnemySquares(new_coords, board) || FriendSquares(new_coords, board))
         {
             break;

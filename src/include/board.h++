@@ -33,7 +33,7 @@ public:
     // these are for interal usage
     std::array<TypePiece, 64> GetPieces(BitWiseBoard &board); // this will return the pieces in the board
     BitWiseBoard BuildFromFEN(std::string fen);
-    std::vector<BoardCoordinates> GetMoves(BoardCoordinates piece, BitWiseBoard &board, TypeFilter filter = Legal); // esto deberia de retornarme un uint64_t con los movimientos legales de la pieza
+    std::vector<BoardCoordinates> GetMoves(BoardCoordinates piece,const BitWiseBoard &board, TypeFilter filter = Legal); // esto deberia de retornarme un uint64_t con los movimientos legales de la pieza
     BitWiseBoard MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board);                   // i make reference to the board in that specific square
     // so this one, will be used to getting general information from the board :)
     TypePiece GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &board);
