@@ -16,7 +16,7 @@ std::array<TypePiece, 64> Board::GetPieces(BitWiseBoard &board)
         uint64_t mask = 1ULL << i;
 
         bool is_white = (bool)(board.white_pieces & mask);
-
+    
         
         if (board.pawns & (mask))
         {
@@ -53,6 +53,14 @@ std::array<TypePiece, 64> Board::GetPieces(BitWiseBoard &board)
             if (once)
                 std::cout << "KING " << std::bitset<64>(board.kings) << std::endl;
             pieces[i] = {Pieces::KING, is_white};
+        }else{
+            uint64_t white_board=board.white_pieces;
+            uint64_t black_board=board.black_pieces;
+            if(black_board&mask){
+                pieces[i]={Pieces::UNKOWN,false};
+            }else if(white_board&mask){
+                pieces[i]={Pieces::UNKOWN,true};
+            }
         }
     }
     once = false;

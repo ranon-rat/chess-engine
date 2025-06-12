@@ -2,7 +2,6 @@
 #include <iostream>
 std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, const BitWiseBoard &board, TypeFilter filter)
 {
-    std::cout << "THE FUCK" << std::endl;
     // checking to//
     uint64_t occupied_squares = board.white_to_move ? board.white_pieces : board.black_pieces;
     // now we need to check if the piece is a pawn or not
@@ -10,7 +9,6 @@ std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, const BitW
     std::vector<BoardCoordinates> moves;
     // hmmm
     // first lets check if the piece is one of us
-    std::cout << "HAHA MAKING MOVES\n";
     if (!(FriendSquares(piece, board)))
     {
         return moves;
@@ -19,12 +17,9 @@ std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, const BitW
     // avaible pieces
     // uint64_t avaible_pieces=0;
     TypePiece piece_info = GetPieceFromCoord(piece, board);
-    std::cout << "HAHA MAKING MOVES\n";
-    std::cout<<piece.y<<"\n";
     switch (piece_info.piece)
     {
     case Pieces::PAWN:
-        std::cout << "PAWN\n";
         PawnMoves(piece, board, moves, filter);
         break;
     case Pieces::KNIGHT:
@@ -73,6 +68,7 @@ void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard 
                 switch (filter)
                 {
                 case Defendable:
+                    std::cout << "CHECKIN ON\n";
                     moves.emplace_back(coords);
                 case Legal:
                     goto finished_line;
@@ -120,8 +116,6 @@ void Board::OneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
 
 void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
 {
-    std::cout << "\n"
-              << origin.x << " " << origin.y << "\n";
 
     int direction = board.white_to_move ? -1 : 1; // this is important :)
     uint64_t pawn_mask = 1ULL << ((origin.y * 8) + origin.x);
@@ -152,7 +146,8 @@ void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::v
             .x = origin.x,
             .y = origin.y + i * direction,
         };
-        if (new_coords.y >= 8)break;
+        if (new_coords.y >= 8)
+            break;
         if (EnemySquares(new_coords, board) || FriendSquares(new_coords, board))
         {
             break;

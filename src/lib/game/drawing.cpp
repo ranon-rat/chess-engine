@@ -73,6 +73,9 @@ void ChessGame::DrawBoardPieces()
                 DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
                 DrawText("K", i * 50 + 20, j * 50 + 20, 20, piece.isWhite ? BLACK : WHITE);
                 break;
+                case Pieces::UNKOWN:
+                 DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
+                DrawText("?", i * 50 + 20, j * 50 + 20, 20, piece.isWhite ? BLACK : WHITE);
             default:
                 break;
             }

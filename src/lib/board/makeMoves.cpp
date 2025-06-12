@@ -19,7 +19,6 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     // if we are not part of the utilized squares, or the piece is part of the attackable squares then we shouldnt continue :)
     if (!FriendSquares(from, board) || EnemySquares(from, board))
     { // if its not in one of our pieces then just return 0 :)
-        std::cout << "this isnt your piece" << "\n";
         return new_board;
     }
     // mask of the targets and pieces :)
@@ -188,9 +187,7 @@ void Board::MovePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &n
     // this is only for the en passant :)
     if (abs(from.y - to.y) == 2)
     {
-        std::cout << "EN PASSANT\n";
         uint64_t enpassant_mask = 1ULL << ((from.y + direction) * 8 + from.x);
-        std::cout << std::bitset<64>(enpassant_mask) << "\n";
         new_board.enpassant |= enpassant_mask;
     }
 }
@@ -202,7 +199,6 @@ void Board::EatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWise
     {
         return;
     }
-    std::cout << "something interesting\n";
     BoardCoordinates enemy_coords = {
         .x = to.x,
         .y = to.y - direction,

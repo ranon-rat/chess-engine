@@ -10,7 +10,8 @@ enum Pieces
     KING,
     PIECE_COUNT,
     PAWN,
-    NONE
+    NONE,
+    UNKOWN
 
 };
 
