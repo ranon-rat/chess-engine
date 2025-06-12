@@ -19,7 +19,6 @@ struct BitWiseBoard
 
     // now i should add a new little thing :)
     uint64_t enpassant = initialize_board;
-    uint64_t right_long_move = pawn_positions;
     //  then i need to check on the utilized squares
     uint64_t utilized_squares = initialize_board; // this is the board with all the pieces
     uint64_t white_pieces = initialize_board;
@@ -28,13 +27,13 @@ struct BitWiseBoard
     uint64_t attacked_squares = initialize_board; // this is for the attacked squares of the opponent pieces :)
     uint64_t potential_line_attacks = initialize_board;
     // some basic rights
-    bool white_to_move = true;
+    bool white_to_move:1 = true;
     // castling bs :)
-    bool black_can_castle=true;
-    bool white_can_castle=true;
-    bool white_can_castle_kingside = true;
-    bool white_can_castle_queenside = true;
-    bool black_can_castle_kingside = true;
-    bool black_can_castle_queenside = true;
+    bool black_can_castle:1=true;
+    bool white_can_castle:1=true;
+    bool white_can_castle_kingside:1 = true;
+    bool white_can_castle_queenside:1 = true;
+    bool black_can_castle_kingside:1 = true;
+    bool black_can_castle_queenside:1 = true;
 };
 #endif

@@ -1,7 +1,8 @@
 #include "board.h++"
+#include <iostream>
 std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, BitWiseBoard &board, TypeFilter filter)
 {
-
+    std::cout << "THE FUCK" << std::endl;
     // checking to//
     uint64_t occupied_squares = board.white_to_move ? board.white_pieces : board.black_pieces;
     // now we need to check if the piece is a pawn or not
@@ -9,6 +10,7 @@ std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, BitWiseBoa
     std::vector<BoardCoordinates> moves;
     // hmmm
     // first lets check if the piece is one of us
+    std::cout << "HAHA MAKING MOVES\n";
     if (!(FriendSquares(piece, board)))
     {
         return moves;
@@ -17,9 +19,11 @@ std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, BitWiseBoa
     // avaible pieces
     // uint64_t avaible_pieces=0;
     TypePiece piece_info = GetPieceFromCoord(piece, board);
+    std::cout << "HAHA MAKING MOVES\n";
     switch (piece_info.piece)
     {
     case Pieces::PAWN:
+        std::cout << "PAWN\n";
         PawnMoves(piece, board, moves, filter);
         break;
     case Pieces::KNIGHT:
@@ -54,9 +58,9 @@ void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard 
 
         for (int x = origin.x + move.x,
                  y = origin.y + move.y;
-            x < 8 && x >= 0 &&
-            y < 8 && y >= 0;
-                 x += move.x, y += move.y)
+             x < 8 && x >= 0 &&
+             y < 8 && y >= 0;
+             x += move.x, y += move.y)
         {
 
             BoardCoordinates coords = {
@@ -115,10 +119,14 @@ void Board::OneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
 
 void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
 {
+    std::cout << "\n"
+              << origin.x << "COÑO" << origin.y << "\n";
+
     int direction = board.white_to_move ? -1 : 1; // this is important :)
     uint64_t pawn_mask = 1ULL << ((origin.y * 8) + origin.x);
-    bool long_move_right = (pawn_mask & board.right_long_move) > 0;
+    bool long_move_right = (pawn_mask& pawn_positions)>0;
     int advance = long_move_right ? 2 : 1;
+
     // attack position :)
     for (int i = -1; i <= 1; i += 2)
     {

@@ -70,8 +70,6 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
         {
         case Pieces::PAWN:
             new_board.pawns &= ~target_mask;
-            new_board.right_long_move &= ~target_mask;
-
             break;
         case Pieces::KNIGHT:
             new_board.knights &= ~target_mask;
@@ -135,7 +133,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     new_board.utilized_squares &= ~piece_mask;
     new_board.utilized_squares |= target_mask;
 
-    new_board.white_to_move = !board.white_to_move;
+    new_board.white_to_move =!board.white_to_move;
 
     return new_board;
 }
@@ -174,7 +172,6 @@ void Board::MovePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &n
     new_board.pawns &= ~initial_mask;
     new_board.pawns |= target_mask;
     // once you make a move you lost the right to make a move in that specific part :)
-    new_board.right_long_move &= ~initial_mask;
     // this is only for the en passant :)
     if (abs(from.y - to.y) == 2)
     {

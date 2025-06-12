@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "game.h++"
 #include "raylib/raylib.h"
 void ChessGame::DrawCheckBoardSquares()
@@ -100,6 +102,7 @@ void ChessGame::SelectPieces()
                         from.x = x % 8;
                         from.y = x / 8;
                         possible_moves = board.GetMoves(from, bitwise_board);
+                        std::cout<<possible_moves.size()<<" possible moves"<<"\n";
 
                         not_selected = false;
                     }
