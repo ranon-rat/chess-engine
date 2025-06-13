@@ -158,7 +158,9 @@ void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::v
 
 void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves)
 {
-    bool can_castle = board.white_to_move ? board.white_can_castle : board.black_can_castle;
+    bool can_castle = board.white_to_move ? 
+    board.white_can_castle_kingside||board.white_can_castle_queenside:
+    board.black_can_castle_kingside||board.black_can_castle_queenside;
     if (!can_castle)
     {
         return;

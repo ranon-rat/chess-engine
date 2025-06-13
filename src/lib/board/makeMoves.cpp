@@ -25,16 +25,19 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     uint64_t piece_mask = 1ULL << ((from.y * 8) + from.x);
     uint64_t target_mask = 1ULL << ((to.y * 8) + to.x);
     // en passant part to reset everything
-    std::vector<BoardCoordinates> legal_moves=GetMoves(from,board);
+    std::vector<BoardCoordinates> legal_moves = GetMoves(from, board);
     // SO THIS IS JUT TO FILTER ANY KIND OF BULLSHIT SO I DONT HAVE TO LOSE ANY TIME CALCULATING SHIT :)
-    bool is_legal=false;
-    for(BoardCoordinates move:legal_moves){
-        if(move.x==to.x&&move.y==to.y){
-            is_legal=true;
+    bool is_legal = false;
+    for (BoardCoordinates move : legal_moves)
+    {
+        if (move.x == to.x && move.y == to.y)
+        {
+            is_legal = true;
             break;
         }
     }
-    if(!is_legal){
+    if (!is_legal)
+    {
         return new_board;
     }
     //
@@ -65,6 +68,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     case Pieces::KING:
         new_board.kings &= ~piece_mask;
         new_board.kings |= target_mask;
+
         break;
     default:
         break;
@@ -122,7 +126,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
             new_board.kings &= ~target_mask;
             break;
         case Pieces::NONE:
-           EatPawnEnPassant(from,to,new_board,board,piece_mask,target_mask,direction);
+            EatPawnEnPassant(from, to, new_board, board, piece_mask, target_mask, direction);
             break;
 
         default:
@@ -135,17 +139,27 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
         new_board.white_pieces &= ~piece_mask;
         new_board.white_pieces |= target_mask;
         new_board.black_pieces &= ~target_mask;
+        if (origin_piece.piece == Pieces::KING)
+        {
+            new_board.white_can_castle_kingside = false;
+            new_board.white_can_castle_queenside = false;
+        }
     }
     else
     {
         new_board.black_pieces &= ~piece_mask;
         new_board.black_pieces |= target_mask;
         new_board.white_pieces &= ~target_mask;
+        if (origin_piece.piece == Pieces::KING)
+        {
+            new_board.black_can_castle_kingside = false;
+            new_board.black_can_castle_queenside = false;
+        }
     }
     new_board.utilized_squares &= ~piece_mask;
     new_board.utilized_squares |= target_mask;
 
-    new_board.white_to_move =!board.white_to_move;
+    new_board.white_to_move = !board.white_to_move;
 
     return new_board;
 }
@@ -194,7 +208,7 @@ void Board::MovePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &n
 
 void Board::EatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int direction)
 {
-    const TypePiece origin_piece=GetPieceFromCoord(from,board);
+    const TypePiece origin_piece = GetPieceFromCoord(from, board);
     if (origin_piece.piece != Pieces::PAWN)
     {
         return;
@@ -209,8 +223,8 @@ void Board::EatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWise
     {
         return;
     }
-    
+
     uint64_t enemy_pawn_mask = 1ULL << ((enemy_coords.y * 8) + enemy_coords.x);
-    
+
     new_board.pawns &= ~enemy_pawn_mask;
 }
