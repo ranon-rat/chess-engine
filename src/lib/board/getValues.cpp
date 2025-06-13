@@ -4,23 +4,24 @@ bool Board::EnemySquares(BoardCoordinates from, const BitWiseBoard &board)
 {
     uint64_t piece_mask = 1ULL << ((from.y * 8) + from.x);
     uint64_t enemy_mask = board.white_to_move ? board.black_pieces : board.white_pieces;
-    return (piece_mask & enemy_mask) ;
+    return (piece_mask & enemy_mask);
 }
 bool Board::FriendSquares(BoardCoordinates from, const BitWiseBoard &board)
 {
     uint64_t piece_mask = 1ULL << ((from.y * 8) + from.x);
     uint64_t friend_mask = board.white_to_move ? board.white_pieces : board.black_pieces;
-    return (piece_mask & friend_mask) ;
+    return (piece_mask & friend_mask);
 }
 
-bool Board::OcuppiedSquares(BoardCoordinates from, const BitWiseBoard&board){
+bool Board::OcuppiedSquares(BoardCoordinates from, const BitWiseBoard &board)
+{
     uint64_t piece_mask = 1ULL << ((from.y * 8) + from.x);
-    return (piece_mask&board.utilized_squares)>0;
+    return (piece_mask & GetUtilizedSquares(board)) ;
 }
 TypePiece Board::GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &board)
 {
     uint64_t piece_mask = 1ULL << ((from.y * 8) + from.x);
-    bool isWhite = (board.white_pieces & piece_mask) > 0;
+    bool isWhite = (board.white_pieces & piece_mask) ;
     // PAWNS
     if (piece_mask & board.pawns)
     {
@@ -52,4 +53,9 @@ TypePiece Board::GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &bo
         return {Pieces::KING, isWhite};
     }
     return {Pieces::NONE, isWhite};
+}
+
+uint64_t Board::GetUtilizedSquares(const BitWiseBoard &board)
+{
+    return board.white_pieces | board.black_pieces;
 }

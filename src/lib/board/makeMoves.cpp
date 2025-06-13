@@ -78,7 +78,6 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     uint64_t enemy_pawn_mask = 0;
     TypePiece enemy_piece = {.piece = NONE, .isWhite = false};
     BoardCoordinates enemy_coords;
-
     if ((EnemySquares(to, board) || target_piece.piece == Pieces::NONE) && target_piece.piece != origin_piece.piece)
     {
 
@@ -156,8 +155,6 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
             new_board.black_can_castle_queenside = false;
         }
     }
-    new_board.utilized_squares &= ~piece_mask;
-    new_board.utilized_squares |= target_mask;
 
     new_board.white_to_move = !board.white_to_move;
 
@@ -227,4 +224,13 @@ void Board::EatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWise
     uint64_t enemy_pawn_mask = 1ULL << ((enemy_coords.y * 8) + enemy_coords.x);
 
     new_board.pawns &= ~enemy_pawn_mask;
+    if (board.white_to_move)
+    {
+        new_board.black_pieces &= ~enemy_pawn_mask;
+    }
+    else
+    {
+        new_board.white_pieces &= ~enemy_pawn_mask;
+    }
+    return;
 }

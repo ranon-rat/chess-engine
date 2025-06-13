@@ -20,7 +20,6 @@ struct BitWiseBoard
     // now i should add a new little thing :)
     uint64_t enpassant = initialize_board;
     //  then i need to check on the utilized squares
-    uint64_t utilized_squares = initialize_board; // this is the board with all the pieces
     uint64_t white_pieces = initialize_board;
     uint64_t black_pieces = initialize_board;
     // attacked squares

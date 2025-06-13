@@ -84,62 +84,50 @@ BitWiseBoard Board::BuildFromFEN(std::string fen)
         case 'p':
             board.pawns |= mask;
             board.black_pieces |= mask;
-            board.utilized_squares |= mask;
             break;
         case 'P':
             board.pawns |= mask;
             board.white_pieces |= mask;
-            board.utilized_squares |= mask;
             break;
         case 'n':
             board.knights |= mask;
             board.black_pieces |= mask;
-            board.utilized_squares |= mask;
             break;
         case 'N':
             board.knights |= mask;
             board.white_pieces |= mask;
-            board.utilized_squares |= mask;
             break;
         case 'b':
             board.bishops |= mask;
             board.black_pieces |= mask;
-            board.utilized_squares |= mask;
             break;
         case 'B':
             board.bishops |= mask;
             board.white_pieces |= mask;
-            board.utilized_squares |= mask;
             break;
         case 'r':
             board.rooks |= mask;
             board.black_pieces |= mask;
-            board.utilized_squares |= mask;
             break;
         case 'R':
             board.rooks |= mask;
             board.white_pieces |= mask;
-            board.utilized_squares |= mask;
             break;
         case 'q':
             board.queens |= mask;
             board.black_pieces |= mask;
-            board.utilized_squares |= mask;
             break;
         case 'Q':
             board.queens |= mask;
             board.white_pieces |= mask;
-            board.utilized_squares |= mask;
             break;
         case 'k':
             board.kings |= mask;
             board.black_pieces |= mask;
-            board.utilized_squares |= mask;
             break;
         case 'K':
             board.kings |= mask;
             board.white_pieces |= mask;
-            board.utilized_squares |= mask;
             break;
         default:
             break;
@@ -184,11 +172,7 @@ BitWiseBoard Board::BuildFromFEN(std::string fen)
     {
         // castling rights
         std::string castling = tokens[1];
-        board.white_can_castle_kingside = false;
-        board.white_can_castle_queenside = false;
-        board.black_can_castle_kingside = false;
-        board.black_can_castle_queenside = false;
-        
+      
         if (castling != "-")
         {
             for (char c : castling)
@@ -241,7 +225,7 @@ BitWiseBoard Board::BuildFromFEN(std::string fen)
     std::cout << "black_can_castle_kingside: " << (board.black_can_castle_kingside ? "true" : "false") << std::endl;
     std::cout << "black_can_castle_queenside: " << (board.black_can_castle_queenside ? "true" : "false") << std::endl;
     std::cout << "enpassant:   \t" << std::bitset<64>(board.enpassant) << std::endl;
-    std::cout << "utilized_squares:\t" << std::bitset<64>(board.utilized_squares) << std::endl;
+    std::cout << "utilized_squares:\t" << std::bitset<64>(GetUtilizedSquares(board)) << std::endl;
     std::cout << "\n\n";
 
     return board;
