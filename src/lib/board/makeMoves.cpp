@@ -148,10 +148,17 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
             new_board.black_can_castle_kingside = false;
             new_board.black_can_castle_queenside = false;
         }
-    }
-
+    }   
+    // we need to do this :)
     new_board.white_to_move = !board.white_to_move;
 
+    // so we need to first define the enemy mask
+    uint64_t enemy_mask=board.white_to_move?board.black_pieces:board.white_pieces;
+
+    // here we are going to calculate the squares that we could attack :)
+    new_board.attacked_squares=0;
+    
+    new_board.king_check=(board.kings&enemy_mask)&new_board.attacked_squares;
     return new_board;
 }
 

@@ -12,7 +12,7 @@ GameStates Board::CheckBoardState(const BitWiseBoard &board)
 // i should take into consideration some points or at least some positions where we cant really do something or solve any of this shit but for now i think that this seems good enough 
     bool is_getting_attacked = board.attacked_squares & board.kings & GetUtilizedSquares(board);
     bool friend_mask = board.white_to_move ? board.white_pieces : board.black_pieces;
-    BoardCoordinates king_coordinates = {
+    BoardCoordinates king_coordinates = { 
         .x = -1,
         .y = -1,
     };

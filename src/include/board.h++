@@ -60,6 +60,11 @@ private:
     // Castling
     void CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves);
     uint64_t GetUtilizedSquares(const BitWiseBoard &board);
+private:
+    uint64_t GetAttackedSquares(const BitWiseBoard&board);// so with this we get somethign quite basic on how this shit will 
+    uint64_t GetPotentialAttackSquares(const BitWiseBoard&board);
+private:
+    uint64_t SimulateForLegalPurposes(const BitWiseBoard&board);
 
 private:
     void MoveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask);
