@@ -17,5 +17,8 @@ int main(){
     for(int i=-1;i<=1;i+=2){
         std::cout<<i<<"\n";
     }
+
+    int value=8*true;
+    std::cout<<"\n"<<value<<" "<<value*false<<"\n";
     return 0;
 }

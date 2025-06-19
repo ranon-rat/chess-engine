@@ -3,9 +3,7 @@
 std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, const BitWiseBoard &board, TypeFilter filter)
 {
     // checking to//
-    uint64_t occupied_squares = board.white_to_move ? board.white_pieces : board.black_pieces;
     // now we need to check if the piece is a pawn or not
-    uint64_t piece_mask = 1ULL << ((piece.y * 8) + piece.x);
     std::vector<BoardCoordinates> moves;
     // hmmm
     // first lets check if the piece is one of us

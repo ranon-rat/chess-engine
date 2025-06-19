@@ -12,6 +12,8 @@
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
                 "-I./src/include",
                 "-I./.moonmake/dependencies/headers",
+                "-Wall", 
+                "-Wextra",
                 "-std=c++2b"
             ],
             "options": {

@@ -33,15 +33,17 @@ public:
     // these are for interal usage
     std::array<TypePiece, 64> GetPieces(BitWiseBoard &board); // this will return the pieces in the board
     BitWiseBoard BuildFromFEN(std::string fen);
-    std::vector<BoardCoordinates> GetMoves(BoardCoordinates piece,const BitWiseBoard &board, TypeFilter filter = Legal); // esto deberia de retornarme un uint64_t con los movimientos legales de la pieza
-    BitWiseBoard MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board);                   // i make reference to the board in that specific square
+    std::vector<BoardCoordinates> GetMoves(BoardCoordinates piece, const BitWiseBoard &board, TypeFilter filter = Legal); // esto deberia de retornarme un uint64_t con los movimientos legales de la pieza
+    BitWiseBoard MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board);                         // i make reference to the board in that specific square
     // so this one, will be used to getting general information from the board :)
     TypePiece GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &board);
+
 public:
     // obviously this is information is useful for knowing what its happening here :)
     bool EnemySquares(BoardCoordinates from, const BitWiseBoard &board);
     bool FriendSquares(BoardCoordinates from, const BitWiseBoard &board);
-    bool OcuppiedSquares(BoardCoordinates from, const BitWiseBoard&board);
+    bool OcuppiedSquares(BoardCoordinates from, const BitWiseBoard &board);
+
 private:
     // this is for the rook, bishop, and queen
     void LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter = Legal);
@@ -50,15 +52,16 @@ private:
     // only for the pawn
     void PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter = TypeFilter::Legal);
     // Castling
-    void CastlingMoves(BoardCoordinates origin,const BitWiseBoard&board,std::vector<BoardCoordinates> &moves);
-    uint64_t GetUtilizedSquares(const BitWiseBoard&board);
+    void CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves);
+    uint64_t GetUtilizedSquares(const BitWiseBoard &board);
 
-    private:
-    void MoveRook(BoardCoordinates from,BoardCoordinates to,BitWiseBoard&new_board,const BitWiseBoard&board,uint64_t initial_mask,uint64_t target_mask);
-    void MovePawn(BoardCoordinates from,BoardCoordinates to,BitWiseBoard&new_board,const BitWiseBoard&board,uint64_t initial_mask,uint64_t target_mask,int direction);
-        void EatPawnEnPassant(BoardCoordinates from,BoardCoordinates to,BitWiseBoard&new_board,const BitWiseBoard&board,uint64_t initial_mask,uint64_t target_mask,int direction);
-    private:
+private:
+    void MoveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask);
+    void MovePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int direction);
+    void EatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int direction);
+    void MoveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask);
 
+private:
     std::array<std::vector<Move>, Pieces::PIECE_COUNT> m_possible_moves; // this is the vector of possible moves
 };
 

@@ -14,8 +14,6 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     // First i need to check if the piece is a legal move,
     // thats all :) XD
 
-    // now we have to check the kinds
-    uint64_t occupied_squares = board.white_to_move ? board.white_pieces : board.black_pieces;
     // if we are not part of the utilized squares, or the piece is part of the attackable squares then we shouldnt continue :)
     if (!FriendSquares(from, board) || EnemySquares(from, board))
     { // if its not in one of our pieces then just return 0 :)
@@ -66,18 +64,14 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
         new_board.queens |= target_mask;
         break;
     case Pieces::KING:
-        new_board.kings &= ~piece_mask;
-        new_board.kings |= target_mask;
 
+        MoveKing(from, to, new_board, board, piece_mask, target_mask);
         break;
     default:
         break;
     }
     /*this is only for the enpassant case :)*/
     TypePiece target_piece = GetPieceFromCoord(to, board);
-    uint64_t enemy_pawn_mask = 0;
-    TypePiece enemy_piece = {.piece = NONE, .isWhite = false};
-    BoardCoordinates enemy_coords;
     if ((EnemySquares(to, board) || target_piece.piece == Pieces::NONE) && target_piece.piece != origin_piece.piece)
     {
 
@@ -233,4 +227,39 @@ void Board::EatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWise
         new_board.white_pieces &= ~enemy_pawn_mask;
     }
     return;
+}
+
+void Board::MoveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask)
+{
+
+    // this is just something quite basic
+    new_board.kings &= ~initial_mask;
+    new_board.kings |= target_mask;
+    if (board.white_to_move)
+    {
+        new_board.white_can_castle_kingside = false;
+        new_board.white_can_castle_queenside = false;
+    }
+    else
+    {
+        new_board.black_can_castle_kingside = false;
+        new_board.black_can_castle_queenside = false;
+    }
+
+    if (abs(from.x - to.x) == 1)
+    {
+        return;
+    }
+    bool king_side = std::signbit(to.x - from.x);
+    int x = 7 * king_side;
+    uint64_t origin_rook_mask = (1ULL << ((from.y * 8) + x));
+    uint64_t new_rook_mask(1ULL << ((from.y * 8) + from.x + (1 - king_side * 2)));
+    new_board.rooks &= ~origin_rook_mask;
+    new_board.rooks |= new_rook_mask;
+    // so i need to erase now :)
+    if (board.white_to_move)
+        new_board.white_pieces &= ~origin_rook_mask;
+
+    else
+        new_board.black_pieces &= ~origin_rook_mask;
 }
