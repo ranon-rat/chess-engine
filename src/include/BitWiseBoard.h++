@@ -24,7 +24,6 @@ struct BitWiseBoard
     uint64_t black_pieces = initialize_board;
     // attacked squares
     uint64_t attacked_squares = initialize_board; // this is for the attacked squares of the opponent pieces :)
-    uint64_t potential_line_attacks = initialize_board;
     // some basic rights
     bool white_to_move:1 = true;
     // castling bs :)

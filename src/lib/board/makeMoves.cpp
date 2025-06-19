@@ -160,7 +160,6 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
 
     // here we are going to calculate the squares that we could attack :)
     new_board.attacked_squares = GetAttackedSquares(board);
-    new_board.potential_line_attacks = GetPotentialAttackSquares(board);
     // okay here goes some basic shit :)
 
     new_board.king_check = (board.kings & enemy_mask) & new_board.attacked_squares;

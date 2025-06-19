@@ -88,8 +88,9 @@ void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard 
             }
 
             moves.emplace_back(coords);
-            if (EnemySquares(coords, board) && (filter == Legal))
+            if (EnemySquares(coords, board))
             {
+                
                 break;
             }
         }
@@ -100,10 +101,6 @@ void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard 
 void Board::OneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
 {
 
-    if (filter == Possible)
-    {
-        return;
-    }
     // this is only for the queen
     // the rook and the bishop
 
@@ -130,10 +127,7 @@ void Board::OneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
 
 void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
 {
-    if (filter == Possible)
-    {
-        return;
-    }
+   
     int direction = board.white_to_move ? -1 : 1; // this is important :)
     uint64_t pawn_mask = 1ULL << ((origin.y * 8) + origin.x);
     bool long_move_right = (pawn_mask & pawn_positions) > 0;
@@ -155,7 +149,9 @@ void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::v
         }
         moves.emplace_back(new_coords);
     }
-
+    if(filter!=Legal){
+        return;
+    }
     // now advance position
     for (int i = 1; i <= advance; i++)
     {
