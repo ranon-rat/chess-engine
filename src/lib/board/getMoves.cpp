@@ -34,7 +34,7 @@ std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, const BitW
         break;
     case Pieces::KING:
         OneLineMoves(KING, piece, board, moves, filter);
-        CastlingMoves(piece, board, moves);
+        CastlingMoves(piece, board, moves,filter);
         break;
     default:
         break;
@@ -89,8 +89,12 @@ void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard 
 void Board::OneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
 {
 
+    if(filter==Possible){
+        return;
+    }
     // this is only for the queen
     // the rook and the bishop
+
     for (auto move : m_possible_moves[piece])
     { // i first create the vector
         const int new_x = origin.x + move.x;
@@ -114,7 +118,9 @@ void Board::OneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
 
 void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
 {
-
+    if(filter==Possible){
+        return;
+    }
     int direction = board.white_to_move ? -1 : 1; // this is important :)
     uint64_t pawn_mask = 1ULL << ((origin.y * 8) + origin.x);
     bool long_move_right = (pawn_mask & pawn_positions) > 0;
@@ -154,8 +160,12 @@ void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::v
     }
 }
 
-void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves)
+void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves,TypeFilter filter)
 {
+    if(filter!=Legal){
+        return;
+    }
+    
     bool can_castle = board.white_to_move ? board.white_can_castle_kingside || board.white_can_castle_queenside : board.black_can_castle_kingside || board.black_can_castle_queenside;
     if (!can_castle)
     {
