@@ -18,6 +18,12 @@ struct BoardCoordinates
     int x;
     int y;
 };
+
+enum GameStates{
+    CONTINUE=0,
+    DRAW,
+    CHECKMATE
+};
 class Board // this is the playing board :)
 {
 public:
@@ -60,7 +66,8 @@ private:
     void MovePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int direction);
     void EatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int direction);
     void MoveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask);
-
+private:
+    GameStates CheckBoardState(const BitWiseBoard &board);
 private:
     std::array<std::vector<Move>, Pieces::PIECE_COUNT> m_possible_moves; // this is the vector of possible moves
 };
