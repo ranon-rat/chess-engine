@@ -34,13 +34,24 @@ std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, const BitW
         break;
     case Pieces::KING:
         OneLineMoves(KING, piece, board, moves, filter);
-        CastlingMoves(piece, board, moves,filter);
+        CastlingMoves(piece, board, moves, filter);
         break;
     default:
         break;
     }
 
-    return moves;
+    if (filter != Legal)
+    {
+        return moves;
+    }
+    std::vector<BoardCoordinates> filtered_moves={};
+    for(BoardCoordinates &move:moves){
+        if(IsChecked(piece,move,board)){
+            continue;
+        }
+        filtered_moves.emplace_back(move);
+    }
+    return filtered_moves;
 }
 
 void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
@@ -89,7 +100,8 @@ void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard 
 void Board::OneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
 {
 
-    if(filter==Possible){
+    if (filter == Possible)
+    {
         return;
     }
     // this is only for the queen
@@ -118,7 +130,8 @@ void Board::OneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
 
 void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
 {
-    if(filter==Possible){
+    if (filter == Possible)
+    {
         return;
     }
     int direction = board.white_to_move ? -1 : 1; // this is important :)
@@ -160,12 +173,13 @@ void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::v
     }
 }
 
-void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves,TypeFilter filter)
+void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
 {
-    if(filter!=Legal){
+    if (filter != Legal)
+    {
         return;
     }
-    
+
     bool can_castle = board.white_to_move ? board.white_can_castle_kingside || board.white_can_castle_queenside : board.black_can_castle_kingside || board.black_can_castle_queenside;
     if (!can_castle)
     {
@@ -196,7 +210,7 @@ void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, st
         if (!v.castling_right)
         {
 
-            std::cout<<"NOT THIS ONE "<<v.dx<<"\n";
+            std::cout << "NOT THIS ONE " << v.dx << "\n";
             continue;
         }
         // 0 check 1 not check but the line is attacked 2 the destiny is attacked, you will be on check :)
@@ -208,11 +222,11 @@ void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, st
                 .x = new_x,
                 .y = origin.y,
             };
-            if ((board.attacked_squares & mask) > 0 || (OcuppiedSquares(new_coords, board)&&i>0))
+            if ((board.attacked_squares & mask) > 0 || (OcuppiedSquares(new_coords, board) && i > 0))
             {
                 break;
             }
-            
+
             if (i != 2)
             {
                 continue;
