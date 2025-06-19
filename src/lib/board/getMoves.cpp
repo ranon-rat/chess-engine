@@ -1,13 +1,16 @@
 #include "board.h++"
 #include <iostream>
-std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, const BitWiseBoard &board, TypeFilter filter)
+std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, const BitWiseBoard &board,std::optional<bool> is_white, TypeFilter filter)
 {
     // checking to//
     // now we need to check if the piece is a pawn or not
+    
+    bool from_white=(is_white.value_or(board.white_to_move));
+   
     std::vector<BoardCoordinates> moves;
     // hmmm
     // first lets check if the piece is one of us
-    if (!(FriendSquares(piece, board)))
+    if (!(FriendSquares(piece, board,from_white)))
     {
         return moves;
     }
@@ -18,23 +21,23 @@ std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, const BitW
     switch (piece_info.piece)
     {
     case Pieces::PAWN:
-        PawnMoves(piece, board, moves, filter);
+        PawnMoves(piece, board, moves,from_white, filter);
         break;
     case Pieces::KNIGHT:
-        OneLineMoves(KNIGHT, piece, board, moves, filter);
+        OneLineMoves(KNIGHT, piece, board, moves,from_white, filter);
         break;
     case Pieces::BISHOP:
-        LineMoves(BISHOP, piece, board, moves, filter);
+        LineMoves(BISHOP, piece, board, moves,from_white, filter);
         break;
     case Pieces::ROOK:
-        LineMoves(ROOK, piece, board, moves, filter);
+        LineMoves(ROOK, piece, board, moves,from_white, filter);
         break;
     case Pieces::QUEEN:
-        LineMoves(QUEEN, piece, board, moves, filter);
+        LineMoves(QUEEN, piece, board, moves,from_white, filter);
         break;
     case Pieces::KING:
-        OneLineMoves(KING, piece, board, moves, filter);
-        CastlingMoves(piece, board, moves, filter);
+        OneLineMoves(KING, piece, board, moves,from_white, filter);
+        CastlingMoves(piece, board, moves,from_white, filter);
         break;
     default:
         break;
@@ -47,7 +50,7 @@ std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, const BitW
     std::vector<BoardCoordinates> filtered_moves = {};
     for (BoardCoordinates &move : moves)
     {
-        if (IsChecked(piece, move, board))
+        if (IsChecked(piece, move, board,from_white))
         {
             continue;
         }
@@ -56,7 +59,7 @@ std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, const BitW
     return filtered_moves;
 }
 
-void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
+void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves,bool is_white, TypeFilter filter)
 {
     // this is only for the queen
     // the rook and the bishop
@@ -74,7 +77,7 @@ void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard 
                 .x = x,
                 .y = y,
             };
-            if (FriendSquares(coords, board))
+            if (FriendSquares(coords, board,is_white))
             {
                 if (filter == Defendable)
                 {
@@ -84,7 +87,7 @@ void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard 
             }
 
             moves.emplace_back(coords);
-            if (EnemySquares(coords, board))
+            if (EnemySquares(coords, board,is_white))
             {
 
                 break;
@@ -93,7 +96,7 @@ void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard 
     }
 }
 
-void Board::OneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
+void Board::OneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves,bool is_white, TypeFilter filter)
 {
 
     // this is only for the queen
@@ -111,7 +114,7 @@ void Board::OneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
             .x = new_x,
             .y = new_y,
         };
-        if (FriendSquares(coords, board) && (filter == Legal))
+        if (FriendSquares(coords, board,is_white) && (filter == Legal))
         {
             continue;
         }
@@ -120,7 +123,7 @@ void Board::OneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
     }
 }
 
-void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
+void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves,bool is_white, TypeFilter filter)
 {
 
     int direction = board.white_to_move ? -1 : 1; // this is important :)
@@ -135,10 +138,14 @@ void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::v
             .x = origin.x + i,
             .y = origin.y + direction};
 
+         if(new_coords.x>=8||new_coords.x<0||new_coords.y>=8||new_coords.y<=0){
+            continue;
+         }
+
         const uint64_t attack_mask = board.enpassant & 1ULL << ((new_coords.y * 8) + new_coords.x);
         const bool enpassant = (board.enpassant & attack_mask) > 0;
 
-        if (!EnemySquares(new_coords, board) && !enpassant && filter == TypeFilter::Legal)
+        if (!EnemySquares(new_coords, board,is_white) && !enpassant && filter == TypeFilter::Legal)
         {
             continue;
         }
@@ -155,9 +162,9 @@ void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::v
             .x = origin.x,
             .y = origin.y + i * direction,
         };
-        if (new_coords.y >= 8)
+        if (new_coords.y >= 8||new_coords.y<0)
             break;
-        if (EnemySquares(new_coords, board) || FriendSquares(new_coords, board))
+        if (EnemySquares(new_coords, board,is_white) || FriendSquares(new_coords, board,is_white))
         {
             break;
         }
@@ -165,7 +172,7 @@ void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::v
     }
 }
 
-void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
+void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves,bool is_white, TypeFilter filter)
 {
     if (filter != Legal)
     {
@@ -214,7 +221,8 @@ void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, st
                 .x = new_x,
                 .y = origin.y,
             };
-            if ((board.attacked_squares & mask) > 0 || (OcuppiedSquares(new_coords, board) && i > 0))
+            
+            if ((board.attacked_squares & mask) > 0 || (OcuppiedSquares(new_coords, board) ))
             {
                 break;
             }

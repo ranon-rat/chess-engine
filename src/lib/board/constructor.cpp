@@ -207,6 +207,7 @@ BitWiseBoard Board::BuildFromFEN(std::string fen)
             board.enpassant = 1ULL << ((ep_y * 8) + ep_x);
         }
     }
+    board.attacked_squares=GetAttackedSquares(board,!board.white_to_move);
     
     // Debug output
     std::cout << "\n\n";

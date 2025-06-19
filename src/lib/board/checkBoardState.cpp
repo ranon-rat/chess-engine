@@ -34,9 +34,9 @@ GameStates Board::CheckBoardState(const BitWiseBoard &board)
     {
         return GameStates::CHECKMATE;
     }
-    if (GetMoves(king_coordinates, board).size() > 0)// this just means that we are on check but we can still do something :)
+    if ((GetMoves(king_coordinates, board,board.white_to_move)).size() > 0)// this just means that we are on check but we can still do something :)
     {
-        return GameStates::CONTINUE;
+        return GameStates::CONTINUE;    
     };
 
     if(is_getting_attacked){// we are fucked dude

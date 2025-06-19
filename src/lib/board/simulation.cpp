@@ -1,8 +1,10 @@
 #include "board.h++"
 #include <iostream>
-uint64_t Board::GetAttackPotentialSquares(const BitWiseBoard &board, TypeFilter filter,bool on_enemy)
+#include <bitset>
+uint64_t Board::GetAttackedSquares(const BitWiseBoard &board, std::optional<bool> is_white)
 {
     uint64_t attack_mask = 0;
+    bool white_to_move = is_white.value_or(board.white_to_move);
     for (int y = 0; y < 8; y++)
     {
         for (int x = 0; x < 8; x++)
@@ -11,32 +13,32 @@ uint64_t Board::GetAttackPotentialSquares(const BitWiseBoard &board, TypeFilter 
                 .x = x,
                 .y = y,
             };
-            // if the square is the one of a friend then i can continue :)
-            if ((!FriendSquares(piece_coords, board)&&!on_enemy)||(!EnemySquares(piece_coords,board)&&on_enemy))
+            if (!FriendSquares(piece_coords, board, white_to_move))
             {
                 continue;
             }
-            std::vector<BoardCoordinates> moves = this->GetMoves(piece_coords, board, filter);
+
+            std::vector<BoardCoordinates> moves = this->GetMoves(piece_coords, board, white_to_move, TypeFilter::Defendable);
             for (BoardCoordinates &move_coords : moves)
             {
-                attack_mask |= (1ULL) << ((move_coords.y * 8) + move_coords.x);
+                uint64_t mask = (1ULL) << ((move_coords.y * 8) + move_coords.x);
+                attack_mask |= mask;
             }
         }
     }
     return attack_mask;
 }
 
-uint64_t Board::GetAttackedSquares(const BitWiseBoard &board,bool on_enemy)
+// this
+bool Board::IsChecked(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, bool from_white)
 {
-    return GetAttackPotentialSquares(board, TypeFilter::Defendable,on_enemy);
-} 
-
-
-// this 
-bool Board::IsChecked(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board){
-    BitWiseBoard new_board=MakeMove(from,to,board,true);
-    uint64_t attacked_squares=GetAttackedSquares(new_board);
-    uint64_t friendly_mask=board.white_to_move?board.white_pieces:board.black_pieces;
-    std::cout<<((attacked_squares&friendly_mask&board.kings)?"its checked":"it isnt checked")<<"\n";
-    return attacked_squares&friendly_mask&board.kings; // if this gives any value it will return true :) its an intersection basically (a()b()c)
+    BitWiseBoard new_board = MakeMove(from, to, board, true);
+    // first i get the attacked squares
+    uint64_t attacked_squares = GetAttackedSquares(new_board, !from_white);
+    // then i make the friendly mask
+    uint64_t friendly_mask = from_white ? new_board.white_pieces : new_board.black_pieces;
+    uint64_t king_mask=new_board.kings;
+  
+    std::cout << ((attacked_squares & friendly_mask & new_board.kings) ? "its checked" : "it isnt checked") << "\n";
+    return attacked_squares & friendly_mask & king_mask; // if this gives any value it will return true :) its an intersection basically (a()b()c)
 }
