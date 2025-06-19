@@ -6,6 +6,7 @@ std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, const BitW
     // now we need to check if the piece is a pawn or not
     
     bool from_white=(is_white.value_or(board.white_to_move));
+    //uint64_t attack_mask=GetAttackedSquares(board,from_white);
    
     std::vector<BoardCoordinates> moves;
     // hmmm
@@ -37,7 +38,7 @@ std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, const BitW
         break;
     case Pieces::KING:
         OneLineMoves(KING, piece, board, moves,from_white, filter);
-        CastlingMoves(piece, board, moves,from_white, filter);
+        CastlingMoves(piece, board, moves,from_white,board.attacked_squares, filter);
         break;
     default:
         break;
@@ -164,7 +165,7 @@ void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::v
         };
         if (new_coords.y >= 8||new_coords.y<0)
             break;
-        if (EnemySquares(new_coords, board,is_white) || FriendSquares(new_coords, board,is_white))
+        if (OcuppiedSquares(new_coords, board))
         {
             break;
         }
@@ -172,10 +173,11 @@ void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::v
     }
 }
 
-void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves,bool is_white, TypeFilter filter)
+void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves,bool is_white,uint64_t attack_mask, TypeFilter filter)
 {
     if (filter != Legal)
     {
+        std::cout<<"SOWWY\n";   
         return;
     }
 
@@ -222,8 +224,11 @@ void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, st
                 .y = origin.y,
             };
             
-            if ((board.attacked_squares & mask) > 0 || (OcuppiedSquares(new_coords, board) ))
+            if ((attack_mask & mask)      || (OcuppiedSquares(new_coords, board)&& i!=0 ))
             {
+                std::cout<<"we are covered!\n";
+                std::cout<<((attack_mask & mask)?"WE ARE ATTACKED":"WE ARENT ATTACKED")<<"\n";
+                std::cout<<"NOT AVAIBLE\n";
                 break;
             }
 

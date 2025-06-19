@@ -58,7 +58,7 @@ private:
     // only for the pawn
     void PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves,bool is_white, TypeFilter filter = TypeFilter::Legal);
     // Castling
-    void CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves,bool is_white, TypeFilter filter);
+    void CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves,bool is_white,uint64_t attack_mask, TypeFilter filter);
     uint64_t GetUtilizedSquares(const BitWiseBoard &board);
 
 private://  simulation shit
