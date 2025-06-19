@@ -156,11 +156,10 @@ void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::v
 
 void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves)
 {
-    bool can_castle = board.white_to_move ? 
-    board.white_can_castle_kingside||board.white_can_castle_queenside:
-    board.black_can_castle_kingside||board.black_can_castle_queenside;
+    bool can_castle = board.white_to_move ? board.white_can_castle_kingside || board.white_can_castle_queenside : board.black_can_castle_kingside || board.black_can_castle_queenside;
     if (!can_castle)
     {
+        std::cout << "cant castle\n";
         return;
     }
     // i should check first the
@@ -186,6 +185,8 @@ void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, st
     {
         if (!v.castling_right)
         {
+
+            std::cout<<"NOT THIS ONE "<<v.dx<<"\n";
             continue;
         }
         // 0 check 1 not check but the line is attacked 2 the destiny is attacked, you will be on check :)
@@ -197,10 +198,11 @@ void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, st
                 .x = new_x,
                 .y = origin.y,
             };
-            if ((board.attacked_squares & mask) > 0 || OcuppiedSquares(new_coords, board))
+            if ((board.attacked_squares & mask) > 0 || (OcuppiedSquares(new_coords, board)&&i>0))
             {
                 break;
             }
+            
             if (i != 2)
             {
                 continue;

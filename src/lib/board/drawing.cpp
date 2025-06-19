@@ -4,7 +4,6 @@
 
 std::array<TypePiece, 64> Board::GetPieces(BitWiseBoard &board)
 {
-    bool once = false;
     std::array<TypePiece, 64> pieces;
     for (int i = 0; i < 64; i++)
     {
@@ -20,38 +19,26 @@ std::array<TypePiece, 64> Board::GetPieces(BitWiseBoard &board)
         
         if (board.pawns & (mask))
         {
-            if (once)
-                std::cout << "PAWN " << std::bitset<64>(board.pawns) << std::endl;
             pieces[i] = {Pieces::PAWN, is_white};
         }
         else if (board.knights & mask)
         {
-            if (once)
-                std::cout << "KNIGHT " << std::bitset<64>(board.knights) << std::endl;
             pieces[i] = {Pieces::KNIGHT, is_white};
         }
         else if (board.bishops & mask)
         {
-            if (once)
-                std::cout << "BISHOP " << std::bitset<64>(board.bishops) << std::endl;
             pieces[i] = {Pieces::BISHOP, is_white};
         }
         else if (board.rooks & mask)
         {
-            if (once)
-                std::cout << "ROOK " << std::bitset<64>(board.rooks) << std::endl;
             pieces[i] = {Pieces::ROOK, is_white};
         }
         else if (board.queens & mask)
         {
-            if (once)
-                std::cout << "QUEEN " << std::bitset<64>(board.queens) << std::endl;
             pieces[i] = {Pieces::QUEEN, is_white};
         }
         else if (board.kings & mask)
         {
-            if (once)
-                std::cout << "KING " << std::bitset<64>(board.kings) << std::endl;
             pieces[i] = {Pieces::KING, is_white};
         }else{
             uint64_t white_board=board.white_pieces;
@@ -63,6 +50,14 @@ std::array<TypePiece, 64> Board::GetPieces(BitWiseBoard &board)
             }
         }
     }
-    once = false;
+
+    std::cout<<"\n";
+     std::cout<< "white_to_move: " << (board.white_to_move ? "true" : "false") << std::endl;
+    std::cout << "white_can_castle_kingside: " << (board.white_can_castle_kingside ? "true" : "false") << std::endl;
+    std::cout << "white_can_castle_queenside: " << (board.white_can_castle_queenside ? "true" : "false") << std::endl;
+    std::cout << "black_can_castle_kingside: " << (board.black_can_castle_kingside ? "true" : "false") << std::endl;
+    std::cout << "black_can_castle_queenside: " << (board.black_can_castle_queenside ? "true" : "false") << std::endl;
+     std::cout<<"\n";
+
     return pieces;
 }
