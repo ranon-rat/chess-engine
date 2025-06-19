@@ -44,9 +44,11 @@ std::vector<BoardCoordinates> Board::GetMoves(BoardCoordinates piece, const BitW
     {
         return moves;
     }
-    std::vector<BoardCoordinates> filtered_moves={};
-    for(BoardCoordinates &move:moves){
-        if(IsChecked(piece,move,board)){
+    std::vector<BoardCoordinates> filtered_moves = {};
+    for (BoardCoordinates &move : moves)
+    {
+        if (IsChecked(piece, move, board))
+        {
             continue;
         }
         filtered_moves.emplace_back(move);
@@ -74,27 +76,20 @@ void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard 
             };
             if (FriendSquares(coords, board))
             {
-                switch (filter)
+                if (filter == Defendable)
                 {
-                case Defendable:
-                    std::cout << "CHECKIN ON\n";
                     moves.emplace_back(coords);
-                case Legal:
-                    goto finished_line;
-                    break;
-                default:
-                    break;
                 }
+                break;
             }
 
             moves.emplace_back(coords);
             if (EnemySquares(coords, board))
             {
-                
+
                 break;
             }
         }
-    finished_line:
     }
 }
 
@@ -127,7 +122,7 @@ void Board::OneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
 
 void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves, TypeFilter filter)
 {
-   
+
     int direction = board.white_to_move ? -1 : 1; // this is important :)
     uint64_t pawn_mask = 1ULL << ((origin.y * 8) + origin.x);
     bool long_move_right = (pawn_mask & pawn_positions) > 0;
@@ -149,7 +144,8 @@ void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, std::v
         }
         moves.emplace_back(new_coords);
     }
-    if(filter!=Legal){
+    if (filter != Legal)
+    {
         return;
     }
     // now advance position

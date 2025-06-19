@@ -19,6 +19,7 @@ void ChessGame::DrawCheckBoardSquares()
 }
 void ChessGame::DrawInitialPos()
 {
+
     if (!not_selected)
     {
         DrawCircle(from.x * 50 + 25, from.y * 50 + 25, 25, RED);
@@ -36,9 +37,14 @@ void ChessGame::DrawBoardPieces()
     {
         for (int i = 0; i < 8; i++)
         {
+            uint64_t is_attacked_mask=bitwise_board.attacked_squares;
+            uint64_t position_mask=1ull<<(j*8+i);
+            bool is_attacked=is_attacked_mask&position_mask;
 
             // Draw the pieces
             TypePiece piece = pieces[j * 8 + i];
+           
+
             switch (piece.piece)
             {
             case Pieces::PAWN:
@@ -78,6 +84,10 @@ void ChessGame::DrawBoardPieces()
                 DrawText("?", i * 50 + 20, j * 50 + 20, 20, piece.isWhite ? BLACK : WHITE);
             default:
                 break;
+            }
+             if(is_attacked){
+                                DrawRectangle(i * 50 + 5, j * 50 + 5, 40, 40, {.r=0,.g=0,.b=255,.a=50});
+
             }
         }
     }

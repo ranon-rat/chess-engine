@@ -2,7 +2,7 @@
 #include <iostream>
 uint64_t Board::GetAttackPotentialSquares(const BitWiseBoard &board, TypeFilter filter,bool on_enemy)
 {
-    uint64_t attack_mask = 0ULL;
+    uint64_t attack_mask = 0;
     for (int y = 0; y < 8; y++)
     {
         for (int x = 0; x < 8; x++)
