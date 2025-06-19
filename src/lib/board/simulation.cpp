@@ -36,6 +36,11 @@ uint64_t Board::GetPotentialAttackSquares(const BitWiseBoard &board)
 
 
 // this 
-uint64_t Board::SimulatePosition(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board){
-
+bool Board::IsChecked(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board){
+    BitWiseBoard new_board=MakeMove(from,to,board);
+    new_board.white_to_move=!board.white_to_move;
+    uint64_t attacked_squares=GetAttackedSquares(new_board);
+    uint64_t friendly_mask=board.white_to_move?board.white_pieces:board.black_pieces;
+    
+    return attacked_squares&friendly_mask&board.kings; // if this gives any value it will return true :) its an intersection basically (a()b()c)
 }

@@ -68,7 +68,7 @@ uint64_t GetAttackedSquares(const BitWiseBoard&board);// so with this we get som
 private:
 
 // this will return a mask that will tell us if by doing that we will attack our king or not, basically thats all we are going to do :)
-    uint64_t SimulatePosition(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board);
+    bool IsChecked(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board);
 
 private:
     void MoveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask);
