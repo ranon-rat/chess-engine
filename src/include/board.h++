@@ -61,9 +61,9 @@ private:
     void CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, std::vector<BoardCoordinates> &moves,TypeFilter filter);
     uint64_t GetUtilizedSquares(const BitWiseBoard &board);
 private:
-    uint64_t GetAttackPotentialSquares(const BitWiseBoard&board,TypeFilter filter);
+    uint64_t GetAttackPotentialSquares(const BitWiseBoard&board,TypeFilter filter,bool on_enemy=false);
 
-uint64_t GetAttackedSquares(const BitWiseBoard&board);// so with this we get somethign quite basic on how this shit will 
+ uint64_t GetAttackedSquares(const BitWiseBoard&board,bool on_enemy=false);// so with this we get somethign quite basic on how this shit will 
     uint64_t GetPotentialAttackSquares(const BitWiseBoard&board);
 private:
 

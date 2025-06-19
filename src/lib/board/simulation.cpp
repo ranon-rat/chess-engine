@@ -1,5 +1,5 @@
 #include <board.h++>
-uint64_t Board::GetAttackPotentialSquares(const BitWiseBoard &board, TypeFilter filter)
+uint64_t Board::GetAttackPotentialSquares(const BitWiseBoard &board, TypeFilter filter,bool on_enemy)
 {
     uint64_t attack_mask = 0ULL;
     for (int y = 0; y < 8; y++)
@@ -11,7 +11,7 @@ uint64_t Board::GetAttackPotentialSquares(const BitWiseBoard &board, TypeFilter 
                 .y = y,
             };
             // if the square is the one of a friend then i can continue :)
-            if (!FriendSquares(piece_coords, board))
+            if ((!FriendSquares(piece_coords, board)&&!on_enemy)||(!EnemySquares(piece_coords,board)&&on_enemy))
             {
                 continue;
             }
@@ -25,9 +25,9 @@ uint64_t Board::GetAttackPotentialSquares(const BitWiseBoard &board, TypeFilter 
     return attack_mask;
 }
 
-uint64_t Board::GetAttackedSquares(const BitWiseBoard &board)
+uint64_t Board::GetAttackedSquares(const BitWiseBoard &board,bool on_enemy)
 {
-    return GetAttackPotentialSquares(board, TypeFilter::Defendable);
+    return GetAttackPotentialSquares(board, TypeFilter::Defendable,on_enemy);
 } // so with this we get somethign quite basic on how this shit will
 uint64_t Board::GetPotentialAttackSquares(const BitWiseBoard &board)
 {
@@ -37,10 +37,8 @@ uint64_t Board::GetPotentialAttackSquares(const BitWiseBoard &board)
 
 // this 
 bool Board::IsChecked(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board){
-    BitWiseBoard new_board=MakeMove(from,to,board);
-    new_board.white_to_move=!board.white_to_move;
+    BitWiseBoard new_board=MakeMove(from,to,board,true);
     uint64_t attacked_squares=GetAttackedSquares(new_board);
-    uint64_t friendly_mask=board.white_to_move?board.white_pieces:board.black_pieces;
-    
+    uint64_t friendly_mask=board.white_to_move?board.white_pieces:board.black_pieces;    
     return attacked_squares&friendly_mask&board.kings; // if this gives any value it will return true :) its an intersection basically (a()b()c)
 }
