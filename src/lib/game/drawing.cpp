@@ -23,8 +23,9 @@ void ChessGame::DrawInitialPos()
     if (!not_selected)
     {
         DrawCircle(from.x * 50 + 25, from.y * 50 + 25, 25, RED);
-        for (BoardCoordinates &v : possible_moves)
+        for (size_t i=0;i<possible_moves.size();i++)
         {
+            BoardCoordinates&v=possible_moves[i];
             DrawCircle(v.x * 50 + 25, v.y * 50 + 25, 25, RED);
         }
     }

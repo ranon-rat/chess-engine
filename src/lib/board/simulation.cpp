@@ -5,9 +5,9 @@ uint64_t Board::GetAttackedSquares(const BitWiseBoard &board, std::optional<bool
 {
     uint64_t attack_mask = 0;
     bool white_to_move = is_white.value_or(board.white_to_move);
-    for (int y = 0; y < 8; y++)
+    for (int8_t y = 0; y < 8; y++)
     {
-        for (int x = 0; x < 8; x++)
+        for (int8_t x = 0; x < 8; x++)
         {
             BoardCoordinates piece_coords = {
                 .x = x,
@@ -18,9 +18,10 @@ uint64_t Board::GetAttackedSquares(const BitWiseBoard &board, std::optional<bool
                 continue;
             }
 
-            std::vector<BoardCoordinates> moves = this->GetMoves(piece_coords, board, white_to_move, TypeFilter::Defendable);
-            for (BoardCoordinates &move_coords : moves)
+            MaxMovesArray moves = this->GetMoves(piece_coords, board, white_to_move, TypeFilter::Defendable);
+            for (size_t i=0;i<moves.size();i++)
             {
+                BoardCoordinates move_coords=moves[i];
                 uint64_t mask = (1ULL) << ((move_coords.y * 8) + move_coords.x);
                 attack_mask |= mask;
             }

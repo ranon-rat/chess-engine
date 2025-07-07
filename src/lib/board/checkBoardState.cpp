@@ -30,11 +30,17 @@ GameStates Board::CheckBoardState(const BitWiseBoard &board)
             break;
         }
     }
+    bool more_pieces_can_move=false;
+    for(int8_t y=0;y<8 && !more_pieces_can_move;y++){
+        for(int8_t x=0;x<8&&!more_pieces_can_move;x++){
+            more_pieces_can_move=GetMoves(BoardCoordinates{.x=x,.y=y},board).size()>0;
+        }
+    }
     if (king_coordinates.x == -1)// this just means we didnt found anything
     {
         return GameStates::CHECKMATE;
     }
-    if ((GetMoves(king_coordinates, board,board.white_to_move)).size() > 0)// this just means that we are on check but we can still do something :)
+    if (more_pieces_can_move)// this just means that we are on check but we can still do something :)
     {
         return GameStates::CONTINUE;    
     };

@@ -15,7 +15,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     // thats all :) XD
 
     // if we are not part of the utilized squares, or the piece is part of the attackable squares then we shouldnt continue :)
-    if (!FriendSquares(from, board,board.white_to_move) || EnemySquares(from, board,board.white_to_move))
+    if (!FriendSquares(from, board, board.white_to_move) || EnemySquares(from, board, board.white_to_move))
     { // if its not in one of our pieces then just return 0 :)
         return new_board;
     }
@@ -25,11 +25,12 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     // en passant part to reset everything
     if (!simulation) // if its a simulation we dont have to emulate any of this shit
     {
-        std::vector<BoardCoordinates> legal_moves = GetMoves(from, board,board.white_to_move);
+        MaxMovesArray legal_moves = GetMoves(from, board, board.white_to_move);
         // SO THIS IS JUT TO FILTER ANY KIND OF BULLSHIT SO I DONT HAVE TO LOSE ANY TIME CALCULATING SHIT :)
         bool is_legal = false;
-        for (BoardCoordinates move : legal_moves)
+        for (size_t i = 0; i < legal_moves.size(); i++)
         {
+            BoardCoordinates move = legal_moves[i];
             if (move.x == to.x && move.y == to.y)
             {
                 is_legal = true;
@@ -75,7 +76,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     }
     /*this is only for the enpassant case :)*/
     TypePiece target_piece = GetPieceFromCoord(to, board);
-    if ((EnemySquares(to, board,board.white_to_move) || target_piece.piece == Pieces::NONE) && target_piece.piece != origin_piece.piece)
+    if ((EnemySquares(to, board, board.white_to_move) || target_piece.piece == Pieces::NONE) && target_piece.piece != origin_piece.piece)
     {
 
         switch (target_piece.piece)
@@ -152,11 +153,12 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
             new_board.black_can_castle_queenside = false;
         }
     }
-    if(!simulation){    
-        new_board.attacked_squares = GetAttackedSquares(new_board,board.white_to_move);
+    if (!simulation)
+    {
+        new_board.attacked_squares = GetAttackedSquares(new_board, board.white_to_move);
         // so we need to first define the enemy mask
         uint64_t enemy_mask = board.white_to_move ? board.black_pieces : board.white_pieces;
-        
+
         // here we are going to calculate the squares that we could attack :)
         // okay here goes some basic shit :)
 
@@ -196,7 +198,7 @@ void Board::MoveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &n
     new_board.rooks |= target_mask;
 }
 
-void Board::MovePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int direction)
+void Board::MovePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction)
 {
     new_board.pawns &= ~initial_mask;
     new_board.pawns |= target_mask;
@@ -209,7 +211,7 @@ void Board::MovePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &n
     }
 }
 
-void Board::EatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int direction)
+void Board::EatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction)
 {
     const TypePiece origin_piece = GetPieceFromCoord(from, board);
     if (origin_piece.piece != Pieces::PAWN)
@@ -218,11 +220,11 @@ void Board::EatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWise
     }
     BoardCoordinates enemy_coords = {
         .x = to.x,
-        .y = to.y - direction,
+        .y = static_cast<int8_t>(to.y - direction),
     };
 
     const TypePiece enemy_piece = GetPieceFromCoord(enemy_coords, board);
-    if (enemy_piece.piece != PAWN || !EnemySquares(enemy_coords, board,board.white_to_move))
+    if (enemy_piece.piece != PAWN || !EnemySquares(enemy_coords, board, board.white_to_move))
     {
         return;
     }
