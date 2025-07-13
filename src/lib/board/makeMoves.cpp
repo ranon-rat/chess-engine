@@ -153,19 +153,22 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
             new_board.black_can_castle_queenside = false;
         }
     }
-    if (!simulation)
+    if (IsReadyToPromote(new_board))
     {
-        new_board.attacked_squares = GetAttackedSquares(new_board);
-        // so we need to first define the enemy mask
-        uint64_t enemy_mask = board.white_to_move ? board.black_pieces : board.white_pieces;
+        if (!simulation)
+        {
+            new_board.attacked_squares = GetAttackedSquares(new_board);
+            // so we need to first define the enemy mask
+            uint64_t enemy_mask = board.white_to_move ? board.black_pieces : board.white_pieces;
 
-        // here we are going to calculate the squares that we could attack :)
-        // okay here goes some basic shit :)
+            // here we are going to calculate the squares that we could attack :)
+            // okay here goes some basic shit :)
 
-        new_board.king_check = board.kings & enemy_mask & new_board.attacked_squares;
+            new_board.king_check = board.kings & enemy_mask & new_board.attacked_squares;
+        }
+        // we need to do this :)
+        new_board.white_to_move = !board.white_to_move;
     }
-    // we need to do this :)
-    new_board.white_to_move = !board.white_to_move;
     return new_board;
 }
 
