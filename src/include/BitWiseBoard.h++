@@ -3,7 +3,9 @@
 
 #include <cstdint>
 #define initialize_board 0x0000000000000000
-#define pawn_positions 0x00ff00000000ff00
+#define pawn_positions   0x00ff00000000ff00
+#define PROMOTION_LINES  0xff000000000000ff
+
 struct BitWiseBoard
 {
     // es para un chess engine asi que es obvio muchas cosas

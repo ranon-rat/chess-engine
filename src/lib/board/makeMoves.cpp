@@ -155,7 +155,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     }
     if (!simulation)
     {
-        new_board.attacked_squares = GetAttackedSquares(new_board, board.white_to_move);
+        new_board.attacked_squares = GetAttackedSquares(new_board);
         // so we need to first define the enemy mask
         uint64_t enemy_mask = board.white_to_move ? board.black_pieces : board.white_pieces;
 

@@ -9,78 +9,9 @@
 #include "BitWiseBoard.h++"
 #include "raylib/raylib.h"
 #include "PiecesAndMoves.h++"
+#include "others.h++"
 
-struct TypePiece
-{
-    Pieces piece;
-    bool isWhite; // true for white, false for black
-};
-struct BoardCoordinates
-{
-    int8_t x = 0;
-    int8_t y = 0;
-};
 
-enum GameStates
-{
-    CONTINUE = 0,
-    DRAW,
-    CHECKMATE
-};
-class MaxMovesArray
-{
-private:
-    size_t m_size = 0;
-    std::array<BoardCoordinates, 28> m_coords;
-
-public:
-    MaxMovesArray()
-    {
-    }
-    MaxMovesArray(const MaxMovesArray &other)
-    {
-        m_size = other.m_size;
-        for (size_t i = 0; i < other.m_size; i++)
-        {
-            m_coords[i] = other.m_coords[i];
-        }
-    }
-
-    MaxMovesArray &operator=(const MaxMovesArray &other)
-    {
-        if (this == &other)
-        {
-            return *this;
-        }
-        this->m_size = other.m_size;
-        for (size_t i = 0; i < other.m_size; i++)
-        {
-            m_coords[i] = other.m_coords[i];
-        }
-        return *this;
-    }
-    void emplace_back(const BoardCoordinates &coords)
-    {
-        m_coords[m_size] = coords;
-        m_size++;
-    }
-    size_t size()
-    {
-        return m_size;
-    }
-
-    // Versión para lectura y escritura
-    BoardCoordinates &operator[](size_t index)
-    {
-        return m_coords[index];
-    }
-
-    // Versión solo lectura (const)
-    const BoardCoordinates &operator[](size_t index) const
-    {
-        return m_coords[index];
-    }
-};
 class Board // this is the playing board :)
 {
 public:
@@ -99,7 +30,7 @@ public:
     BitWiseBoard MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, bool simulation = false);                             // i make reference to the board in that specific square
     // so this one, will be used to getting general information from the board :)
     TypePiece GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &board);
-
+    BitWiseBoard Promotion(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard&board,TypePiece new_piece); // so you select the new piece :)
 public:
     // obviously this is information is useful for knowing what its happening here :)
     bool EnemySquares(BoardCoordinates from, const BitWiseBoard &board, bool is_white);
