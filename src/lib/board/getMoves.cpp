@@ -1,5 +1,4 @@
 #include "board.h++"
-#include <iostream>
 MaxMovesArray Board::GetMoves(BoardCoordinates piece, const BitWiseBoard &board, std::optional<bool> is_white, TypeFilter filter)
 {
     // checking to//
@@ -182,14 +181,12 @@ void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, Ma
 {
     if (filter != Legal)
     {
-        std::cout << "SOWWY\n";
         return;
     }
 
     bool can_castle = is_white ? board.white_can_castle_kingside || board.white_can_castle_queenside : board.black_can_castle_kingside || board.black_can_castle_queenside;
     if (!can_castle)
     {
-        std::cout << "cant castle\n";
         return;
     }
     // i should check first the
@@ -216,7 +213,6 @@ void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, Ma
         if (!v.castling_right)
         {
 
-            std::cout << "NOT THIS ONE " << v.dx << "\n";
             continue;
         }
         // 0 check 1 not check but the line is attacked 2 the destiny is attacked, you will be on check :)
@@ -231,9 +227,7 @@ void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, Ma
 
             if ((attack_mask & mask) || (OcuppiedSquares(new_coords, board) && i != 0))
             {
-                std::cout << "we are covered!\n";
-                std::cout << ((attack_mask & mask) ? "WE ARE ATTACKED" : "WE ARENT ATTACKED") << "\n";
-                std::cout << "NOT AVAIBLE\n";
+     
                 break;
             }
 

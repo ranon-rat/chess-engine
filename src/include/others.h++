@@ -15,14 +15,7 @@ struct BoardCoordinates
     int8_t y = 0;
 };
 
-enum GameStates
-{
-    CONTINUE = 0,
-    DRAW,
-    CHECKMATE,
-    PROMOTION,
-    
-};
+
 class MaxMovesArray
 {
 private:

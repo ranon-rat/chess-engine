@@ -15,6 +15,15 @@ enum Pieces
 
 };
 
+enum GameStates
+{
+    CONTINUE = 0,
+    DRAW,
+    CHECKMATE,
+    PROMOTION,
+    
+};
+
 struct Move
 {
     int x;

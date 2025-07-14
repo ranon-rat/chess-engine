@@ -1,6 +1,4 @@
 #include "board.h++"
-#include <iostream>
-#include <bitset>
 #include <cmath>
 
 BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, bool simulation)
@@ -269,7 +267,6 @@ void Board::MoveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &n
     }
     bool king_side = std::signbit(from.x - to.x);
     int x = 7 * king_side;
-    std::cout << x << " " << from.y << "\n";
     uint64_t origin_rook_mask = (1ULL << ((from.y * 8) + x));
     uint64_t new_rook_mask(1ULL << ((from.y * 8) + from.x + (1 - (!king_side) * 2)));
     new_board.rooks &= ~origin_rook_mask;
