@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include "others.h++"
 int main(){
     using namespace std;
     for(int i=0;i<10&&i>=0;i--){
@@ -20,5 +20,7 @@ int main(){
 
     int value=8*true;
     std::cout<<"\n"<<value<<" "<<value*false<<"\n";
+
+    std::cout<<"\n"<<sizeof(MaxMovesArray)<<"\n";
     return 0;
 }
