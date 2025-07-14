@@ -173,7 +173,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
 void Board::moveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask)
 {
     // queen side
-    if (to.x == 8)
+    if (to.x == 7)
     {
         if (board.white_to_move)
         {
@@ -261,7 +261,7 @@ void Board::moveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &n
         new_board.black_can_castle_queenside = false;
     }
 
-    if (abs(from.x - to.x) == 1)
+    if (abs(from.x - to.x) == 1 ||from.y!=to.y)
     {
         return;
     }
