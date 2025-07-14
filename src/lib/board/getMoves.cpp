@@ -108,7 +108,7 @@ void Board::oneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
     { // i first create the vector
         const int8_t new_x = origin.x + move.x;
         const int8_t new_y = origin.y + move.y;
-        if (new_x < 0 || new_x >= 8 || new_y < 0 || new_y >= 8)
+        if (new_x < 0 || new_x > 7 || new_y < 0 || new_y >= 7)
         {
             continue;
         }
@@ -140,7 +140,7 @@ void Board::pawnMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMov
             .x = static_cast<int8_t>(origin.x + i),
             .y = static_cast<int8_t>(origin.y + direction)};
 
-        if (new_coords.x >= 8 || new_coords.x < 0 || new_coords.y >= 8 || new_coords.y < 0)
+        if (new_coords.x > 7 || new_coords.x < 0 || new_coords.y > 7 || new_coords.y < 0)
         {
             continue;
         }
@@ -167,7 +167,7 @@ void Board::pawnMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMov
             .x = origin.x,
             .y = static_cast<int8_t>(origin.y + static_cast<int8_t>(i) * direction),
         };
-        if (new_coords.y >= 8 || new_coords.y < 0)
+        if (new_coords.y > 7 || new_coords.y < 0)
             break;
         if (OcuppiedSquares(new_coords, board))
         {

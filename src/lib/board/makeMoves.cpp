@@ -75,30 +75,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
             new_board.bishops &= ~target_mask;
             break;
         case Pieces::ROOK:
-            if (to.x == 8)
-            {
-                if (board.white_to_move)
-                {
-                    new_board.black_can_castle_kingside = false;
-                }
-                else
-                {
-                    new_board.white_can_castle_kingside = false;
-                }
-            }
-            else if (to.x == 0)
-            {
-                if (board.white_to_move)
-                {
-                    new_board.black_can_castle_queenside = false;
-                }
-                else
-                {
-                    new_board.white_can_castle_queenside = false;
-                }
-            }
-            new_board.rooks &= ~target_mask;
-
+            eatRook(to, target_mask, new_board, board);
             break;
         case Pieces::QUEEN:
             new_board.queens &= ~target_mask;
@@ -109,7 +86,6 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
         case Pieces::NONE:
             eatPawnEnPassant(from, to, new_board, board, piece_mask, target_mask, direction);
             break;
-
         default:
             break;
         }
@@ -120,22 +96,13 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
         new_board.white_pieces &= ~piece_mask;
         new_board.white_pieces |= target_mask;
         new_board.black_pieces &= ~target_mask;
-        if (origin_piece.piece == Pieces::KING)
-        {
-            new_board.white_can_castle_kingside = false;
-            new_board.white_can_castle_queenside = false;
-        }
     }
     else
     {
         new_board.black_pieces &= ~piece_mask;
         new_board.black_pieces |= target_mask;
         new_board.white_pieces &= ~target_mask;
-        if (origin_piece.piece == Pieces::KING)
-        {
-            new_board.black_can_castle_kingside = false;
-            new_board.black_can_castle_queenside = false;
-        }
+  
     }
     if (!IsReadyToPromote(new_board))
     {
@@ -197,6 +164,7 @@ void Board::movePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &n
         new_board.enpassant |= enpassant_mask;
     }
 }
+// here starts the enpassant eating
 
 void Board::eatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction)
 {
@@ -251,11 +219,16 @@ void Board::moveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &n
     {
         return;
     }
-    bool king_side = std::signbit(from.x - to.x);
+
+    // we need to know if this is on the king side :)
+    bool king_side = std::signbit(from.x - to.x);// we get the difference here
     int x = 7 * king_side;
+    // we get the masks
     uint64_t origin_rook_mask = (1ULL << ((from.y * 8) + x));
     uint64_t new_rook_mask(1ULL << ((from.y * 8) + from.x + (1 - (!king_side) * 2)));
+    // we delete the origin msak
     new_board.rooks &= ~origin_rook_mask;
+    // draw it
     new_board.rooks |= new_rook_mask;
     // so i need to erase now :)
     if (board.white_to_move)
@@ -268,4 +241,31 @@ void Board::moveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &n
         new_board.black_pieces &= ~origin_rook_mask;
         new_board.black_pieces |= new_rook_mask;
     }
+}
+void Board::eatRook(BoardCoordinates to, uint64_t target_mask, BitWiseBoard &new_board, const BitWiseBoard &board)
+{
+
+    if (to.x == 7)
+    {
+        if (board.white_to_move)
+        {
+            new_board.black_can_castle_kingside = false;
+        }
+        else
+        {
+            new_board.white_can_castle_kingside = false;
+        }
+    }
+    else if (to.x == 0)
+    {
+        if (board.white_to_move)
+        {
+            new_board.black_can_castle_queenside = false;
+        }
+        else
+        {
+            new_board.white_can_castle_queenside = false;
+        }
+    }
+    new_board.rooks &= ~target_mask;
 }
