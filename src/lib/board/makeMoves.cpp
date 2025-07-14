@@ -1,6 +1,22 @@
 #include "board.h++"
 #include <cmath>
-
+#include <iostream>
+bool Board::movementIsLegal(const BoardCoordinates &from, const BoardCoordinates &to, const BitWiseBoard &board, bool simulation)
+{
+    if(simulation){
+    std::cout<<"THIS IS BEING EXECUTED IN SIMULATION\n";}
+    MaxMovesArray legal_moves = GetMoves(from, board, board.white_to_move);
+    // SO THIS IS JUT TO FILTER ANY KIND OF BULLSHIT SO I DONT HAVE TO LOSE ANY TIME CALCULATING SHIT :)
+    for (size_t i = 0; i < legal_moves.size(); i++)
+    {
+        BoardCoordinates move = legal_moves[i];
+        if (move.x == to.x && move.y == to.y)
+        {
+            return true;
+        }
+    }
+    return false;
+}
 BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, bool simulation)
 {
     BitWiseBoard new_board = board;
@@ -21,24 +37,10 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     uint64_t piece_mask = 1ULL << ((from.y * 8) + from.x);
     uint64_t target_mask = 1ULL << ((to.y * 8) + to.x);
     // en passant part to reset everything
-    if (!simulation) // if its a simulation we dont have to emulate any of this shit
+    if (!simulation && !movementIsLegal(from, to, board,simulation)) // if its a simulation we dont have to emulate any of this shit
     {
-        MaxMovesArray legal_moves = GetMoves(from, board, board.white_to_move);
-        // SO THIS IS JUT TO FILTER ANY KIND OF BULLSHIT SO I DONT HAVE TO LOSE ANY TIME CALCULATING SHIT :)
-        bool is_legal = false;
-        for (size_t i = 0; i < legal_moves.size(); i++)
-        {
-            BoardCoordinates move = legal_moves[i];
-            if (move.x == to.x && move.y == to.y)
-            {
-                is_legal = true;
-                break;
-            }
-        }
-        if (!is_legal)
-        {
-            return new_board;
-        }
+
+        return new_board;
     }
     //
     new_board.enpassant = initialize_board; // we reset this before we have to alter it :);
@@ -261,7 +263,7 @@ void Board::moveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &n
         new_board.black_can_castle_queenside = false;
     }
 
-    if (abs(from.x - to.x) == 1 ||from.y!=to.y)
+    if (abs(from.x - to.x) == 1 || from.y != to.y)
     {
         return;
     }
