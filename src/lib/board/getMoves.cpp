@@ -227,7 +227,7 @@ void Board::castlingMoves(BoardCoordinates origin, const BitWiseBoard &board, Ma
 
             if ((attack_mask & mask) || (OcuppiedSquares(new_coords, board) && i != 0))
             {
-     
+
                 break;
             }
 

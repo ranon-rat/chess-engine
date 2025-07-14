@@ -15,7 +15,6 @@ struct BoardCoordinates
     int8_t y = 0;
 };
 
-
 class MaxMovesArray
 {
 private:

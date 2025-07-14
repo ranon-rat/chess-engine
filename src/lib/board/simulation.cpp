@@ -18,9 +18,9 @@ uint64_t Board::getAttackedSquares(const BitWiseBoard &board, std::optional<bool
             }
 
             MaxMovesArray moves = this->GetMoves(piece_coords, board, white_to_move, TypeFilter::Defendable);
-            for (size_t i=0;i<moves.size();i++)
+            for (size_t i = 0; i < moves.size(); i++)
             {
-                BoardCoordinates move_coords=moves[i];
+                BoardCoordinates move_coords = moves[i];
                 uint64_t mask = (1ULL) << ((move_coords.y * 8) + move_coords.x);
                 attack_mask |= mask;
             }
@@ -34,10 +34,10 @@ bool Board::IsChecked(BoardCoordinates from, BoardCoordinates to, const BitWiseB
 {
     BitWiseBoard new_board = MakeMove(from, to, board, true);
     // first i get the attacked squares
-    uint64_t attacked_squares = getAttackedSquares(new_board,from_white);
+    uint64_t attacked_squares = getAttackedSquares(new_board, from_white);
     // then i make the friendly mask
     uint64_t friendly_mask = from_white ? new_board.white_pieces : new_board.black_pieces;
-    uint64_t king_mask=new_board.kings;
-  
+    uint64_t king_mask = new_board.kings;
+
     return attacked_squares & friendly_mask & king_mask; // if this gives any value it will return true :) its an intersection basically (a()b()c)
 }

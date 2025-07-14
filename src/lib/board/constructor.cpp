@@ -50,7 +50,7 @@ BitWiseBoard Board::BuildFromFEN(std::string fen)
     int x = 0;
     int y = 0;
     size_t i = 0;
-    
+
     for (i = 0; i < fen.size(); i++)
     {
         char character = fen[i];
@@ -67,7 +67,7 @@ BitWiseBoard Board::BuildFromFEN(std::string fen)
             x += value;
             continue;
         }
-        
+
         if (character == '/')
         {
             x = 0;
@@ -75,10 +75,10 @@ BitWiseBoard Board::BuildFromFEN(std::string fen)
             std::cout << "\n";
             continue;
         }
-        
+
         uint64_t mask = 1ULL << ((y * 8) + x);
         std::cout << character << " ";
-        
+
         switch (character)
         {
         case 'p':
@@ -137,10 +137,10 @@ BitWiseBoard Board::BuildFromFEN(std::string fen)
 
     std::vector<std::string> tokens;
     std::string current_token = "";
-    
+
     for (size_t j = i; j < fen.size(); j++)
     {
-        if (fen[j] == ' ')// empty shit
+        if (fen[j] == ' ') // empty shit
         {
             if (!current_token.empty())
             {
@@ -158,7 +158,7 @@ BitWiseBoard Board::BuildFromFEN(std::string fen)
     {
         tokens.push_back(current_token);
     }
-    
+
     // which tunr
     if (tokens.size() >= 1)
     {
@@ -167,12 +167,12 @@ BitWiseBoard Board::BuildFromFEN(std::string fen)
         else if (tokens[0] == "b")
             board.white_to_move = false;
     }
-    
+
     if (tokens.size() >= 2)
     {
         // castling rights
         std::string castling = tokens[1];
-      
+
         if (castling != "-")
         {
             for (char c : castling)
@@ -195,7 +195,7 @@ BitWiseBoard Board::BuildFromFEN(std::string fen)
             }
         }
     }
-    
+
     if (tokens.size() >= 3)
     {
         // En passant
@@ -207,8 +207,8 @@ BitWiseBoard Board::BuildFromFEN(std::string fen)
             board.enpassant = 1ULL << ((ep_y * 8) + ep_x);
         }
     }
-    
-    board.attacked_squares=getAttackedSquares(board);
+
+    board.attacked_squares = getAttackedSquares(board);
     // Debug output
     std::cout << "\n\n";
     std::cout << "pawns:       \t" << std::bitset<64>(board.pawns) << std::endl;
@@ -219,8 +219,8 @@ BitWiseBoard Board::BuildFromFEN(std::string fen)
     std::cout << "kings:       \t" << std::bitset<64>(board.kings) << std::endl;
     std::cout << "white_pieces:\t" << std::bitset<64>(board.white_pieces) << std::endl;
     std::cout << "black_pieces:\t" << std::bitset<64>(board.black_pieces) << std::endl;
-    std::cout<<"\n\n";
-    std::cout<< "white_to_move: " << (board.white_to_move ? "true" : "false") << std::endl;
+    std::cout << "\n\n";
+    std::cout << "white_to_move: " << (board.white_to_move ? "true" : "false") << std::endl;
     std::cout << "white_can_castle_kingside: " << (board.white_can_castle_kingside ? "true" : "false") << std::endl;
     std::cout << "white_can_castle_queenside: " << (board.white_can_castle_queenside ? "true" : "false") << std::endl;
     std::cout << "black_can_castle_kingside: " << (board.black_can_castle_kingside ? "true" : "false") << std::endl;

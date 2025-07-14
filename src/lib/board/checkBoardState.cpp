@@ -1,6 +1,7 @@
 #include "board.h++"
-bool Board::IsReadyToPromote(const BitWiseBoard&board){
-    return PROMOTION_LINES&board.pawns;
+bool Board::IsReadyToPromote(const BitWiseBoard &board)
+{
+    return PROMOTION_LINES & board.pawns;
 }
 GameStates Board::CheckBoardState(const BitWiseBoard &board)
 { // draw by repetition is something that i have to add :)
@@ -15,7 +16,6 @@ GameStates Board::CheckBoardState(const BitWiseBoard &board)
 
     // okay so i should have a square for promotion
 
-  
     bool is_getting_attacked = board.attacked_squares & board.kings & GetUtilizedSquares(board);
     bool friend_mask = board.white_to_move ? board.white_pieces : board.black_pieces;
 

@@ -1,12 +1,12 @@
 #include "board.h++"
 
-bool Board::EnemySquares(BoardCoordinates from, const BitWiseBoard &board,bool is_white)
+bool Board::EnemySquares(BoardCoordinates from, const BitWiseBoard &board, bool is_white)
 {
     uint64_t piece_mask = 1ULL << ((from.y * 8) + from.x);
     uint64_t enemy_mask = is_white ? board.black_pieces : board.white_pieces;
     return (piece_mask & enemy_mask);
 }
-bool Board::FriendSquares(BoardCoordinates from, const BitWiseBoard &board,bool is_white)
+bool Board::FriendSquares(BoardCoordinates from, const BitWiseBoard &board, bool is_white)
 {
     uint64_t piece_mask = 1ULL << ((from.y * 8) + from.x);
     uint64_t friend_mask = is_white ? board.white_pieces : board.black_pieces;
@@ -16,12 +16,12 @@ bool Board::FriendSquares(BoardCoordinates from, const BitWiseBoard &board,bool 
 bool Board::OcuppiedSquares(BoardCoordinates from, const BitWiseBoard &board)
 {
     uint64_t piece_mask = 1ULL << ((from.y * 8) + from.x);
-    return (piece_mask & GetUtilizedSquares(board)) ;
+    return (piece_mask & GetUtilizedSquares(board));
 }
 TypePiece Board::GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &board)
 {
     uint64_t piece_mask = 1ULL << ((from.y * 8) + from.x);
-    bool isWhite = (board.white_pieces & piece_mask) ;
+    bool isWhite = (board.white_pieces & piece_mask);
     // PAWNS
     if (piece_mask & board.pawns)
     {

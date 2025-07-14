@@ -3,8 +3,8 @@
 
 #include <cstdint>
 #define initialize_board 0x0000000000000000
-#define pawn_positions   0x00ff00000000ff00
-#define PROMOTION_LINES  0xff000000000000ff
+#define pawn_positions 0x00ff00000000ff00
+#define PROMOTION_LINES 0xff000000000000ff
 
 struct BitWiseBoard
 {
@@ -27,16 +27,16 @@ struct BitWiseBoard
     // attacked squares
     uint64_t attacked_squares = initialize_board; // this is for the attacked squares of the opponent pieces :)
     // some basic rights
-    bool white_to_move:1 = true;
+    bool white_to_move : 1 = true;
     // castling bs :)
- 
-    bool white_can_castle_kingside:1 = false;
-    bool white_can_castle_queenside:1 = false;
-    bool black_can_castle_kingside:1 = false;
-    bool black_can_castle_queenside:1 = false;
+
+    bool white_can_castle_kingside : 1 = false;
+    bool white_can_castle_queenside : 1 = false;
+    bool black_can_castle_kingside : 1 = false;
+    bool black_can_castle_queenside : 1 = false;
 
     // okay so here is some things that we need
 
-    bool king_check:1=false;// so this will become important later on
+    bool king_check : 1 = false; // so this will become important later on
 };
 #endif

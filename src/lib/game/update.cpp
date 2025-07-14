@@ -5,6 +5,7 @@ void ChessGame::Update()
 {
 
     BeginDrawing();
+    
     ClearBackground(RAYWHITE);
     DrawCheckBoardSquares();
     // Draw the board
@@ -13,5 +14,6 @@ void ChessGame::Update()
     SelectPieces();
     ShowBasicInformation();
     PromotionPart();
+
     EndDrawing();
 }

@@ -13,13 +13,12 @@ BitWiseBoard Board::Promotion(BoardCoordinates from, const BitWiseBoard &board, 
     const uint64_t finish_mask = white_to_move ? WHITE_SIDE : BLACK_SIDE;
 
     if (!(finish_mask & position_mask))
-    {   
+    {
         return board;
     }
     BitWiseBoard new_board = board;
 
     new_board.pawns &= ~position_mask;
-    
 
     switch (new_piece)
     {
@@ -38,7 +37,7 @@ BitWiseBoard Board::Promotion(BoardCoordinates from, const BitWiseBoard &board, 
     default:
         break;
     }
-    new_board.attacked_squares=getAttackedSquares(new_board);
-    new_board.white_to_move=!white_to_move;
+    new_board.attacked_squares = getAttackedSquares(new_board);
+    new_board.white_to_move = !white_to_move;
     return new_board;
 }

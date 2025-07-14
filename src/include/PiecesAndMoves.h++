@@ -3,7 +3,7 @@
 
 enum Pieces
 {
-    KNIGHT=0,
+    KNIGHT = 0,
     BISHOP,
     ROOK,
     QUEEN,
@@ -21,7 +21,7 @@ enum GameStates
     DRAW,
     CHECKMATE,
     PROMOTION,
-    
+
 };
 
 struct Move
