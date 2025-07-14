@@ -53,7 +53,7 @@ private:
 
 private: //  simulation shit
     uint64_t getAttackedSquares(const BitWiseBoard &board, std::optional<bool> is_white = std::nullopt);
-    bool movementIsLegal(const BoardCoordinates &from, const BoardCoordinates &to, const BitWiseBoard &board, bool simulation=false);
+    bool movementIsLegal(const BoardCoordinates &from, const BoardCoordinates &to, const BitWiseBoard &board);
 
 private:
     void moveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask);
