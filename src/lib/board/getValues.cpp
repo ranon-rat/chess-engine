@@ -52,6 +52,11 @@ TypePiece Board::GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &bo
     {
         return {Pieces::KING, isWhite};
     }
+    // ENPASSANT
+    else if (piece_mask & board.enpassant)
+    {
+        return {Pieces::ENPASSANT, isWhite};
+    }
     return {Pieces::NONE, isWhite};
 }
 

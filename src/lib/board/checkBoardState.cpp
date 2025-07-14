@@ -18,6 +18,10 @@ GameStates Board::CheckBoardState(const BitWiseBoard &board)
 
     bool is_getting_attacked = board.attacked_squares & board.kings & GetUtilizedSquares(board);
     bool friend_mask = board.white_to_move ? board.white_pieces : board.black_pieces;
+    if (board.no_capture_no_pawn >= 100)
+    {
+        return GameStates::DRAW;
+    }
 
     BoardCoordinates king_coordinates = {
         .x = -1,
