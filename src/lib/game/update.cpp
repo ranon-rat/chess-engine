@@ -12,5 +12,6 @@ void ChessGame::Update()
     DrawBoardPieces();
     SelectPieces();
     ShowBasicInformation();
+    PromotionPart();
     EndDrawing();
 }

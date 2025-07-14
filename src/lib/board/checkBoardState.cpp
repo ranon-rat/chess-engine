@@ -1,4 +1,4 @@
-#include <board.h++>
+#include "board.h++"
 bool Board::IsReadyToPromote(const BitWiseBoard&board){
     return PROMOTION_LINES&board.pawns;
 }

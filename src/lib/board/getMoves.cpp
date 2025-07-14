@@ -141,7 +141,7 @@ void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMov
             .x = static_cast<int8_t>(origin.x + i),
             .y = static_cast<int8_t>(origin.y + direction)};
 
-        if (new_coords.x >= 8 || new_coords.x < 0 || new_coords.y >= 8 || new_coords.y <= 0)
+        if (new_coords.x >= 8 || new_coords.x < 0 || new_coords.y >= 8 || new_coords.y < 0)
         {
             continue;
         }

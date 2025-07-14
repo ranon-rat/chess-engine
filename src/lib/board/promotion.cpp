@@ -1,19 +1,24 @@
 #include "board.h++"
-#define WHITE_SIDE 0xff00000000000000
-#define BLACK_SIDE 0x00000000000000ff
-
+#define BLACK_SIDE 0xff00000000000000
+#define WHITE_SIDE 0x00000000000000ff
+#include <iostream>
+#include <bitset>
 BitWiseBoard Board::Promotion(BoardCoordinates from, const BitWiseBoard &board, Pieces new_piece, std::optional<bool> is_white)
 {
     const TypePiece piece = GetPieceFromCoord(from, board);
     if (piece.piece != Pieces::PAWN)
     {
+        std::cout<<"not valid piece\n";
         return board;
     }
     const bool white_to_move = is_white.value_or(board.white_to_move);
     const uint64_t position_mask = (1ULL) << ((from.y * 8) + from.x);
     const uint64_t finish_mask = white_to_move ? WHITE_SIDE : BLACK_SIDE;
+
+    std::cout <<"IS WHITE? "<<(white_to_move?"true":"false")<<"\n";
     if (!(finish_mask & position_mask))
-    {
+    {   
+        std::cout<<"IS WHITE BUT NOT VALID COLOR :/ "<<std::bitset<64> ( position_mask) <<std::bitset<64> (finish_mask & position_mask)<<"\n";
         return board;
     }
     BitWiseBoard new_board = board;

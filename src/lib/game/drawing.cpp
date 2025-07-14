@@ -23,9 +23,9 @@ void ChessGame::DrawInitialPos()
     if (!not_selected)
     {
         DrawCircle(from.x * 50 + 25, from.y * 50 + 25, 25, RED);
-        for (size_t i=0;i<possible_moves.size();i++)
+        for (size_t i = 0; i < possible_moves.size(); i++)
         {
-            BoardCoordinates&v=possible_moves[i];
+            BoardCoordinates &v = possible_moves[i];
             DrawCircle(v.x * 50 + 25, v.y * 50 + 25, 25, RED);
         }
     }
@@ -38,13 +38,12 @@ void ChessGame::DrawBoardPieces()
     {
         for (int i = 0; i < 8; i++)
         {
-            uint64_t is_attacked_mask=bitwise_board.attacked_squares;
-            uint64_t position_mask=1ull<<(j*8+i);
-            bool is_attacked=is_attacked_mask&position_mask;
+            uint64_t is_attacked_mask = bitwise_board.attacked_squares;
+            uint64_t position_mask = 1ull << (j * 8 + i);
+            bool is_attacked = is_attacked_mask & position_mask;
 
             // Draw the pieces
             TypePiece piece = pieces[j * 8 + i];
-           
 
             switch (piece.piece)
             {
@@ -80,15 +79,15 @@ void ChessGame::DrawBoardPieces()
                 DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
                 DrawText("K", i * 50 + 20, j * 50 + 20, 20, piece.isWhite ? BLACK : WHITE);
                 break;
-                case Pieces::UNKOWN:
-                 DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
+            case Pieces::UNKOWN:
+                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
                 DrawText("?", i * 50 + 20, j * 50 + 20, 20, piece.isWhite ? BLACK : WHITE);
             default:
                 break;
             }
-             if(is_attacked){
-                                DrawRectangle(i * 50 + 5, j * 50 + 5, 40, 40, {.r=0,.g=0,.b=255,.a=50});
-
+            if (is_attacked)
+            {
+                DrawRectangle(i * 50 + 5, j * 50 + 5, 40, 40, {.r = 0, .g = 0, .b = 255, .a = 50});
             }
         }
     }
@@ -96,7 +95,10 @@ void ChessGame::DrawBoardPieces()
 
 void ChessGame::SelectPieces()
 {
-
+    if (ready_to_promote)
+    {
+        return;
+    }
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
         double currentTime = GetTime();
@@ -116,7 +118,7 @@ void ChessGame::SelectPieces()
                         from.x = x % 8;
                         from.y = x / 8;
                         possible_moves = board.GetMoves(from, bitwise_board);
-                        std::cout<<possible_moves.size()<<" possible moves"<<"\n";
+                        std::cout << possible_moves.size() << " possible moves" << "\n";
 
                         not_selected = false;
                     }
@@ -125,7 +127,9 @@ void ChessGame::SelectPieces()
                         to.x = x % 8;
                         to.y = x / 8;
                         bitwise_board = board.MakeMove(from, to, bitwise_board);
+
                         pieces = board.GetPieces(bitwise_board);
+                        ready_to_promote = board.IsReadyToPromote(bitwise_board);
                         not_selected = true;
                     }
                     break;
@@ -138,4 +142,43 @@ void ChessGame::ShowBasicInformation()
 {
     float x_offset = 8 * 50 + 10;
     DrawText(bitwise_board.white_to_move ? "white move" : "black move", x_offset, 10, 10, BLACK);
+}
+
+void ChessGame::PromotionPart()
+{
+    if (!ready_to_promote)
+    {
+        return;
+    }
+    float x_offset = 8 * 50 + 10;
+
+    float y_offset = 4 * 50;
+
+    DrawText("1->Q 2->R 3->B 4->K", x_offset, y_offset, 10, BLACK);
+    Pieces new_piece = NONE;
+    switch (GetKeyPressed())
+    {
+    case KEY_ONE:
+        new_piece = Pieces::QUEEN;
+        break;
+    case KEY_TWO:
+        new_piece = Pieces::ROOK;
+        break;
+    case KEY_THREE:
+        new_piece = Pieces::BISHOP;
+        break;
+    case KEY_FOUR:
+        new_piece = Pieces::KNIGHT;
+        break;
+    default:
+        break;
+    }
+    if (new_piece == NONE)
+    {
+        return;
+    }
+    bitwise_board = board.Promotion(to, bitwise_board, new_piece);
+    pieces = board.GetPieces(bitwise_board);
+
+    ready_to_promote = false;
 }

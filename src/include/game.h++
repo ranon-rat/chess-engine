@@ -12,7 +12,7 @@ private:
     bool not_selected = true;
     BoardCoordinates from;
     BoardCoordinates to;
-
+    bool ready_to_promote=false;
     double lastClickTime = 0.0;
     double clickCooldown = 0.2;
     std::array<TypePiece, 64> pieces;
@@ -25,5 +25,6 @@ public:
     void SelectPieces();
     void DrawInitialPos();
     void ShowBasicInformation();
+    void PromotionPart();
 };
 #endif
