@@ -11,7 +11,6 @@
 #include "PiecesAndMoves.h++"
 #include "others.h++"
 
-
 class Board // this is the playing board :)
 {
 public:
@@ -31,41 +30,34 @@ public:
     // so this one, will be used to getting general information from the board :)
     TypePiece GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &board);
     bool IsReadyToPromote(const BitWiseBoard &board);
-    BitWiseBoard Promotion(BoardCoordinates from, const BitWiseBoard&board,Pieces new_piece,std::optional<bool> is_white=std::nullopt); // so you select the new piece :)
+    BitWiseBoard Promotion(BoardCoordinates from, const BitWiseBoard &board, Pieces new_piece, std::optional<bool> is_white = std::nullopt); // so you select the new piece :)
+    GameStates CheckBoardState(const BitWiseBoard &board);
 
-    public:
+public:
     // obviously this is information is useful for knowing what its happening here :)
     bool EnemySquares(BoardCoordinates from, const BitWiseBoard &board, bool is_white);
     bool FriendSquares(BoardCoordinates from, const BitWiseBoard &board, bool is_white);
     bool OcuppiedSquares(BoardCoordinates from, const BitWiseBoard &board);
-
-private:
-    // this is for the rook, bishop, and queen
-    void LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, TypeFilter filter = Legal);
-    // king, knight
-    void OneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &movesbool, bool is_white, TypeFilter filter = Legal);
-    // only for the pawn
-    void PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, TypeFilter filter = TypeFilter::Legal);
-    // Castling
-    void CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, uint64_t attack_mask, TypeFilter filter);
     uint64_t GetUtilizedSquares(const BitWiseBoard &board);
-
-private: //  simulation shit
-    uint64_t GetAttackedSquares(const BitWiseBoard &board, std::optional<bool> is_white = std::nullopt);
-
-private:
-    // this will return a mask that will tell us if by doing that we will attack our king or not, basically thats all we are going to do :)
     bool IsChecked(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, bool from_white);
 
 private:
-    void MoveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask);
-    void MovePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction);
-    void EatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction);
-    void MoveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask);
+    // this is for the rook, bishop, and queen
+    void lineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, TypeFilter filter = Legal);
+    // king, knight
+    void oneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &movesbool, bool is_white, TypeFilter filter = Legal);
+    // only for the pawn
+    void pawnMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, TypeFilter filter = TypeFilter::Legal);
+    // Castling
+    void castlingMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, uint64_t attack_mask, TypeFilter filter);
 
+private: //  simulation shit
+    uint64_t getAttackedSquares(const BitWiseBoard &board, std::optional<bool> is_white = std::nullopt);
 private:
-    GameStates CheckBoardState(const BitWiseBoard &board);
-
+    void moveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask);
+    void movePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction);
+    void eatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction);
+    void moveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask);
 private:
     std::array<std::vector<Move>, Pieces::PIECE_COUNT> m_possible_moves; // this is the vector of possible moves
 };

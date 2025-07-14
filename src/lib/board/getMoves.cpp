@@ -5,7 +5,7 @@ MaxMovesArray Board::GetMoves(BoardCoordinates piece, const BitWiseBoard &board,
     // now we need to check if the piece is a pawn or not
 
     bool from_white = (is_white.value_or(board.white_to_move));
-    // uint64_t attack_mask=GetAttackedSquares(board,from_white);
+    // uint64_t attack_mask=getAttackedSquares(board,from_white);
 
     MaxMovesArray moves;
     // hmmm
@@ -21,23 +21,23 @@ MaxMovesArray Board::GetMoves(BoardCoordinates piece, const BitWiseBoard &board,
     switch (piece_info.piece)
     {
     case Pieces::PAWN:
-        PawnMoves(piece, board, moves, from_white, filter);
+        pawnMoves(piece, board, moves, from_white, filter);
         break;
     case Pieces::KNIGHT:
-        OneLineMoves(KNIGHT, piece, board, moves, from_white, filter);
+        oneLineMoves(KNIGHT, piece, board, moves, from_white, filter);
         break;
     case Pieces::BISHOP:
-        LineMoves(BISHOP, piece, board, moves, from_white, filter);
+        lineMoves(BISHOP, piece, board, moves, from_white, filter);
         break;
     case Pieces::ROOK:
-        LineMoves(ROOK, piece, board, moves, from_white, filter);
+        lineMoves(ROOK, piece, board, moves, from_white, filter);
         break;
     case Pieces::QUEEN:
-        LineMoves(QUEEN, piece, board, moves, from_white, filter);
+        lineMoves(QUEEN, piece, board, moves, from_white, filter);
         break;
     case Pieces::KING:
-        OneLineMoves(KING, piece, board, moves, from_white, filter);
-        CastlingMoves(piece, board, moves, from_white, board.attacked_squares, filter);
+        oneLineMoves(KING, piece, board, moves, from_white, filter);
+        castlingMoves(piece, board, moves, from_white, board.attacked_squares, filter);
         break;
     default:
         break;
@@ -61,7 +61,7 @@ MaxMovesArray Board::GetMoves(BoardCoordinates piece, const BitWiseBoard &board,
     return filtered_moves;
 }
 
-void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, TypeFilter filter)
+void Board::lineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, TypeFilter filter)
 {
     // this is only for the queen
     // the rook and the bishop
@@ -98,7 +98,7 @@ void Board::LineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard 
     }
 }
 
-void Board::OneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, TypeFilter filter)
+void Board::oneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, TypeFilter filter)
 {
 
     // this is only for the queen
@@ -125,7 +125,7 @@ void Board::OneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
     }
 }
 
-void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, TypeFilter filter)
+void Board::pawnMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, TypeFilter filter)
 {
 
     int8_t direction = is_white ? -1 : 1; // this is important :)
@@ -177,7 +177,7 @@ void Board::PawnMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMov
     }
 }
 
-void Board::CastlingMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, uint64_t attack_mask, TypeFilter filter)
+void Board::castlingMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, uint64_t attack_mask, TypeFilter filter)
 {
     if (filter != Legal)
     {

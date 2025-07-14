@@ -38,7 +38,7 @@ BitWiseBoard Board::Promotion(BoardCoordinates from, const BitWiseBoard &board, 
     default:
         break;
     }
-    new_board.attacked_squares=GetAttackedSquares(new_board);
+    new_board.attacked_squares=getAttackedSquares(new_board);
     new_board.white_to_move=!white_to_move;
     return new_board;
 }

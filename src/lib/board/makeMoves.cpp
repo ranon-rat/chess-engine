@@ -48,7 +48,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     switch (origin_piece.piece) // this will write the pieces position :)
     {
     case Pieces::PAWN:
-        MovePawn(from, to, new_board, board, piece_mask, target_mask, direction);
+        movePawn(from, to, new_board, board, piece_mask, target_mask, direction);
         break;
     case Pieces::KNIGHT:
         new_board.knights &= ~piece_mask;
@@ -59,7 +59,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
         new_board.bishops |= target_mask;
         break;
     case Pieces::ROOK:
-        MoveRook(from, to, new_board, board, piece_mask, target_mask);
+        moveRook(from, to, new_board, board, piece_mask, target_mask);
         break;
     case Pieces::QUEEN:
         new_board.queens &= ~piece_mask;
@@ -67,7 +67,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
         break;
     case Pieces::KING:
 
-        MoveKing(from, to, new_board, board, piece_mask, target_mask);
+        moveKing(from, to, new_board, board, piece_mask, target_mask);
         break;
     default:
         break;
@@ -121,7 +121,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
             new_board.kings &= ~target_mask;
             break;
         case Pieces::NONE:
-            EatPawnEnPassant(from, to, new_board, board, piece_mask, target_mask, direction);
+            eatPawnEnPassant(from, to, new_board, board, piece_mask, target_mask, direction);
             break;
 
         default:
@@ -157,7 +157,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
 
         if (!simulation)
         {
-            new_board.attacked_squares = GetAttackedSquares(new_board);
+            new_board.attacked_squares = getAttackedSquares(new_board);
             // so we need to first define the enemy mask
             uint64_t enemy_mask = board.white_to_move ? board.black_pieces : board.white_pieces;    
 
@@ -170,7 +170,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     return new_board;
 }
 
-void Board::MoveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask)
+void Board::moveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask)
 {
     // queen side
     if (to.x == 8)
@@ -199,7 +199,7 @@ void Board::MoveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &n
     new_board.rooks |= target_mask;
 }
 
-void Board::MovePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction)
+void Board::movePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction)
 {
     new_board.pawns &= ~initial_mask;
     new_board.pawns |= target_mask;
@@ -212,7 +212,7 @@ void Board::MovePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &n
     }
 }
 
-void Board::EatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction)
+void Board::eatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction)
 {
     const TypePiece origin_piece = GetPieceFromCoord(from, board);
     if (origin_piece.piece != Pieces::PAWN)
@@ -244,7 +244,7 @@ void Board::EatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWise
     return;
 }
 
-void Board::MoveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask)
+void Board::moveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask)
 {
 
     // this is just something quite basic

@@ -1,6 +1,6 @@
 #include "board.h++"
 #include <bitset>
-uint64_t Board::GetAttackedSquares(const BitWiseBoard &board, std::optional<bool> is_white)
+uint64_t Board::getAttackedSquares(const BitWiseBoard &board, std::optional<bool> is_white)
 {
     uint64_t attack_mask = 0;
     bool white_to_move = !is_white.value_or(board.white_to_move);
@@ -34,7 +34,7 @@ bool Board::IsChecked(BoardCoordinates from, BoardCoordinates to, const BitWiseB
 {
     BitWiseBoard new_board = MakeMove(from, to, board, true);
     // first i get the attacked squares
-    uint64_t attacked_squares = GetAttackedSquares(new_board,from_white);
+    uint64_t attacked_squares = getAttackedSquares(new_board,from_white);
     // then i make the friendly mask
     uint64_t friendly_mask = from_white ? new_board.white_pieces : new_board.black_pieces;
     uint64_t king_mask=new_board.kings;
