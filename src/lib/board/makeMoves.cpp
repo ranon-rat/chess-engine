@@ -1,6 +1,6 @@
 #include "board.h++"
 #include <cmath>
-
+#include <iostream>
 BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, bool simulation)
 {
     BitWiseBoard new_board = board;
@@ -31,7 +31,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     int direction = board.white_to_move ? -1 : 1;
 
     TypePiece origin_piece = GetPieceFromCoord(from, board);
-  
+
     switch (origin_piece.piece) // this will write the pieces position :)
     {
     case Pieces::PAWN:
@@ -61,9 +61,9 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     }
     /*this is only for the enpassant case :)*/
     TypePiece target_piece = GetPieceFromCoord(to, board);
-    if(target_piece.piece!=NONE&&target_piece.piece!=ENPASSANT){
-        new_board.no_capture_no_pawn=0;
-
+    if (target_piece.piece != Pieces::NONE)
+    {
+        new_board.no_capture_no_pawn = 0;
     }
     if ((EnemySquares(to, board, board.white_to_move) || target_piece.piece == Pieces::NONE) && target_piece.piece != origin_piece.piece)
     {
@@ -88,13 +88,13 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
         case Pieces::KING:
             new_board.kings &= ~target_mask;
             break;
-        
-        case Pieces::ENPASSANT:
-         
-            eatPawnEnPassant(from, to, new_board, board, piece_mask, target_mask, direction);
-            break;
+
         default:
-           if(origin_piece.piece!=Pieces::PAWN){
+            eatPawnEnPassant(from, to, new_board, board, piece_mask, target_mask, direction);
+
+            // If there isnt any kind of capture then we have to choose this :)
+            if (origin_piece.piece != Pieces::PAWN)
+            {
                 new_board.no_capture_no_pawn++;
             }
             break;
@@ -112,7 +112,6 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
         new_board.black_pieces &= ~piece_mask;
         new_board.black_pieces |= target_mask;
         new_board.white_pieces &= ~target_mask;
-  
     }
     if (!IsReadyToPromote(new_board))
     {
@@ -164,7 +163,7 @@ void Board::moveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &n
 
 void Board::movePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction)
 {
-    new_board.no_capture_no_pawn=0;
+    new_board.no_capture_no_pawn = 0;
     new_board.pawns &= ~initial_mask;
     new_board.pawns |= target_mask;
     // once you make a move you lost the right to make a move in that specific part :)
@@ -196,7 +195,7 @@ void Board::eatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWise
     }
 
     uint64_t enemy_pawn_mask = 1ULL << ((enemy_coords.y * 8) + enemy_coords.x);
-    new_board.no_capture_no_pawn=0;
+    new_board.no_capture_no_pawn = 0;
     new_board.pawns &= ~enemy_pawn_mask;
     if (board.white_to_move)
     {
@@ -232,7 +231,7 @@ void Board::moveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &n
     }
 
     // we need to know if this is on the king side :)
-    bool king_side = std::signbit(from.x - to.x);// we get the difference here
+    bool king_side = std::signbit(from.x - to.x); // we get the difference here
     int x = 7 * king_side;
     // we get the masks
     uint64_t origin_rook_mask = (1ULL << ((from.y * 8) + x));
