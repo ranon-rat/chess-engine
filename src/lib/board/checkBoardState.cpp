@@ -1,6 +1,4 @@
 #include "board.h++"
-#include <iostream>
-#include <bitset>
 bool Board::IsReadyToPromote(const BitWiseBoard &board)
 {
     return PROMOTION_LINES & board.pawns;
@@ -36,11 +34,8 @@ GameStates Board::CheckBoardState(const BitWiseBoard &board)
         {
             uint64_t mask = (1ULL) << ((y * 8) + x);
             if (!(mask & friend_mask & board.kings))
-            { /*
-              std::cout<<"OKAY"<< std::bitset<64>(mask)<<" " <<std::bitset<64>(friend_mask)<<" "<< std::bitset<64>(board.kings)<<"\n";
-              */
                 continue;
-            }
+
             king_coordinates.x = x;
             king_coordinates.y = y;
             goto end;
@@ -60,12 +55,6 @@ end:
         }
     }
 finish:
-    std::cout << "KING COORDINATES x,y " << (int)king_coordinates.x << " , " << (int)king_coordinates.y << " \n";
-    std::cout << "IS GETTING ATTACKED  " << (is_getting_attacked ? "true" : "false") << "\n";
-    std::cout << "MORE PIECES CAN MOVE " << (more_pieces_can_move ? "true" : "false") << "\n";
-    std::cout << "BITSET FRIENDMASK    " << std::bitset<64>(friend_mask) << "\n";
-    std::cout << "BITSET white         " << std::bitset<64>(board.white_pieces) << "\n";
-    std::cout << "BITSET black         " << std::bitset<64>(board.black_pieces) << "\n";
 
     if (king_coordinates.x == -1) // this just means we didnt found anything
     {

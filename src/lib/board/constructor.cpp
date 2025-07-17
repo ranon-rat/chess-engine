@@ -1,11 +1,10 @@
 #include <board.h++>
 #include <iostream>
 #include <bitset>
-Board::Board()
-{
-    // m_possible_moves.empty();
-    // aqui deberia de ser suficiente :)
-    m_possible_moves[Pieces::KNIGHT] = {
+
+ArrayPieces InitPossibleMoves(){
+    std::array<std::vector<Move>, Pieces::PIECE_COUNT-1> moves;
+      moves[Pieces::KNIGHT] = {
         {2, 1}, // up right
         {2, -1},
         {-2, 1},
@@ -14,17 +13,17 @@ Board::Board()
         {1, -2},
         {-1, 2},
         {-1, -2}};
-    m_possible_moves[Pieces::BISHOP] = {
+    moves[Pieces::BISHOP] = {
         {1, 1},
         {1, -1},
         {-1, 1},
         {-1, -1}};
-    m_possible_moves[Pieces::ROOK] = {
+    moves[Pieces::ROOK] = {
         {1, 0},
         {0, 1},
         {-1, 0},
         {0, -1}};
-    m_possible_moves[Pieces::QUEEN] = {
+    moves[Pieces::QUEEN] = {
         {1, 1},
         {1, -1},
         {-1, 1},
@@ -33,7 +32,7 @@ Board::Board()
         {0, 1},
         {-1, 0},
         {0, -1}};
-    m_possible_moves[Pieces::KING] = {
+    moves[Pieces::KING] = {
         {1, 1},
         {1, -1},
         {-1, 1},
@@ -42,6 +41,11 @@ Board::Board()
         {0, 1},
         {-1, 0},
         {0, -1}};
+        return moves;
+    }
+Board::Board()
+{
+
 }
 
 BitWiseBoard Board::BuildFromFEN(std::string fen)

@@ -11,6 +11,8 @@
 #include "PiecesAndMoves.h++"
 #include "others.h++"
 
+typedef std::array<std::vector<Move>, Pieces::PIECE_COUNT-1>  ArrayPieces;
+ArrayPieces InitPossibleMoves();
 class Board // this is the playing board :)
 {
 public:
@@ -64,7 +66,7 @@ private:
     void eatRook(BoardCoordinates to, uint64_t target_mask, BitWiseBoard &new_board, const BitWiseBoard &board);
 
 private:
-    std::array<std::vector<Move>, Pieces::PIECE_COUNT-1> m_possible_moves; // this is the vector of possible moves
+     const ArrayPieces m_possible_moves=InitPossibleMoves(); // this is the vector of possible moves
 };
 
 #endif
