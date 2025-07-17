@@ -40,6 +40,7 @@ public:
     bool OcuppiedSquares(BoardCoordinates from, const BitWiseBoard &board);
     uint64_t GetUtilizedSquares(const BitWiseBoard &board);
     bool IsChecked(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, bool from_white);
+    uint64_t GetZobrist(const BitWiseBoard &board);
 
 private:
     // this is for the rook, bishop, and queen
@@ -61,8 +62,9 @@ private:
     void moveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask);
     void eatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction);
     void eatRook(BoardCoordinates to, uint64_t target_mask, BitWiseBoard &new_board, const BitWiseBoard &board);
+
 private:
-    std::array<std::vector<Move>, Pieces::PIECE_COUNT> m_possible_moves; // this is the vector of possible moves
+    std::array<std::vector<Move>, Pieces::PIECE_COUNT-1> m_possible_moves; // this is the vector of possible moves
 };
 
 #endif

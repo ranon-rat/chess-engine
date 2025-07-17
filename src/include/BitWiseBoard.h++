@@ -42,5 +42,6 @@ struct BitWiseBoard
     // okay so here is some things that we need
 
     bool king_check : 1 = false; // so this will become important later on
+    uint64_t zobrist=0;
 };
 #endif

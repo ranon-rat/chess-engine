@@ -115,6 +115,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     if (!IsReadyToPromote(new_board))
     {
         new_board.white_to_move = !board.white_to_move;
+        new_board.zobrist=GetZobrist(new_board);
 
         if (!simulation)
         {

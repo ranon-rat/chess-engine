@@ -8,8 +8,8 @@ enum Pieces
     ROOK,
     QUEEN,
     KING,
-    PIECE_COUNT,
     PAWN,
+    PIECE_COUNT,
     ENPASSANT,
     NONE,
     UNKOWN
