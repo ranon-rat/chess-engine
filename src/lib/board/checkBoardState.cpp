@@ -1,4 +1,6 @@
 #include "board.h++"
+#include <iostream>
+#include <bitset>
 bool Board::IsReadyToPromote(const BitWiseBoard &board)
 {
     return PROMOTION_LINES & board.pawns;
@@ -16,8 +18,9 @@ GameStates Board::CheckBoardState(const BitWiseBoard &board)
 
     // okay so i should have a square for promotion
 
-    bool is_getting_attacked = board.attacked_squares & board.kings & GetUtilizedSquares(board);
-    bool friend_mask = board.white_to_move ? board.white_pieces : board.black_pieces;
+    const uint64_t friend_mask = (board.white_to_move ? board.white_pieces : board.black_pieces);
+    bool is_getting_attacked = board.attacked_squares & board.kings & friend_mask;
+
     if (board.no_capture_no_pawn >= 100)
     {
         return GameStates::DRAW;
@@ -33,22 +36,37 @@ GameStates Board::CheckBoardState(const BitWiseBoard &board)
         {
             uint64_t mask = (1ULL) << ((y * 8) + x);
             if (!(mask & friend_mask & board.kings))
-            {
+            { /*
+              std::cout<<"OKAY"<< std::bitset<64>(mask)<<" " <<std::bitset<64>(friend_mask)<<" "<< std::bitset<64>(board.kings)<<"\n";
+              */
                 continue;
             }
             king_coordinates.x = x;
             king_coordinates.y = y;
-            break;
+            goto end;
         }
     }
+end:
     bool more_pieces_can_move = false;
     for (int8_t y = 0; y < 8 && !more_pieces_can_move; y++)
     {
         for (int8_t x = 0; x < 8 && !more_pieces_can_move; x++)
         {
-            more_pieces_can_move = GetMoves(BoardCoordinates{.x = x, .y = y}, board).size() > 0;
+            if (GetMoves(BoardCoordinates{.x = x, .y = y}, board).size() > 0)
+            {
+                more_pieces_can_move = true;
+                goto finish;
+            }
         }
     }
+finish:
+    std::cout << "KING COORDINATES x,y " << (int)king_coordinates.x << " , " << (int)king_coordinates.y << " \n";
+    std::cout << "IS GETTING ATTACKED  " << (is_getting_attacked ? "true" : "false") << "\n";
+    std::cout << "MORE PIECES CAN MOVE " << (more_pieces_can_move ? "true" : "false") << "\n";
+    std::cout << "BITSET FRIENDMASK    " << std::bitset<64>(friend_mask) << "\n";
+    std::cout << "BITSET white         " << std::bitset<64>(board.white_pieces) << "\n";
+    std::cout << "BITSET black         " << std::bitset<64>(board.black_pieces) << "\n";
+
     if (king_coordinates.x == -1) // this just means we didnt found anything
     {
         return GameStates::CHECKMATE;

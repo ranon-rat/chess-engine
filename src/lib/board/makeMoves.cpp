@@ -1,6 +1,5 @@
 #include "board.h++"
 #include <cmath>
-#include <iostream>
 BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, bool simulation)
 {
     BitWiseBoard new_board = board;

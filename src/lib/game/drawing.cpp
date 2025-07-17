@@ -11,9 +11,9 @@ void ChessGame::DrawCheckBoardSquares()
 
             // Draw the squares
             if ((i + j) % 2 == 0)
-                DrawRectangle(i * 50, j * 50, 50, 50, DARKGRAY);
+                DrawRectangle(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE, DARKGRAY);
             else
-                DrawRectangle(i * 50, j * 50, 50, 50, LIGHTGRAY);
+                DrawRectangle(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE, LIGHTGRAY);
         }
     }
 }
@@ -22,11 +22,11 @@ void ChessGame::DrawInitialPos()
 
     if (!not_selected)
     {
-        DrawCircle(from.x * 50 + 25, from.y * 50 + 25, 25, RED);
+        DrawCircle(from.x * SQUARE_SIZE + 25, from.y * SQUARE_SIZE + 25, 25, RED);
         for (size_t i = 0; i < possible_moves.size(); i++)
         {
             BoardCoordinates &v = possible_moves[i];
-            DrawCircle(v.x * 50 + 25, v.y * 50 + 25, 25, RED);
+            DrawCircle(v.x * SQUARE_SIZE + 25, v.y * SQUARE_SIZE + 25, 25, RED);
         }
     }
 }
@@ -50,44 +50,44 @@ void ChessGame::DrawBoardPieces()
             case Pieces::PAWN:
                 // now i need to make moves
 
-                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
-                DrawText("P", i * 50 + 20, j * 50 + 20, 20, piece.isWhite ? BLACK : WHITE);
+                DrawRectangle(i * SQUARE_SIZE + 10, j * SQUARE_SIZE + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
+                DrawText("P", i * SQUARE_SIZE + 20, j * SQUARE_SIZE + 20, 20, piece.isWhite ? BLACK : WHITE);
 
                 break;
             case Pieces::KNIGHT:
 
-                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
-                DrawText("N", i * 50 + 20, j * 50 + 20, 20, piece.isWhite ? BLACK : WHITE);
+                DrawRectangle(i * SQUARE_SIZE + 10, j * SQUARE_SIZE + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
+                DrawText("N", i * SQUARE_SIZE + 20, j * SQUARE_SIZE + 20, 20, piece.isWhite ? BLACK : WHITE);
                 break;
             case Pieces::BISHOP:
 
-                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
-                DrawText("B", i * 50 + 20, j * 50 + 20, 20, piece.isWhite ? BLACK : WHITE);
+                DrawRectangle(i * SQUARE_SIZE + 10, j * SQUARE_SIZE + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
+                DrawText("B", i * SQUARE_SIZE + 20, j * SQUARE_SIZE + 20, 20, piece.isWhite ? BLACK : WHITE);
                 break;
             case Pieces::ROOK:
 
-                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
-                DrawText("R", i * 50 + 20, j * 50 + 20, 20, piece.isWhite ? BLACK : WHITE);
+                DrawRectangle(i * SQUARE_SIZE + 10, j * SQUARE_SIZE + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
+                DrawText("R", i * SQUARE_SIZE + 20, j * SQUARE_SIZE + 20, 20, piece.isWhite ? BLACK : WHITE);
                 break;
             case Pieces::QUEEN:
 
-                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
-                DrawText("Q", i * 50 + 20, j * 50 + 20, 20, piece.isWhite ? BLACK : WHITE);
+                DrawRectangle(i * SQUARE_SIZE + 10, j * SQUARE_SIZE + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
+                DrawText("Q", i * SQUARE_SIZE + 20, j * SQUARE_SIZE + 20, 20, piece.isWhite ? BLACK : WHITE);
                 break;
             case Pieces::KING:
 
-                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
-                DrawText("K", i * 50 + 20, j * 50 + 20, 20, piece.isWhite ? BLACK : WHITE);
+                DrawRectangle(i * SQUARE_SIZE + 10, j * SQUARE_SIZE + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
+                DrawText("K", i * SQUARE_SIZE + 20, j * SQUARE_SIZE + 20, 20, piece.isWhite ? BLACK : WHITE);
                 break;
             case Pieces::UNKOWN:
-                DrawRectangle(i * 50 + 10, j * 50 + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
-                DrawText("?", i * 50 + 20, j * 50 + 20, 20, piece.isWhite ? BLACK : WHITE);
+                DrawRectangle(i * SQUARE_SIZE + 10, j * SQUARE_SIZE + 10, 30, 30, piece.isWhite ? WHITE : BLACK);
+                DrawText("?", i * SQUARE_SIZE + 20, j * SQUARE_SIZE + 20, 20, piece.isWhite ? BLACK : WHITE);
             default:
                 break;
             }
             if (is_attacked)
             {
-                DrawRectangle(i * 50 + 5, j * 50 + 5, 40, 40, {.r = 0, .g = 0, .b = 255, .a = 50});
+                DrawRectangle(i * SQUARE_SIZE + 5, j * SQUARE_SIZE + 5, 40, 40, {.r = 0, .g = 0, .b = 255, .a = SQUARE_SIZE});
             }
         }
     }
@@ -95,7 +95,7 @@ void ChessGame::DrawBoardPieces()
 
 void ChessGame::SelectPieces()
 {
-    if (ready_to_promote)
+    if (ready_to_promote||game_state!=GameStates::CONTINUE)
     {
         return;
     }
@@ -130,6 +130,7 @@ void ChessGame::SelectPieces()
 
                         pieces = board.GetPieces(bitwise_board);
                         ready_to_promote = board.IsReadyToPromote(bitwise_board);
+                        game_state = board.CheckBoardState(bitwise_board);
                         not_selected = true;
                     }
                     break;
@@ -140,7 +141,7 @@ void ChessGame::SelectPieces()
 }
 void ChessGame::ShowBasicInformation()
 {
-    float x_offset = 8 * 50 + 10;
+    float x_offset = 8 * SQUARE_SIZE + 10;
     DrawText(bitwise_board.white_to_move ? "white move" : "black move", x_offset, 10, 10, BLACK);
 }
 
@@ -150,9 +151,9 @@ void ChessGame::PromotionPart()
     {
         return;
     }
-    float x_offset = 8 * 50 + 10;
+    float x_offset = 8 * SQUARE_SIZE + 10;
 
-    float y_offset = 4 * 50;
+    float y_offset = 4 * SQUARE_SIZE;
 
     DrawText("1->Q 2->R 3->B 4->K", x_offset, y_offset, 10, BLACK);
     Pieces new_piece = NONE;
@@ -179,6 +180,27 @@ void ChessGame::PromotionPart()
     }
     bitwise_board = board.Promotion(to, bitwise_board, new_piece);
     pieces = board.GetPieces(bitwise_board);
-
+    game_state = board.CheckBoardState(bitwise_board);
     ready_to_promote = false;
+}
+
+void ChessGame::DrawGameState()
+{
+    if (game_state == GameStates::CONTINUE)
+    {
+        return;
+    }
+
+    int font_size = 20;
+    int x_offset = 10;
+    if (game_state == GameStates::CHECKMATE)
+    {
+
+        DrawText("CHECKMATE BITCH", SQUARE_SIZE * 8 + x_offset, screenHeight / 2, font_size, BLACK);
+        DrawText(bitwise_board.white_to_move ? "BLACK WINS" : "WHITE WINS", SQUARE_SIZE * 8 + x_offset, screenHeight / 2 + font_size + 5, 10, BLACK);
+    }
+    else if (game_state == GameStates::DRAW)
+    {
+        DrawText("DRAW", SQUARE_SIZE * 8 + x_offset, screenHeight / 2, font_size, BLACK);
+    }
 }

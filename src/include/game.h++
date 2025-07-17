@@ -1,8 +1,13 @@
 #ifndef GAME_HPP
 #define GAME_HPP
+
+
+
 #include <string>
 #include "board.h++"
-
+#define screenWidth 800
+#define screenHeight 450
+#define SQUARE_SIZE 50
 class ChessGame
 {
 private:
@@ -17,7 +22,7 @@ private:
     double clickCooldown = 0.2;
     std::array<TypePiece, 64> pieces;
     MaxMovesArray possible_moves;
-
+    GameStates game_state=GameStates::CONTINUE;
 public:
     ChessGame(std::string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     void Update();
@@ -27,5 +32,6 @@ public:
     void DrawInitialPos();
     void ShowBasicInformation();
     void PromotionPart();
+    void DrawGameState();
 };
 #endif

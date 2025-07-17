@@ -21,7 +21,6 @@ enum GameStates
     CONTINUE = 0,
     DRAW,
     CHECKMATE,
-    PROMOTION,
 
 };
 
