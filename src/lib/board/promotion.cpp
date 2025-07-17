@@ -40,5 +40,6 @@ BitWiseBoard Board::Promotion(BoardCoordinates from, const BitWiseBoard &board, 
     new_board.attacked_squares = getAttackedSquares(new_board);
     new_board.white_to_move = !white_to_move;
     new_board.zobrist=GetZobrist(new_board);
+    //
     return new_board;
 }
