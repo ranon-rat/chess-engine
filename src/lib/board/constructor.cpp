@@ -206,6 +206,7 @@ BitWiseBoard BoardAPI::BuildFromFEN(std::string fen)
             board.enpassant = 1ULL << ((ep_y * 8) + ep_x);
         }
     }
+    
 
     board.attacked_squares = getAttackedSquares(board);
     board.zobrist = GetZobrist(board);

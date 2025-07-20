@@ -108,7 +108,7 @@ void BoardAPI::oneLineMoves(Pieces piece, BoardCoordinates origin, const BitWise
     { // i first create the vector
         const int8_t new_x = origin.x + move.x;
         const int8_t new_y = origin.y + move.y;
-        if (new_x < 0 || new_x > 7 || new_y < 0 || new_y >= 7)
+        if (new_x < 0 || new_x > 7 || new_y < 0 || new_y > 7)
         {
             continue;
         }
