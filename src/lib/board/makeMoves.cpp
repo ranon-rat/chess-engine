@@ -1,6 +1,6 @@
-#include "board.h++"
+#include "board-api.h++"
 #include <cmath>
-BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, bool simulation)
+BitWiseBoard BoardAPI::MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, bool simulation)
 {
     BitWiseBoard new_board = board;
     if (from.x == to.x && from.y == to.y)
@@ -132,7 +132,7 @@ BitWiseBoard Board::MakeMove(BoardCoordinates from, BoardCoordinates to, const B
     return new_board;
 }
 
-void Board::moveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask)
+void BoardAPI::moveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask)
 {
     // queen side
     if (to.x == 7)
@@ -161,7 +161,7 @@ void Board::moveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &n
     new_board.rooks |= target_mask;
 }
 
-void Board::movePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction)
+void BoardAPI::movePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction)
 {
     new_board.no_capture_no_pawn = 0;
     new_board.pawns &= ~initial_mask;
@@ -176,7 +176,7 @@ void Board::movePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &n
 }
 // here starts the enpassant eating
 
-void Board::eatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction)
+void BoardAPI::eatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction)
 {
     const TypePiece origin_piece = GetPieceFromCoord(from, board);
     if (origin_piece.piece != Pieces::PAWN)
@@ -208,7 +208,7 @@ void Board::eatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWise
     return;
 }
 
-void Board::moveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask)
+void BoardAPI::moveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask)
 {
 
     // this is just something quite basic
@@ -252,7 +252,7 @@ void Board::moveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &n
         new_board.black_pieces |= new_rook_mask;
     }
 }
-void Board::eatRook(BoardCoordinates to, uint64_t target_mask, BitWiseBoard &new_board, const BitWiseBoard &board)
+void BoardAPI::eatRook(BoardCoordinates to, uint64_t target_mask, BitWiseBoard &new_board, const BitWiseBoard &board)
 {
 
     if (to.x == 7)

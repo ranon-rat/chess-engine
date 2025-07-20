@@ -13,10 +13,10 @@
 
 typedef std::array<std::vector<Move>, Pieces::PIECE_COUNT-1>  ArrayPieces;
 ArrayPieces InitPossibleMoves();
-class Board // this is the playing board :)
+class BoardAPI // this is the playing board :)
 {
 public:
-    Board();
+    BoardAPI(){}
     enum TypeFilter
     {
         Legal = 0,

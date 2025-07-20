@@ -2,7 +2,7 @@
 
 ChessGame::ChessGame(std::string fen)
 {
-    bitwise_board = board.BuildFromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    bitwise_board = board.BuildFromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - ");
     pieces = board.GetPieces(bitwise_board);
 
     for (float j = 0; j < 8; j++)

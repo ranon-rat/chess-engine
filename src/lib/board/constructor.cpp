@@ -1,10 +1,10 @@
-#include <board.h++>
-#include <iostream>
+#include <board-api.h++>
 #include <bitset>
 
-ArrayPieces InitPossibleMoves(){
-    std::array<std::vector<Move>, Pieces::PIECE_COUNT-1> moves;
-      moves[Pieces::KNIGHT] = {
+ArrayPieces InitPossibleMoves()
+{
+    std::array<std::vector<Move>, Pieces::PIECE_COUNT - 1> moves;
+    moves[Pieces::KNIGHT] = {
         {2, 1}, // up right
         {2, -1},
         {-2, 1},
@@ -41,14 +41,11 @@ ArrayPieces InitPossibleMoves(){
         {0, 1},
         {-1, 0},
         {0, -1}};
-        return moves;
-    }
-Board::Board()
-{
-
+    return moves;
 }
 
-BitWiseBoard Board::BuildFromFEN(std::string fen)
+
+BitWiseBoard BoardAPI::BuildFromFEN(std::string fen)
 {
     BitWiseBoard board;
     int x = 0;
@@ -67,7 +64,6 @@ BitWiseBoard Board::BuildFromFEN(std::string fen)
         if (isdigit(character))
         {
             uint8_t value = (character - '0');
-            std::cout << value << " ";
             x += value;
             continue;
         }
@@ -76,13 +72,12 @@ BitWiseBoard Board::BuildFromFEN(std::string fen)
         {
             x = 0;
             y++;
-            std::cout << "\n";
+ 
             continue;
         }
 
         uint64_t mask = 1ULL << ((y * 8) + x);
-        std::cout << character << " ";
-
+ 
         switch (character)
         {
         case 'p':
@@ -213,26 +208,8 @@ BitWiseBoard Board::BuildFromFEN(std::string fen)
     }
 
     board.attacked_squares = getAttackedSquares(board);
-    board.zobrist=GetZobrist(board);
-    // Debug output
-    std::cout << "\n\n";
-    std::cout << "pawns:       \t" << std::bitset<64>(board.pawns) << std::endl;
-    std::cout << "knights:     \t" << std::bitset<64>(board.knights) << std::endl;
-    std::cout << "bishops:     \t" << std::bitset<64>(board.bishops) << std::endl;
-    std::cout << "rooks:       \t" << std::bitset<64>(board.rooks) << std::endl;
-    std::cout << "queens:      \t" << std::bitset<64>(board.queens) << std::endl;
-    std::cout << "kings:       \t" << std::bitset<64>(board.kings) << std::endl;
-    std::cout << "white_pieces:\t" << std::bitset<64>(board.white_pieces) << std::endl;
-    std::cout << "black_pieces:\t" << std::bitset<64>(board.black_pieces) << std::endl;
-    std::cout << "\n\n";
-    std::cout << "white_to_move: " << (board.white_to_move ? "true" : "false") << std::endl;
-    std::cout << "white_can_castle_kingside: " << (board.white_can_castle_kingside ? "true" : "false") << std::endl;
-    std::cout << "white_can_castle_queenside: " << (board.white_can_castle_queenside ? "true" : "false") << std::endl;
-    std::cout << "black_can_castle_kingside: " << (board.black_can_castle_kingside ? "true" : "false") << std::endl;
-    std::cout << "black_can_castle_queenside: " << (board.black_can_castle_queenside ? "true" : "false") << std::endl;
-    std::cout << "enpassant:   \t" << std::bitset<64>(board.enpassant) << std::endl;
-    std::cout << "utilized_squares:\t" << std::bitset<64>(GetUtilizedSquares(board)) << std::endl;
-    std::cout << "\n\n";
+    board.zobrist = GetZobrist(board);
+
 
     return board;
 }

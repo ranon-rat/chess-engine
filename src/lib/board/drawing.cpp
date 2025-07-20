@@ -1,8 +1,8 @@
-#include "board.h++"
+#include "board-api.h++"
 #include <iostream>
 #include <bitset>
 
-std::array<TypePiece, 64> Board::GetPieces(BitWiseBoard &board)
+std::array<TypePiece, 64> BoardAPI::GetPieces(BitWiseBoard &board)
 {
     std::array<TypePiece, 64> pieces;
     for (int i = 0; i < 64; i++)

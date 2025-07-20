@@ -1,7 +1,7 @@
-#include "board.h++"
+#include "board-api.h++"
 #define BLACK_SIDE 0xff00000000000000
 #define WHITE_SIDE 0x00000000000000ff
-BitWiseBoard Board::Promotion(BoardCoordinates from, const BitWiseBoard &board, Pieces new_piece, std::optional<bool> is_white)
+BitWiseBoard BoardAPI::Promotion(BoardCoordinates from, const BitWiseBoard &board, Pieces new_piece, std::optional<bool> is_white)
 {
     const TypePiece piece = GetPieceFromCoord(from, board);
     if (piece.piece != Pieces::PAWN)

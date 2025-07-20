@@ -1,9 +1,9 @@
-#include "board.h++"
-bool Board::IsReadyToPromote(const BitWiseBoard &board)
+#include "board-api.h++"
+bool BoardAPI::IsReadyToPromote(const BitWiseBoard &board)
 {
     return PROMOTION_LINES & board.pawns;
 }
-GameStates Board::CheckBoardState(const BitWiseBoard &board)
+GameStates BoardAPI::CheckBoardState(const BitWiseBoard &board)
 { // draw by repetition is something that i have to add :)
 
     // i think that now i will do the next
@@ -28,6 +28,7 @@ GameStates Board::CheckBoardState(const BitWiseBoard &board)
         .x = -1,
         .y = -1,
     };
+    
     for (int y = 0; y < 8; y++)
     {
         for (int x = 0; x < 8; x++)

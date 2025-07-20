@@ -1,5 +1,5 @@
-#include "board.h++"
-MaxMovesArray Board::GetMoves(BoardCoordinates piece, const BitWiseBoard &board, std::optional<bool> is_white, TypeFilter filter)
+#include "board-api.h++"
+MaxMovesArray BoardAPI::GetMoves(BoardCoordinates piece, const BitWiseBoard &board, std::optional<bool> is_white, TypeFilter filter)
 {
     // checking to//
     // now we need to check if the piece is a pawn or not
@@ -61,7 +61,7 @@ MaxMovesArray Board::GetMoves(BoardCoordinates piece, const BitWiseBoard &board,
     return filtered_moves;
 }
 
-void Board::lineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, TypeFilter filter)
+void BoardAPI::lineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, TypeFilter filter)
 {
     // this is only for the queen
     // the rook and the bishop
@@ -98,7 +98,7 @@ void Board::lineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard 
     }
 }
 
-void Board::oneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, TypeFilter filter)
+void BoardAPI::oneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, TypeFilter filter)
 {
 
     // this is only for the queen
@@ -125,7 +125,7 @@ void Board::oneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
     }
 }
 
-void Board::pawnMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, TypeFilter filter)
+void BoardAPI::pawnMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, TypeFilter filter)
 {
 
     int8_t direction = is_white ? -1 : 1; // this is important :)
@@ -177,7 +177,7 @@ void Board::pawnMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMov
     }
 }
 
-void Board::castlingMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, uint64_t attack_mask, TypeFilter filter)
+void BoardAPI::castlingMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, uint64_t attack_mask, TypeFilter filter)
 {
     if (filter != Legal)
     {

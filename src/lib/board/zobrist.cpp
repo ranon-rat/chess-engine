@@ -1,4 +1,4 @@
-#include "board.h++"
+#include "board-api.h++"
 #include <random>
 
 struct ZobristTable
@@ -35,12 +35,12 @@ ZobristTable InitZobristTable()
     return zobrist_table;
 }
 const ZobristTable zobrist_lookup = InitZobristTable();
-uint64_t Board::GetZobrist(const BitWiseBoard &board)
+uint64_t BoardAPI::GetZobrist(const BitWiseBoard &board)
 {
     uint64_t final_zobrist = 0;
-    for (int y = 0; y < 8; y++)
+    for (int8_t y = 0; y < 8; y++)
     {
-        for (int x = 0; x < 8; x++)
+        for (int8_t x = 0; x < 8; x++)
         {
             BoardCoordinates piece_coords = {
                 .x = x,

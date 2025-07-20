@@ -1,6 +1,6 @@
-#include "board.h++"
+#include "board-api.h++"
 #include <bitset>
-uint64_t Board::getAttackedSquares(const BitWiseBoard &board, std::optional<bool> is_white)
+uint64_t BoardAPI::getAttackedSquares(const BitWiseBoard &board, std::optional<bool> is_white)
 {
     uint64_t attack_mask = 0;
     bool white_to_move = !is_white.value_or(board.white_to_move);
@@ -30,7 +30,7 @@ uint64_t Board::getAttackedSquares(const BitWiseBoard &board, std::optional<bool
 }
 
 // this
-bool Board::IsChecked(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, bool from_white)
+bool BoardAPI::IsChecked(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, bool from_white)
 {
     BitWiseBoard new_board = MakeMove(from, to, board, true);
     // first i get the attacked squares
@@ -42,7 +42,7 @@ bool Board::IsChecked(BoardCoordinates from, BoardCoordinates to, const BitWiseB
     return attacked_squares & friendly_mask & king_mask; // if this gives any value it will return true :) its an intersection basically (a()b()c)
 }
 
-bool Board::movementIsLegal(const BoardCoordinates &from, const BoardCoordinates &to, const BitWiseBoard &board)
+bool BoardAPI::movementIsLegal(const BoardCoordinates &from, const BoardCoordinates &to, const BitWiseBoard &board)
 {
     MaxMovesArray legal_moves = GetMoves(from, board, board.white_to_move);
     // SO THIS IS JUT TO FILTER ANY KIND OF BULLSHIT SO I DONT HAVE TO LOSE ANY TIME CALCULATING SHIT :)

@@ -4,7 +4,7 @@
 
 
 #include <string>
-#include "board.h++"
+#include "board-api.h++"
 #define screenWidth 800
 #define screenHeight 450
 #define SQUARE_SIZE 50
@@ -12,7 +12,7 @@ class ChessGame
 {
 private:
     BitWiseBoard bitwise_board;
-    Board board;
+    BoardAPI board;
     std::array<Rectangle, 64> squares;
     bool not_selected = true;
     BoardCoordinates from;
