@@ -77,7 +77,7 @@ void EvaluateFen(size_t depth, std::string fen, const std::vector<size_t> &quant
 }
 int main()
 {
-        std::cout << "-----------------------------------\n";
+    std::cout << "-----------------------------------\n";
 
     EvaluateFen(2,
                 "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
