@@ -19,7 +19,7 @@ GameStates BoardAPI::CheckBoardState(const BitWiseBoard &board)
     const uint64_t friend_mask = (board.white_to_move ? board.white_pieces : board.black_pieces);
     bool is_getting_attacked = board.attacked_squares & board.kings & friend_mask;
 
-    if (board.no_capture_no_pawn >= 100)
+    if (board.half_move >= 100)
     {
         return GameStates::DRAW;
     }

@@ -11,22 +11,32 @@
 #include "PiecesAndMoves.h++"
 #include "others.h++"
 
-typedef std::array<std::vector<Move>, Pieces::PIECE_COUNT-1>  ArrayPieces;
+typedef std::array<std::vector<Move>, Pieces::PIECE_COUNT - 1> ArrayPieces;
 ArrayPieces InitPossibleMoves();
 class BoardAPI // this is the playing board :)
 {
 public:
-    BoardAPI(){}
+    BoardAPI() {}
     enum TypeFilter
     {
         Legal = 0,
         Defendable
     };
+    struct FenParts
+    {
+        std::string piece_placement;
+        std::string active_color;
+        std::string castling_availability;
+        std::string en_passant_target_square;
+        uint8_t halfmove_clock;
+        uint16_t fullmove_number;
+    };
 
 public:
     // these are for interal usage
     std::array<TypePiece, 64> GetPieces(BitWiseBoard &board); // this will return the pieces in the board
-    BitWiseBoard BuildFromFEN(std::string fen);
+    BitWiseBoard BuildFromFEN(const std::string &fen);
+    std::string GetFen(const BitWiseBoard &board);
     MaxMovesArray GetMoves(BoardCoordinates piece, const BitWiseBoard &board, std::optional<bool> is_white = std::nullopt, TypeFilter filter = Legal); // esto deberia de retornarme un uint64_t con los movimientos legales de la pieza
     BitWiseBoard MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, bool simulation = false);                             // i make reference to the board in that specific square
     // so this one, will be used to getting general information from the board :)
@@ -43,6 +53,19 @@ public:
     uint64_t GetUtilizedSquares(const BitWiseBoard &board);
     bool IsChecked(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, bool from_white);
     uint64_t GetZobrist(const BitWiseBoard &board);
+
+private: // FEN BS
+    FenParts getFenParts(const std::string &str);
+    void buildBoardPiecePlacementFen(BitWiseBoard &board, const std::string &fen_pieces);
+    void selectColorFen(BitWiseBoard &board, const std::string &fen_color);
+    void castlingRightsFen(BitWiseBoard &board, const std::string &fen_castling);
+    void enPassantFen(BitWiseBoard &board, const std::string &fen_en_passant);
+    // now the reverse operation
+
+    void fenFromBoardPieces(const BitWiseBoard &board, std::string &fen_pieces);
+    void fenFromColor(const BitWiseBoard &board, std::string &fen_color);
+    void fenFromCastlingRights(const BitWiseBoard &board, std::string &fen_castling);
+    void fenFromEnPassant(const BitWiseBoard &board,  std::string &fen_en_passant);
 
 private:
     // this is for the rook, bishop, and queen
@@ -66,7 +89,7 @@ private:
     void eatRook(BoardCoordinates to, uint64_t target_mask, BitWiseBoard &new_board, const BitWiseBoard &board);
 
 private:
-     const ArrayPieces m_possible_moves=InitPossibleMoves(); // this is the vector of possible moves
+    const ArrayPieces m_possible_moves = InitPossibleMoves(); // this is the vector of possible moves
 };
 
 #endif

@@ -78,6 +78,6 @@ uint64_t BoardAPI::GetZobrist(const BitWiseBoard &board)
         final_zobrist ^= zobrist_lookup.castle_queen_side_white;
     if(board.white_to_move)
         final_zobrist^=zobrist_lookup.white_to_move;
-    final_zobrist ^= board.no_capture_no_pawn;
+    final_zobrist ^= board.half_move;
     return final_zobrist;
 }

@@ -62,7 +62,7 @@ BitWiseBoard BoardAPI::MakeMove(BoardCoordinates from, BoardCoordinates to, cons
     TypePiece target_piece = GetPieceFromCoord(to, board);
     if (target_piece.piece != Pieces::NONE)
     {
-        new_board.no_capture_no_pawn = 0;
+        new_board.half_move = 0;
     }
     if ((EnemySquares(to, board, board.white_to_move) || target_piece.piece == Pieces::NONE) && target_piece.piece != origin_piece.piece)
     {
@@ -94,7 +94,7 @@ BitWiseBoard BoardAPI::MakeMove(BoardCoordinates from, BoardCoordinates to, cons
             // If there isnt any kind of capture then we have to choose this :)
             if (origin_piece.piece != Pieces::PAWN)
             {
-                new_board.no_capture_no_pawn++;
+                new_board.half_move++;
             }
             break;
         }
@@ -112,10 +112,16 @@ BitWiseBoard BoardAPI::MakeMove(BoardCoordinates from, BoardCoordinates to, cons
         new_board.black_pieces |= target_mask;
         new_board.white_pieces &= ~target_mask;
     }
+
+    if (!board.white_to_move)
+    {
+        new_board.complete_move++;
+    }
     if (!IsReadyToPromote(new_board))
     {
+
         new_board.white_to_move = !board.white_to_move;
-        new_board.zobrist=GetZobrist(new_board);
+        new_board.zobrist = GetZobrist(new_board);
 
         if (!simulation)
         {
@@ -163,7 +169,7 @@ void BoardAPI::moveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard
 
 void BoardAPI::movePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction)
 {
-    new_board.no_capture_no_pawn = 0;
+    new_board.half_move = 0;
     new_board.pawns &= ~initial_mask;
     new_board.pawns |= target_mask;
     // once you make a move you lost the right to make a move in that specific part :)
@@ -195,7 +201,7 @@ void BoardAPI::eatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitW
     }
 
     uint64_t enemy_pawn_mask = 1ULL << ((enemy_coords.y * 8) + enemy_coords.x);
-    new_board.no_capture_no_pawn = 0;
+    new_board.half_move = 0;
     new_board.pawns &= ~enemy_pawn_mask;
     if (board.white_to_move)
     {

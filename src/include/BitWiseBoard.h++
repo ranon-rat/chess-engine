@@ -38,7 +38,8 @@ struct BitWiseBoard
 
     // no capture, or movement of pawn
 
-    uint8_t no_capture_no_pawn=0;
+    uint8_t half_move=0;
+    uint16_t complete_move=0;
     // okay so here is some things that we need
 
     bool king_check : 1 = false; // so this will become important later on
