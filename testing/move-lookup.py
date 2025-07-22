@@ -60,23 +60,24 @@ def check_fens(positions: List[chess.Board], name: str, depth: int):
     # Delete old file
     if os.path.exists(f"moves-test/{name}-{depth}-p.txt"):
         os.remove(f"moves-test/{name}-{depth}-p.txt")
-
+    if os.path.exists(f"moves-test/{name}-{depth}-non-valid.txt"):
+        os.remove(f"moves-test/{name}-{depth}-non-valid.txt")
     # Write new file
     with open(f"moves-test/{name}-{depth}-p.txt", "a", encoding="utf-8") as file:
         for fen in fens:
             file.write(f"{fen}\n")
 
     # Read original file as bytes
+    non_valid_fens = open(f"moves-test/{name}-{depth}-non-valid.txt", "a")
     with open(f"moves-test/{name}-{depth}.txt", "r") as file:
         lines = file.readlines()
 
         for i, line in enumerate(lines):
-            compare_fen = line.strip()  # decode back to string
+            compare_fen = line.strip().split(",")[0]  # decode back to string
             if compare_fen in fens:
                 continue
-            print(
-                f"non valid fen: {compare_fen}  {fens[i]} at index {i} in {name}-{depth}.txt"
-            )
+
+            non_valid_fens.write(line)
 
 
 def TestFen(depth: int, fen: str, expected: List[float], name: str):
@@ -89,8 +90,9 @@ def TestFen(depth: int, fen: str, expected: List[float], name: str):
         print(
             f"Depth: {epoch + 1} Result: {len( positions) } positions | passed: {"✅" if len(positions) == expected[epoch]else "⁉️"} expected: {expected[epoch]}"
         )
+        check_fens(positions, name, epoch + 1)
         epoch += 1
-    check_fens(positions, name, depth)
+
     print("-" * 50)
 
 

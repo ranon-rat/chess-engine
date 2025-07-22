@@ -146,22 +146,22 @@ void BoardAPI::moveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard
     {
         if (board.white_to_move)
         {
-            new_board.white_can_castle_kingside = false;
+            new_board.white_can_castle_kingside = from.y != 7;
         }
         else
         {
-            new_board.black_can_castle_kingside = false;
+            new_board.black_can_castle_kingside = from.y != 0;
         }
     } // queen side
     else if (from.x == 0)
     {
         if (board.white_to_move)
         {
-            new_board.white_can_castle_queenside = false;
+            new_board.white_can_castle_queenside = from.y != 7;
         }
         else
         {
-            new_board.black_can_castle_queenside = false;
+            new_board.black_can_castle_queenside = from.y != 0;
         }
     }
     new_board.rooks &= ~initial_mask;
@@ -264,24 +264,24 @@ void BoardAPI::eatRook(BoardCoordinates to, uint64_t target_mask, BitWiseBoard &
 
     if (to.x == 7)
     {
-        if (board.white_to_move)
+        if (board.white_to_move )
         {
-            new_board.black_can_castle_kingside = false;
+            new_board.black_can_castle_kingside =to.y!=0;
         }
-        else
+        else 
         {
-            new_board.white_can_castle_kingside = false;
+            new_board.white_can_castle_kingside =to.y!=7;
         }
     }
     else if (to.x == 0)
     {
-        if (board.white_to_move)
+        if (board.white_to_move )
         {
-            new_board.black_can_castle_queenside = false;
+            new_board.black_can_castle_queenside = to.y!=0;
         }
-        else
+        else 
         {
-            new_board.white_can_castle_queenside = false;
+            new_board.white_can_castle_queenside = to.y!=7;
         }
     }
     new_board.rooks &= ~target_mask;

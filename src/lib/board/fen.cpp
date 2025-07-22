@@ -277,7 +277,16 @@ bool BoardAPI::thereIsPawnNearEnPassant(const BitWiseBoard &board, const BoardCo
         uint64_t mask = 1ULL << (next_y * 8 + e_p1);
         if (board.pawns & mask & friend_squares)
         {
-            return true;
+            MaxMovesArray moves = GetMoves(BoardCoordinates{
+                                               .x = e_p1,
+                                               .y = next_y,
+                                           },
+                                           board);
+            for (size_t i = 0; i < moves.size(); i++)
+            {
+                if (moves[i].x == origin.x && moves[i].y == origin.y)
+                    return true;
+            }
         }
     }
     if (e_p2 >= 0)
@@ -285,7 +294,16 @@ bool BoardAPI::thereIsPawnNearEnPassant(const BitWiseBoard &board, const BoardCo
         uint64_t mask = 1ULL << (next_y * 8 + e_p2);
         if (board.pawns & mask & friend_squares)
         {
-            return true;
+            MaxMovesArray moves = GetMoves(BoardCoordinates{
+                                               .x = e_p2,
+                                               .y = next_y,
+                                           },
+                                           board);
+            for (size_t i = 0; i < moves.size(); i++)
+            {
+                if (moves[i].x == origin.x && moves[i].y == origin.y)
+                    return true;
+            }
         }
     }
     return false;

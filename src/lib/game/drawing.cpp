@@ -132,6 +132,9 @@ void ChessGame::SelectPieces()
                         ready_to_promote = board.IsReadyToPromote(bitwise_board);
                         game_state = board.CheckBoardState(bitwise_board);
                         std::cout << board.GetFen(bitwise_board) << "\n";
+                        std::cout << "to y " << static_cast<int>(to.y) << "\n";
+                        std::cout << "to x " << static_cast<int>(to.x) << "\n";
+
                         not_selected = true;
                     }
                     break;

@@ -8,8 +8,15 @@
 #include <array>
 
 BoardAPI api;
+struct PositionalInfo
+{
+    BitWiseBoard board;
+    BoardCoordinates from;
+    BoardCoordinates to;
+    std::string previous_fen;
+};
 
-void ExecuteMoves(const BitWiseBoard &board, BoardCoordinates from, MaxMovesArray &to_moves, std::vector<BitWiseBoard> &new_positions)
+void ExecuteMoves(const BitWiseBoard &board, BoardCoordinates from, MaxMovesArray &to_moves, std::vector<PositionalInfo> &new_positions)
 {
     static Pieces possible_pieces[] = {Pieces::KNIGHT, Pieces::BISHOP, Pieces::ROOK, Pieces::QUEEN};
     for (size_t i = 0; i < to_moves.size(); i++)
@@ -24,15 +31,25 @@ void ExecuteMoves(const BitWiseBoard &board, BoardCoordinates from, MaxMovesArra
                 Pieces p = possible_pieces[j];
 
                 BitWiseBoard promotion_board = api.Promotion(to, new_board, p);
-                new_positions.emplace_back(
-                    promotion_board);
+                new_positions.emplace_back(PositionalInfo{
+                    .board = promotion_board,
+                    .from = from,
+                    .to = to,
+                    .previous_fen = api.GetFen(board),
+                });
             }
             continue;
         }
-        new_positions.emplace_back(new_board);
+        new_positions.emplace_back(PositionalInfo{
+            .board = new_board,
+            .from = from,
+            .to = to,
+            .previous_fen = api.GetFen(board),
+
+        });
     }
 }
-void EvaluatePossiblePosition(const BitWiseBoard &board, std::vector<BitWiseBoard> &new_positions)
+void EvaluatePossiblePosition(const BitWiseBoard &board, std::vector<PositionalInfo> &new_positions)
 {
     if (api.CheckBoardState(board) != GameStates::CONTINUE)
     {
@@ -53,17 +70,23 @@ void EvaluatePossiblePosition(const BitWiseBoard &board, std::vector<BitWiseBoar
     }
 }
 
-std::vector<BitWiseBoard> GetAllPossiblePositions(const std::vector<BitWiseBoard> &positions)
+std::vector<PositionalInfo> GetAllPossiblePositions(const std::vector<PositionalInfo> &positions)
 {
-    std::vector<BitWiseBoard> new_positions;
+    std::vector<PositionalInfo> new_positions;
 
-    for (BitWiseBoard board : positions)
+    for (PositionalInfo info : positions)
     {
-        EvaluatePossiblePosition(board, new_positions);
+        EvaluatePossiblePosition(info.board, new_positions);
     }
     return new_positions;
 }
-
+std::string BoardCoordinate2String(BoardCoordinates pos)
+{
+    std::string out = "";
+    out += static_cast<char>('a' + pos.x);
+    out += static_cast<char>('8' - pos.y);
+    return out;
+}
 void EvaluateFen(size_t depth, std::string fen, const std::vector<size_t> &quantity, const std::string name)
 {
     if (!std::filesystem::is_directory("./moves-test"))
@@ -74,7 +97,7 @@ void EvaluateFen(size_t depth, std::string fen, const std::vector<size_t> &quant
     {
         std::cout << "there isnt enough data to test if it actually captures what you want :(\n";
     }
-    std::vector<BitWiseBoard> positions = {api.BuildFromFEN(fen)};
+    std::vector<PositionalInfo> positions = {PositionalInfo{.board = api.BuildFromFEN(fen), .from = {0, 0}, .to = {0, 0},.previous_fen=""}};
     std::cout << "Testing fen:     " << fen << "\n";
     std::cout << "Expected epochs: " << depth << "\n";
     std::cout << "Name:            " << name << "\n";
@@ -91,10 +114,10 @@ void EvaluateFen(size_t depth, std::string fen, const std::vector<size_t> &quant
             std::format("moves-test/{}-{}.txt", name, epoch + 1),
             std::ios_base::app);
 
-        for (BitWiseBoard &board : positions)
+        for (PositionalInfo &info : positions)
         {
 
-            file << api.GetFen(board) << "\n";
+            file << api.GetFen(info.board) << "," << BoardCoordinate2String(info.from) << "," << BoardCoordinate2String(info.to) << "," << info.previous_fen << "\n";
         }
         file.close();
 
