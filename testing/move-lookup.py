@@ -1,6 +1,5 @@
 import chess
 from typing import List
-import random
 import os
 
 testing_fens = [
