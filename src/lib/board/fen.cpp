@@ -264,6 +264,33 @@ void BoardAPI::fenFromCastlingRights(const BitWiseBoard &board, std::string &fen
         fen_castling += "-";
     }
 }
+bool BoardAPI::thereIsPawnNearEnPassant(const BitWiseBoard &board, const BoardCoordinates &origin)
+{
+    // if there is an enpassant then there is a piece in the position that its next to it
+    uint64_t friend_squares = board.white_to_move ? board.white_pieces : board.black_pieces;
+    int8_t direction = board.white_to_move ? 1 : -1;
+    int8_t e_p1 = origin.x + 1;
+    int8_t e_p2 = origin.x - 1;
+    int8_t next_y = origin.y + direction;
+    if (e_p1 < 8)
+    {
+        uint64_t mask = 1ULL << (next_y * 8 + e_p1);
+        if (board.pawns & mask & friend_squares)
+        {
+            return true;
+        }
+    }
+    if (e_p2 >= 0)
+    {
+        uint64_t mask = 1ULL << (next_y * 8 + e_p2);
+        if (board.pawns & mask & friend_squares)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void BoardAPI::fenFromEnPassant(const BitWiseBoard &board, std::string &fen_en_passant)
 {
     // lets first find the en passant
@@ -272,13 +299,13 @@ void BoardAPI::fenFromEnPassant(const BitWiseBoard &board, std::string &fen_en_p
         uint64_t mask = (1ULL) << (i);
 
         if (!(mask & board.enpassant))
-        {
             continue;
-        }
-        uint8_t x = i % 8;
 
-        uint8_t y = (i / 8); // okay so now i have to
-
+        int8_t x = i % 8;
+        int8_t y = (i / 8); // okay so now i have to
+        // NOW I HAVE TO CHECK THE NEXT THING
+        if (!thereIsPawnNearEnPassant(board, BoardCoordinates{.x = x, .y = y}))
+            continue;
         // then i should do sometyhing like uhhh
         fen_en_passant += static_cast<char>('a' + x);
         fen_en_passant += static_cast<char>('8' - y);

@@ -67,6 +67,7 @@ private: // FEN BS
     void fenFromColor(const BitWiseBoard &board, std::string &fen_color);
     void fenFromCastlingRights(const BitWiseBoard &board, std::string &fen_castling);
     void fenFromEnPassant(const BitWiseBoard &board, std::string &fen_en_passant);
+    bool thereIsPawnNearEnPassant(const BitWiseBoard &board,const BoardCoordinates &origin);
 
 private:
     // this is for the rook, bishop, and queen

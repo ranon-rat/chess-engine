@@ -86,18 +86,14 @@ void EvaluateFen(size_t depth, std::string fen, const std::vector<size_t> &quant
 
         positions = GetAllPossiblePositions(positions);
         std::ofstream file;
-        std::filesystem::remove(std::format("moves-test/{}-{}.txt", name, epoch));
+        std::filesystem::remove(std::format("moves-test/{}-{}.txt", name, epoch + 1));
         file.open(
-            std::format("moves-test/{}-{}.txt", name, epoch),
+            std::format("moves-test/{}-{}.txt", name, epoch + 1),
             std::ios_base::app);
-        if (!file.is_open())
-        {
-            std::cerr << "No se pudo abrir el archivo " << std::format("moves-test/{}.txt", epoch) << "\n";
-            return;
-        }
+
         for (BitWiseBoard &board : positions)
         {
-            
+
             file << api.GetFen(board) << "\n";
         }
         file.close();

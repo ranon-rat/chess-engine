@@ -1,6 +1,8 @@
 import chess
 from typing import List
-import random 
+import random
+import os
+
 testing_fens = [
     {
         "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
@@ -54,17 +56,30 @@ def execute_positions(initial_positions: List[chess.Board]):
 
 def check_fens(positions: List[chess.Board], name: str, depth: int):
     fens = [b.fen() for b in positions]
+
+    # Delete old file
+    if os.path.exists(f"moves-test/{name}-{depth}-p.txt"):
+        os.remove(f"moves-test/{name}-{depth}-p.txt")
+
+    # Write new file
+    with open(f"moves-test/{name}-{depth}-p.txt", "a", encoding="utf-8") as file:
+        for fen in fens:
+            file.write(f"{fen}\n")
+
+    # Read original file as bytes
     with open(f"moves-test/{name}-{depth}.txt", "r") as file:
-        lines =[ l.strip("\n") for l in file.readlines()]
-         
-        for i,line in enumerate(lines):
-            compare_fen = line.strip()
+        lines = file.readlines()
+
+        for i, line in enumerate(lines):
+            compare_fen = line.strip()  # decode back to string
             if compare_fen in fens:
                 continue
-            print(f"non valid fen: {compare_fen}  {fens[i]} at index {i} in {name}-{depth}.txt")
+            print(
+                f"non valid fen: {compare_fen}  {fens[i]} at index {i} in {name}-{depth}.txt"
+            )
 
 
-def TestFen(depth: int, fen: str, expected: List[float],name:str):
+def TestFen(depth: int, fen: str, expected: List[float], name: str):
     positions = [chess.Board(fen)]
     epoch = 0
     print("-" * 50)

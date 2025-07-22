@@ -2,6 +2,7 @@
 
 bool BoardAPI::EnemySquares(BoardCoordinates from, const BitWiseBoard &board, bool is_white)
 {
+    
     uint64_t piece_mask = 1ULL << ((from.y * 8) + from.x);
     uint64_t enemy_mask = is_white ? board.black_pieces : board.white_pieces;
     return (piece_mask & enemy_mask);

@@ -55,6 +55,10 @@ std::array<TypePiece, 64> BoardAPI::GetPieces(BitWiseBoard &board)
         }
     }
     std::cout<<"enpassant: "<<std::bitset<64>(board.enpassant)<<"\n";
-
+    std::cout << "can castle white kingside: " << board.white_can_castle_kingside << "\n";
+    std::cout << "can castle white queenside: " << board.white_can_castle_queenside << "\n";
+    std::cout << "can castle black kingside: " << board.black_can_castle_kingside << "\n";
+    std::cout << "can castle black queenside: " << board.black_can_castle_queenside << "\n";
+    std::cout << "white to move: " << board.white_to_move << "\n2";
     return pieces;
 }

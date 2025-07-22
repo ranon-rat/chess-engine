@@ -141,8 +141,8 @@ BitWiseBoard BoardAPI::MakeMove(BoardCoordinates from, BoardCoordinates to, cons
 
 void BoardAPI::moveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask)
 {
-    // queen side
-    if (to.x == 7)
+    // king side
+    if (from.x == 7)
     {
         if (board.white_to_move)
         {
@@ -152,8 +152,8 @@ void BoardAPI::moveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard
         {
             new_board.black_can_castle_kingside = false;
         }
-    } // king side
-    else if (to.x == 0)
+    } // queen side
+    else if (from.x == 0)
     {
         if (board.white_to_move)
         {
