@@ -9,26 +9,6 @@
 
 BoardAPI api;
 
-void AppendToFile(int depth, const BitWiseBoard &board, const std::string &name)
-{
-
-    if (!std::filesystem::is_directory("./moves-test"))
-    {
-        std::filesystem::create_directory("./moves-test");
-    }
-    std::ofstream file;
-    file.open(
-        std::format("moves-test/{}-{}.txt", name, depth),
-        std::ios_base::app);
-    if (!file.is_open())
-    {
-        std::cerr << "No se pudo abrir el archivo " << std::format("moves-test/{}.txt", depth) << "\n";
-        return;
-    }
-
-    file << api.GetFen(board) << "\n";
-    file.close();
-}
 void ExecuteMoves(const BitWiseBoard &board, BoardCoordinates from, MaxMovesArray &to_moves, std::vector<BitWiseBoard> &new_positions)
 {
     static Pieces possible_pieces[] = {Pieces::KNIGHT, Pieces::BISHOP, Pieces::ROOK, Pieces::QUEEN};
@@ -86,6 +66,10 @@ std::vector<BitWiseBoard> GetAllPossiblePositions(const std::vector<BitWiseBoard
 
 void EvaluateFen(size_t depth, std::string fen, const std::vector<size_t> &quantity, const std::string name)
 {
+    if (!std::filesystem::is_directory("./moves-test"))
+    {
+        std::filesystem::create_directory("./moves-test");
+    }
     if (depth > quantity.size())
     {
         std::cout << "there isnt enough data to test if it actually captures what you want :(\n";
@@ -93,7 +77,7 @@ void EvaluateFen(size_t depth, std::string fen, const std::vector<size_t> &quant
     std::vector<BitWiseBoard> positions = {api.BuildFromFEN(fen)};
     std::cout << "Testing fen:     " << fen << "\n";
     std::cout << "Expected epochs: " << depth << "\n";
-    std::cout << "Name:            " << name<<"\n";
+    std::cout << "Name:            " << name << "\n";
     std::cout << "-----------------------------------\n";
     std::cout << "Depth: " << 0 << " Result:" << positions.size() << " positions\n";
 
@@ -101,10 +85,23 @@ void EvaluateFen(size_t depth, std::string fen, const std::vector<size_t> &quant
     {
 
         positions = GetAllPossiblePositions(positions);
+        std::ofstream file;
+        std::filesystem::remove(std::format("moves-test/{}-{}.txt", name, epoch));
+        file.open(
+            std::format("moves-test/{}-{}.txt", name, epoch),
+            std::ios_base::app);
+        if (!file.is_open())
+        {
+            std::cerr << "No se pudo abrir el archivo " << std::format("moves-test/{}.txt", epoch) << "\n";
+            return;
+        }
         for (BitWiseBoard &board : positions)
         {
-            AppendToFile(epoch + 1, board, name);
+            
+            file << api.GetFen(board) << "\n";
         }
+        file.close();
+
         std::cout << "Depth: " << epoch + 1 << " Result:" << positions.size() << " positions | passed: " << (positions.size() == quantity[epoch] ? "✅" : "⁉️") << " expected:" << quantity[epoch] << "\n";
     }
     std::cout << "-----------------------------------\n\n";
@@ -126,7 +123,7 @@ int main()
         Eval_t{
             .fen = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 0",
             .quantity = {48, 2039, 97862, 4085603, 193690690},
-            .name = "second",// second is the prblem ...
+            .name = "second", // second is the prblem ...
         },
         Eval_t{
             .fen = "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1",
