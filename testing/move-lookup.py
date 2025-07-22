@@ -53,9 +53,9 @@ def execute_positions(initial_positions: List[chess.Board]):
 
 
 def check_fens(positions: List[chess.Board], name: str, depth: int):
-    fens = [b.fen()[:-3] for b in positions]
+    fens = [b.fen() for b in positions]
     with open(f"moves-test/{name}-{depth}.txt", "r") as file:
-        lines =[ l.strip("\n")[:-3] for l in file.readlines()]
+        lines =[ l.strip("\n") for l in file.readlines()]
          
         for i,line in enumerate(lines):
             compare_fen = line.strip()
