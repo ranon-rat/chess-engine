@@ -72,6 +72,9 @@
         "text_encoding": "cpp",
         "cinttypes": "cpp",
         "variant": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "codecvt": "cpp",
+        "ratio": "cpp",
+        "iomanip": "cpp"
     }
 }

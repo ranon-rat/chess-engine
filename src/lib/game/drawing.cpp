@@ -95,7 +95,7 @@ void ChessGame::DrawBoardPieces()
 
 void ChessGame::SelectPieces()
 {
-    if (ready_to_promote||game_state!=GameStates::CONTINUE)
+    if (ready_to_promote || game_state != GameStates::CONTINUE)
     {
         return;
     }
@@ -131,6 +131,7 @@ void ChessGame::SelectPieces()
                         pieces = board.GetPieces(bitwise_board);
                         ready_to_promote = board.IsReadyToPromote(bitwise_board);
                         game_state = board.CheckBoardState(bitwise_board);
+                        std::cout << board.GetFen(bitwise_board) << "\n";
                         not_selected = true;
                     }
                     break;
@@ -181,6 +182,8 @@ void ChessGame::PromotionPart()
     bitwise_board = board.Promotion(to, bitwise_board, new_piece);
     pieces = board.GetPieces(bitwise_board);
     game_state = board.CheckBoardState(bitwise_board);
+    std::cout << board.GetFen(bitwise_board) << "\n";
+
     ready_to_promote = false;
 }
 

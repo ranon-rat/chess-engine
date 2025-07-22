@@ -20,7 +20,8 @@ public:
     enum TypeFilter
     {
         Legal = 0,
-        Defendable
+        Defendable,
+        Line,
     };
     struct FenParts
     {
@@ -65,7 +66,7 @@ private: // FEN BS
     void fenFromBoardPieces(const BitWiseBoard &board, std::string &fen_pieces);
     void fenFromColor(const BitWiseBoard &board, std::string &fen_color);
     void fenFromCastlingRights(const BitWiseBoard &board, std::string &fen_castling);
-    void fenFromEnPassant(const BitWiseBoard &board,  std::string &fen_en_passant);
+    void fenFromEnPassant(const BitWiseBoard &board, std::string &fen_en_passant);
 
 private:
     // this is for the rook, bishop, and queen

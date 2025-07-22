@@ -161,7 +161,7 @@ void BoardAPI::enPassantFen(BitWiseBoard &board, const std::string &fen_en_passa
     if (fen_en_passant != "-")
     {
         int ep_x = fen_en_passant[0] - 'a';
-        int ep_y = fen_en_passant[1] - '1';
+        int ep_y = '8' - fen_en_passant[1];
         board.enpassant = 1ULL << ((ep_y * 8) + ep_x);
     }
 }
@@ -275,13 +275,16 @@ void BoardAPI::fenFromEnPassant(const BitWiseBoard &board, std::string &fen_en_p
         {
             continue;
         }
-        char x = i % 8;
-        char y = i / 8;
-        fen_en_passant += "a" + x;
-        fen_en_passant += "1" + y;
+        uint8_t x = i % 8;
+
+        uint8_t y = (i / 8); // okay so now i have to
+
+        // then i should do sometyhing like uhhh
+        fen_en_passant += static_cast<char>('a' + x);
+        fen_en_passant += static_cast<char>('8' - y);
         return;
     }
-    fen_en_passant+="-";
+    fen_en_passant += "-";
 }
 // rnbqkbnr/p2p3p/5pp1/1pp1p3/4P2P/2N5/PPPP1PP1/R1BQKBNR w Qkq - 0 6
 

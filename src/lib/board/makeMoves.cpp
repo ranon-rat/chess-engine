@@ -26,7 +26,7 @@ BitWiseBoard BoardAPI::MakeMove(BoardCoordinates from, BoardCoordinates to, cons
         return new_board;
     }
     //
-    new_board.enpassant = initialize_board; // we reset this before we have to alter it :);
+    new_board.enpassant = 0; // we reset this before we have to alter it :);
     int direction = board.white_to_move ? -1 : 1;
 
     TypePiece origin_piece = GetPieceFromCoord(from, board);
@@ -117,23 +117,24 @@ BitWiseBoard BoardAPI::MakeMove(BoardCoordinates from, BoardCoordinates to, cons
     {
         new_board.complete_move++;
     }
-    if (!IsReadyToPromote(new_board))
+    if (!IsReadyToPromote(new_board) && !simulation)
     {
 
         new_board.white_to_move = !board.white_to_move;
+
         new_board.zobrist = GetZobrist(new_board);
+        new_board.attacked_squares = getAttackedSquares(new_board);
+        // so we need to first define the enemy mask
+        uint64_t enemy_mask = board.white_to_move ? board.black_pieces : board.white_pieces;
 
-        if (!simulation)
-        {
-            new_board.attacked_squares = getAttackedSquares(new_board);
-            // so we need to first define the enemy mask
-            uint64_t enemy_mask = board.white_to_move ? board.black_pieces : board.white_pieces;
+        // here we are going to calculate the squares that we could attack :)
+        // okay here goes some basic shit :)
 
-            // here we are going to calculate the squares that we could attack :)
-            // okay here goes some basic shit :)
-
-            new_board.king_check = board.kings & enemy_mask & new_board.attacked_squares;
-        }
+        new_board.king_check = board.kings & enemy_mask & new_board.attacked_squares;
+    }
+    if (simulation)
+    {
+        new_board.white_to_move = !board.white_to_move;
     }
     return new_board;
 }
