@@ -146,8 +146,8 @@ void BoardAPI::pawnMoves(BoardCoordinates origin, const BitWiseBoard &board, Max
         }
         if (filter == TypeFilter::Legal)
         {
-            const uint64_t attack_mask = board.enpassant & 1ULL << ((new_coords.y * 8) + new_coords.x);
-            const bool enpassant = (board.enpassant & attack_mask) > 0;
+            const uint64_t attack_mask = 1ULL << ((new_coords.y * 8) + new_coords.x);
+            const bool enpassant = (board.enpassant & attack_mask);
 
             if (!EnemySquares(new_coords, board, is_white) && !enpassant)
             {
@@ -180,9 +180,7 @@ void BoardAPI::pawnMoves(BoardCoordinates origin, const BitWiseBoard &board, Max
 void BoardAPI::castlingMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, uint64_t attack_mask, TypeFilter filter)
 {
     if (filter != Legal)
-    {
         return;
-    }
 
     bool can_castle = is_white ? board.white_can_castle_kingside || board.white_can_castle_queenside : board.black_can_castle_kingside || board.black_can_castle_queenside;
     if (!can_castle)
@@ -211,10 +209,8 @@ void BoardAPI::castlingMoves(BoardCoordinates origin, const BitWiseBoard &board,
     for (CastlingRight &v : castling)
     {
         if (!v.castling_right)
-        {
-
             continue;
-        }
+
         // 0 check 1 not check but the line is attacked 2 the destiny is attacked, you will be on check :)
         for (int i = 0; i <= 2; i++)
         {
