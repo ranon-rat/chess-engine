@@ -55,7 +55,7 @@ def execute_positions(initial_positions: List[chess.Board]):
 
 
 def check_fens(positions: List[chess.Board], name: str, depth: int):
-    fens = [b.fen() for b in positions]
+    fens = [b.fen()[:-1] for b in positions]
 
     # Delete old file
     if os.path.exists(f"moves-test/{name}-{depth}-p.txt"):
@@ -73,7 +73,7 @@ def check_fens(positions: List[chess.Board], name: str, depth: int):
         lines = file.readlines()
 
         for i, line in enumerate(lines):
-            compare_fen = line.strip().split(",")[0]  # decode back to string
+            compare_fen = line.strip().split(",")[0][:-1]  # decode back to string
             if compare_fen in fens:
                 continue
 
