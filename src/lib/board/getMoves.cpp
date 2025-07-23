@@ -222,15 +222,10 @@ void BoardAPI::castlingMoves(BoardCoordinates origin, const BitWiseBoard &board,
             };
 
             if ((attack_mask & mask) || (OcuppiedSquares(new_coords, board) && i != 0))
-            {
-
                 break;
-            }
 
             if (i != 2)
-            {
                 continue;
-            }
             moves.emplace_back(new_coords);
         }
     }

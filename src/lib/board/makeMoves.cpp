@@ -242,7 +242,7 @@ void BoardAPI::moveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard
     int x = 7 * king_side;
     // we get the masks
     uint64_t origin_rook_mask = (1ULL << ((from.y * 8) + x));
-    uint64_t new_rook_mask(1ULL << ((from.y * 8) + from.x + (1 - (!king_side) * 2)));
+    uint64_t new_rook_mask = (1ULL << ((from.y * 8) + from.x + (1 - (!king_side) * 2)));
     // we delete the origin msak
     new_board.rooks &= ~origin_rook_mask;
     // draw it
