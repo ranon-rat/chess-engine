@@ -192,18 +192,19 @@ void BoardAPI::castlingMoves(BoardCoordinates origin, const BitWiseBoard &board,
     struct CastlingRight
     {
         int dx;
+        int distance;
         bool castling_right;
     };
     std::array<CastlingRight, 2> castling = {
         CastlingRight{
-
             .dx = 1,
+            .distance = 2,
             .castling_right = is_white ? board.white_can_castle_kingside : board.black_can_castle_kingside,
         },
         CastlingRight{
             .dx = (-1),
+            .distance = 3,
             .castling_right = is_white ? board.white_can_castle_queenside : board.black_can_castle_queenside,
-
         },
     };
     for (CastlingRight &v : castling)
@@ -212,7 +213,7 @@ void BoardAPI::castlingMoves(BoardCoordinates origin, const BitWiseBoard &board,
             continue;
 
         // 0 check 1 not check but the line is attacked 2 the destiny is attacked, you will be on check :)
-        for (int i = 0; i <= 2; i++)
+        for (int i = 0; i <= v.distance; i++)
         {
             int8_t new_x = origin.x + v.dx * i;
             uint64_t mask = 1ULL << ((origin.y * 8) + new_x);
@@ -224,7 +225,7 @@ void BoardAPI::castlingMoves(BoardCoordinates origin, const BitWiseBoard &board,
             if ((attack_mask & mask) || (OcuppiedSquares(new_coords, board) && i != 0))
                 break;
 
-            if (i != 2)
+            if (i != v.distance)
                 continue;
             moves.emplace_back(new_coords);
         }
