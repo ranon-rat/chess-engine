@@ -10,7 +10,14 @@ files=[
     "fifth-3.txt",
     "sixth-3.txt",
 ]
-
+def get_fens(board: chess.Board):
+    fens = []
+    for m in board.legal_moves:
+        simulated_board = board.copy()
+        simulated_board.push(m)
+        fens.append(simulated_board.fen()[:-1])
+    return fens
+    
 
 def get_boards():
 
@@ -28,7 +35,10 @@ def get_boards():
                 to_sq = chess.parse_square(to_square)
                 move = chess.Move(from_sq, to_sq)
                 if move  not in board.legal_moves:
-                    bad_moves.append(line.strip())
+                    #okay now we will hav eto check the next
+                    move_fen= get_fens(board)
+                    if fen[:-1] not in move_fen:
+                        bad_moves.append(line.strip())
             if bad_moves:
                 with open(f"moves-test/non-valid/bad-moves-{file}", "w", encoding="utf-8") as bad_file:
                     for move in bad_moves:
