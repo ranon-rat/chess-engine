@@ -30,7 +30,7 @@ struct BitWiseBoard
     // some basic rights
     bool white_to_move : 1 = true;
     // castling bs :)
-
+ 
     bool white_can_castle_kingside : 1 = false;
     bool white_can_castle_queenside : 1 = false;
     bool black_can_castle_kingside : 1 = false;

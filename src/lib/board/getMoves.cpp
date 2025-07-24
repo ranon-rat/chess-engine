@@ -72,9 +72,7 @@ MaxMovesArray BoardAPI::GetMoves(BoardCoordinates piece, const BitWiseBoard &boa
     {
         BoardCoordinates &move = moves[i];
         if (IsChecked(piece, move, board, from_white))
-        {
             continue;
-        }
         filtered_moves.emplace_back(move);
     }
 
@@ -87,8 +85,8 @@ void BoardAPI::lineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
     // the rook and the bishop
     for (auto move : m_possible_moves[piece])
     { // i first create the vector
-        int max_how_deep_enemy = filter == Line ? 2 : 1;
-        int max_how_deep_friend = filter == Line ? 2 : 1;
+        int max_how_deep = filter == Line ? 2 : 1;
+
         int found_friend = 0;
         int found_enemy = 0;
         for (int8_t x = origin.x + move.x,
@@ -110,7 +108,7 @@ void BoardAPI::lineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
                 {
                     found_friend++;
                     moves.emplace_back(coords);
-                    if (found_friend >= max_how_deep_friend)
+                    if (found_friend >= max_how_deep)
                         break;
                     continue;
                 }
@@ -120,19 +118,18 @@ void BoardAPI::lineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
 
             moves.emplace_back(coords);
             if (EnemySquares(coords, board, is_white))
+            {
                 found_enemy++;
-            if (found_enemy >= max_how_deep_enemy)
-                break;
+                if (found_enemy >= max_how_deep)
+                    break;
+            }
         }
     }
 }
-
 void BoardAPI::oneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, TypeFilter filter)
 {
     if (filter == TypeFilter::Line)
-    {
         return;
-    }
 
     // this is only for the queen
     // the rook and the bishop
@@ -142,17 +139,13 @@ void BoardAPI::oneLineMoves(Pieces piece, BoardCoordinates origin, const BitWise
         const int8_t new_x = origin.x + move.x;
         const int8_t new_y = origin.y + move.y;
         if (new_x < 0 || new_x > 7 || new_y < 0 || new_y > 7)
-        {
             continue;
-        }
         BoardCoordinates coords = {
             .x = new_x,
             .y = new_y,
         };
-        if (FriendSquares(coords, board, is_white) && (filter == Legal))
-        {
+        if ((filter == Legal) && FriendSquares(coords, board, is_white))
             continue;
-        }
 
         moves.emplace_back(coords);
     }
@@ -174,25 +167,20 @@ void BoardAPI::pawnMoves(BoardCoordinates origin, const BitWiseBoard &board, Max
             .y = static_cast<int8_t>(origin.y + direction)};
 
         if (new_coords.x > 7 || new_coords.x < 0 || new_coords.y > 7 || new_coords.y < 0)
-        {
             continue;
-        }
         if (filter == TypeFilter::Legal)
         {
             const uint64_t attack_mask = 1ULL << ((new_coords.y * 8) + new_coords.x);
             const bool enpassant = (board.enpassant & attack_mask);
 
-            if (!EnemySquares(new_coords, board, is_white) && !enpassant)
-            {
+            if (!enpassant && !EnemySquares(new_coords, board, is_white))
                 continue;
-            }
         }
         moves.emplace_back(new_coords);
     }
     if (filter != Legal)
-    {
         return;
-    }
+
     // now advance position
     for (size_t i = 1; i <= advance; i++)
     {
@@ -203,9 +191,7 @@ void BoardAPI::pawnMoves(BoardCoordinates origin, const BitWiseBoard &board, Max
         if (new_coords.y > 7 || new_coords.y < 0)
             break;
         if (OcuppiedSquares(new_coords, board))
-        {
             break;
-        }
         moves.emplace_back(new_coords);
     }
 }
@@ -271,11 +257,11 @@ void BoardAPI::castlingMoves(BoardCoordinates origin, const BitWiseBoard &board,
                 .x = new_x,
                 .y = origin.y,
             };
-            if (i <= 2 && (attack_mask & mask))
+            if (i <= 2 && (attack_mask & mask))//  its being attacked?
                 break;
-            if ((OcuppiedSquares(new_coords, board)))
+            if ((OcuppiedSquares(new_coords, board))) // the square is occupied
                 break;
-            if (i != v.distance)
+            if (i != v.distance)// we havent arrived to our point :)
                 continue;
             moves.emplace_back(v.safe_castling);
         }
