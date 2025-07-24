@@ -87,10 +87,10 @@ void BoardAPI::lineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
     // the rook and the bishop
     for (auto move : m_possible_moves[piece])
     { // i first create the vector
-        int max_how_deep = filter == Line ? 2 : 1;
+        int max_how_deep_enemy = filter == Line ? 2 : 1;
         int max_how_deep_friend = filter == Line ? 2 : 1;
         int found_friend = 0;
-        int found = 0;
+        int found_enemy = 0;
         for (int8_t x = origin.x + move.x,
                     y = origin.y + move.y;
              x < 8 && x >= 0 &&
@@ -102,32 +102,27 @@ void BoardAPI::lineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
                 .x = x,
                 .y = y,
             };
-            if (found_friend >= max_how_deep_friend)break;
+
             if (FriendSquares(coords, board, is_white))
             {
 
-                if (filter != Legal && found_friend < max_how_deep_friend)
+                if (filter != Legal)
                 {
                     found_friend++;
                     moves.emplace_back(coords);
+                    if (found_friend >= max_how_deep_friend)
+                        break;
                     continue;
                 }
-                if (filter == Legal || found_friend >= max_how_deep_friend)
-                {
-
+                if (filter == Legal)
                     break;
-                }
             }
 
             moves.emplace_back(coords);
             if (EnemySquares(coords, board, is_white))
-            {
-                found++;
-            }
-            if (found >= max_how_deep)
-            {
+                found_enemy++;
+            if (found_enemy >= max_how_deep_enemy)
                 break;
-            }
         }
     }
 }
