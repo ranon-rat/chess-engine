@@ -1,6 +1,6 @@
 #include "board-api.h++"
 #include <cmath>
-BitWiseBoard BoardAPI::MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, bool simulation)
+BitWiseBoard BoardAPI::MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, TypeGame game)
 {
     BitWiseBoard new_board = board;
     if (from.x == to.x && from.y == to.y)
@@ -20,7 +20,7 @@ BitWiseBoard BoardAPI::MakeMove(BoardCoordinates from, BoardCoordinates to, cons
     uint64_t piece_mask = 1ULL << ((from.y * 8) + from.x);
     uint64_t target_mask = 1ULL << ((to.y * 8) + to.x);
     // en passant part to reset everything
-    if (!simulation && !movementIsLegal(from, to, board)) // if its a simulation we dont have to emulate any of this shit
+    if (game==TypeGame::User && !movementIsLegal(from, to, board)) // if its a simulation we dont have to emulate any of this shit
     {
 
         return new_board;
@@ -117,7 +117,7 @@ BitWiseBoard BoardAPI::MakeMove(BoardCoordinates from, BoardCoordinates to, cons
     {
         new_board.complete_move++;
     }
-    if (!IsReadyToPromote(new_board) && !simulation)
+    if (game!=TypeGame::Simulation && !IsReadyToPromote(new_board) )
     {
 
         new_board.white_to_move = !board.white_to_move;

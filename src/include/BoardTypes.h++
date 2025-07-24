@@ -1,5 +1,5 @@
-#ifndef OTHER_HPP
-#define OTHER_HPP
+#ifndef BOARDTYPES_HPP
+#define BOARDTYPES_HPP
 #include "PiecesAndMoves.h++"
 #include <cstdint>
 #include <array>
@@ -15,12 +15,12 @@ struct BoardCoordinates
     int8_t x = 0;
     int8_t y = 0;
 };
-
+// this class is just for storing the ovements and not having to store anything in the heap
 class MaxMovesArray
 {
 private:
     size_t m_size = 0;
-    std::array<BoardCoordinates, 28> m_coords;
+    BoardCoordinates m_coords[28];
 
 public:
     MaxMovesArray()

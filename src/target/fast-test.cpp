@@ -1,5 +1,5 @@
 #include <iostream>
-#include "others.h++"
+#include "BoardTypes.h++"
 int main(){
     using namespace std;
     for(int i=0;i<10&&i>=0;i--){

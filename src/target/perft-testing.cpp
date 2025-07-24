@@ -22,7 +22,7 @@ void ExecuteMoves(const BitWiseBoard &board, BoardCoordinates from, MaxMovesArra
     for (size_t i = 0; i < to_moves.size(); i++)
     {
         const BoardCoordinates to = to_moves[i];
-        BitWiseBoard new_board = api.MakeMove(from, to, board);
+        BitWiseBoard new_board = api.MakeMove(from, to, board,TypeGame::Bot);
 
         if (api.IsReadyToPromote(new_board))
         {

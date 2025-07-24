@@ -69,7 +69,7 @@ uint64_t BoardAPI::getPotentialAttacks(const BitWiseBoard &board, std::optional<
 // this
 bool BoardAPI::IsChecked(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, bool from_white)
 {
-    BitWiseBoard new_board = MakeMove(from, to, board, true);
+    BitWiseBoard new_board = MakeMove(from, to, board, TypeGame::Simulation);
     // first i get the attacked squares
     uint64_t attacked_squares = getAttackedSquares(new_board, from_white);
     // then i make the friendly mask
