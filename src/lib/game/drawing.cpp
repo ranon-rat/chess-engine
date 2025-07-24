@@ -126,7 +126,7 @@ void ChessGame::SelectPieces()
                     {
                         to.x = x % 8;
                         to.y = x / 8;
-                        bitwise_board = board.MakeMove(from, to, bitwise_board);
+                        bitwise_board = board.MakeMove(from, to, bitwise_board,TypeGame::User);
                         
                         pieces = board.GetPieces(bitwise_board);
                         ready_to_promote = board.IsReadyToPromote(bitwise_board);

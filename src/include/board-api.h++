@@ -45,7 +45,7 @@ public:
     BitWiseBoard BuildFromFEN(const std::string &fen);
     std::string GetFen(const BitWiseBoard &board);
     MaxMovesArray GetMoves(BoardCoordinates piece, const BitWiseBoard &board, std::optional<bool> is_white = std::nullopt, TypeFilter filter = Legal); // esto deberia de retornarme un uint64_t con los movimientos legales de la pieza
-    BitWiseBoard MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, TypeGame game = TypeGame::User);                      // i make reference to the board in that specific square
+    BitWiseBoard MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, TypeGame game = TypeGame::Bot);                      // i make reference to the board in that specific square
     // so this one, will be used to getting general information from the board :)
     TypePiece GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &board);
     bool IsReadyToPromote(const BitWiseBoard &board);
