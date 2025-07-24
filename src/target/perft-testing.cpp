@@ -22,7 +22,7 @@ void ExecuteMoves(const BitWiseBoard &board, BoardCoordinates from, MaxMovesArra
     for (size_t i = 0; i < to_moves.size(); i++)
     {
         const BoardCoordinates to = to_moves[i];
-        BitWiseBoard new_board = api.MakeMove(from, to, board,TypeGame::Bot);
+        BitWiseBoard new_board = api.MakeMove(from, to, board, TypeGame::Bot);
 
         if (api.IsReadyToPromote(new_board))
         {
@@ -110,14 +110,15 @@ void EvaluateFen(size_t depth, std::string fen, const std::vector<size_t> &quant
 
         positions = GetAllPossiblePositions(positions);
         auto end = std::chrono::high_resolution_clock::now();
-        bool passed=positions.size() == quantity[epoch];
+        bool passed = positions.size() == quantity[epoch];
         std::cout << "Depth: " << epoch + 1
                   << " Result:" << positions.size()
                   << " positions | passed: " << (passed ? "✅" : "⁉️")
                   << " expected:" << quantity[epoch]
                   << " duration: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
                   << " ms\n";
-        if(passed) continue;
+        if (passed)
+            continue;
         std::ofstream file;
         file.open(
             std::format("moves-test/{}-{}.txt", name, epoch + 1));
@@ -128,11 +129,11 @@ void EvaluateFen(size_t depth, std::string fen, const std::vector<size_t> &quant
             file << api.GetFen(info.board) << "," << BoardCoordinate2String(info.from) << "," << BoardCoordinate2String(info.to) << "," << info.previous_fen << "\n";
         }
         file.close();
-
     }
     std::cout << "-----------------------------------\n\n";
 }
-int main()
+
+void GeneralEvaluation()
 {
     std::cout << "-----------------------------------\n";
     struct Eval_t
@@ -177,4 +178,27 @@ int main()
     {
         EvaluateFen(4, eval.fen, eval.quantity, eval.name);
     }
+}
+int main()
+{
+    struct Eval_t
+    {
+        std::string fen;
+        std::vector<size_t> quantity;
+        std::string name;
+    };
+    Eval_t eval = {
+        .fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        .quantity = {
+            20,
+            400,
+            8902,
+            197281,
+            4865609,
+            119060324,
+            3195901860	
+        },
+        .name = "basic-board"};
+
+    EvaluateFen(5, eval.fen, eval.quantity, eval.name);
 }

@@ -3,29 +3,24 @@
 BitWiseBoard BoardAPI::MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, TypeGame game)
 {
     BitWiseBoard new_board = board;
-    if (from.x == to.x && from.y == to.y)
+    if (game == TypeGame::User)
     {
-        return new_board;
-    }
+        if (from.x == to.x && from.y == to.y)
+            return new_board;
 
-    // First i need to check if the piece is a legal move,
-    // thats all :) XD
+        // First i need to check if the piece is a legal move,
+        // thats all :) XD
 
-    // if we are not part of the utilized squares, or the piece is part of the attackable squares then we shouldnt continue :)
-    if (!FriendSquares(from, board, board.white_to_move) || EnemySquares(from, board, board.white_to_move))
-    { // if its not in one of our pieces then just return 0 :)
-        return new_board;
+        // if we are not part of the utilized squares, or the piece is part of the attackable squares then we shouldnt continue :)
+        if (!FriendSquares(from, board, board.white_to_move) || EnemySquares(from, board, board.white_to_move))
+            return new_board;
+
+        if (!movementIsLegal(from, to, board)) // if its a simulation we dont have to emulate any of this shit
+            return new_board;
     }
-    // mask of the targets and pieces :)
     uint64_t piece_mask = 1ULL << ((from.y * 8) + from.x);
     uint64_t target_mask = 1ULL << ((to.y * 8) + to.x);
-    // en passant part to reset everything
-    if (game==TypeGame::User && !movementIsLegal(from, to, board)) // if its a simulation we dont have to emulate any of this shit
-    {
 
-        return new_board;
-    }
-    //
     new_board.enpassant = 0; // we reset this before we have to alter it :);
     int direction = board.white_to_move ? -1 : 1;
 
@@ -117,7 +112,7 @@ BitWiseBoard BoardAPI::MakeMove(BoardCoordinates from, BoardCoordinates to, cons
     {
         new_board.complete_move++;
     }
-    if (game!=TypeGame::Simulation && !IsReadyToPromote(new_board) )
+    if (game != TypeGame::Simulation && !IsReadyToPromote(new_board))
     {
 
         new_board.white_to_move = !board.white_to_move;
