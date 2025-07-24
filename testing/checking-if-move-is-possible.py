@@ -3,7 +3,7 @@ import chess
 import os
 
 files_dir=os.listdir("moves-test")
-files= [ f for f in files_dir if f.endswith(".txt") and not f.startswith("bad-moves-")]
+files=["second-4.txt"] #[ f for f in files_dir if f.endswith(".txt") and not f.startswith("bad-moves-")]
 def get_fens(board: chess.Board):
     fens = []
     for m in board.legal_moves:

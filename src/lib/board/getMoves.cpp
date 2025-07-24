@@ -87,7 +87,7 @@ void BoardAPI::lineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
     // the rook and the bishop
     for (auto move : m_possible_moves[piece])
     { // i first create the vector
-        int max_how_deep = filter == Line ? 3 : 1;
+        int max_how_deep = filter == Line ? 2 : 1;
         int max_how_deep_friend = filter == Line ? 2 : 1;
         int found_friend = 0;
         int found = 0;
@@ -102,16 +102,19 @@ void BoardAPI::lineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
                 .x = x,
                 .y = y,
             };
+            if (found_friend >= max_how_deep_friend)break;
             if (FriendSquares(coords, board, is_white))
             {
 
-                if (filter != Legal)
+                if (filter != Legal && found_friend < max_how_deep_friend)
                 {
-                    moves.emplace_back(coords);
                     found_friend++;
+                    moves.emplace_back(coords);
+                    continue;
                 }
                 if (filter == Legal || found_friend >= max_how_deep_friend)
                 {
+
                     break;
                 }
             }
@@ -273,7 +276,7 @@ void BoardAPI::castlingMoves(BoardCoordinates origin, const BitWiseBoard &board,
                 .x = new_x,
                 .y = origin.y,
             };
-            if ((attack_mask & mask) && i <= 2)
+            if (i <= 2 && (attack_mask & mask))
                 break;
             if ((OcuppiedSquares(new_coords, board)))
                 break;

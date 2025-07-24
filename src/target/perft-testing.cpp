@@ -110,24 +110,25 @@ void EvaluateFen(size_t depth, std::string fen, const std::vector<size_t> &quant
 
         positions = GetAllPossiblePositions(positions);
         auto end = std::chrono::high_resolution_clock::now();
-
-        // std::ofstream file;
-        // file.open(
-        //     std::format("moves-test/{}-{}.txt", name, epoch + 1));
-        //
-        // for (PositionalInfo &info : positions)
-        //{
-        //
-        //    file << api.GetFen(info.board) << "," << BoardCoordinate2String(info.from) << "," << BoardCoordinate2String(info.to) << "," << info.previous_fen << "\n";
-        //}
-        // file.close();
-
+        bool passed=positions.size() == quantity[epoch];
         std::cout << "Depth: " << epoch + 1
                   << " Result:" << positions.size()
-                  << " positions | passed: " << (positions.size() == quantity[epoch] ? "✅" : "⁉️")
+                  << " positions | passed: " << (passed ? "✅" : "⁉️")
                   << " expected:" << quantity[epoch]
                   << " duration: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
                   << " ms\n";
+        if(passed) continue;
+        std::ofstream file;
+        file.open(
+            std::format("moves-test/{}-{}.txt", name, epoch + 1));
+
+        for (PositionalInfo &info : positions)
+        {
+
+            file << api.GetFen(info.board) << "," << BoardCoordinate2String(info.from) << "," << BoardCoordinate2String(info.to) << "," << info.previous_fen << "\n";
+        }
+        file.close();
+
     }
     std::cout << "-----------------------------------\n\n";
 }
