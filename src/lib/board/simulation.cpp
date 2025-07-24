@@ -3,7 +3,7 @@
 uint64_t BoardAPI::getAttackedSquares(const BitWiseBoard &board, std::optional<bool> is_white)
 {
     uint64_t attack_mask = 0;
-    bool white_to_move = !is_white.value_or(board.white_to_move);
+    bool enemy_to_move = !is_white.value_or(board.white_to_move);
     for (int8_t y = 0; y < 8; y++)
     {
         for (int8_t x = 0; x < 8; x++)
@@ -12,17 +12,54 @@ uint64_t BoardAPI::getAttackedSquares(const BitWiseBoard &board, std::optional<b
                 .x = x,
                 .y = y,
             };
-            if (!FriendSquares(piece_coords, board, white_to_move))
+            if (!FriendSquares(piece_coords, board, enemy_to_move))
             {
                 continue;
             }
 
-            MaxMovesArray moves = this->GetMoves(piece_coords, board, white_to_move, TypeFilter::Defendable);
+            MaxMovesArray moves = this->GetMoves(piece_coords, board, enemy_to_move, TypeFilter::Defendable);
             for (size_t i = 0; i < moves.size(); i++)
             {
                 BoardCoordinates move_coords = moves[i];
                 uint64_t mask = (1ULL) << ((move_coords.y * 8) + move_coords.x);
                 attack_mask |= mask;
+            }
+        }
+    }
+    return attack_mask;
+}
+
+uint64_t BoardAPI::getPotentialAttacks(const BitWiseBoard &board, std::optional<bool> is_white)
+{
+    uint64_t attack_mask = 0;
+    bool white_to_move = is_white.value_or(board.white_to_move);
+    bool enemy_to_move = !white_to_move;
+    uint64_t our_king = (white_to_move ? board.white_pieces : board.black_pieces) & board.kings;
+    for (int8_t y = 0; y < 8; y++)
+    {
+        for (int8_t x = 0; x < 8; x++)
+        {
+            BoardCoordinates piece_coords = {
+                .x = x,
+                .y = y,
+            };
+            if (!FriendSquares(piece_coords, board, enemy_to_move))
+            {
+                continue;
+            }
+
+            MaxMovesArray moves = this->GetMoves(piece_coords, board, enemy_to_move, TypeFilter::Line);
+            // we are going to check if first it actually hits on here;
+            uint64_t new_mask_attack = 0;
+            for (size_t i = 0; i < moves.size(); i++)
+            {
+                BoardCoordinates move_coords = moves[i];
+                uint64_t mask = (1ULL) << ((move_coords.y * 8) + move_coords.x);
+                new_mask_attack |= mask;
+            }
+            if (new_mask_attack & our_king)
+            {
+                attack_mask |= new_mask_attack;
             }
         }
     }

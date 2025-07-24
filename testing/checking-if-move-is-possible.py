@@ -2,14 +2,8 @@
 import chess
 import os
 
-files=[
-    "basic-board-3.txt",
-    "second-3.txt",
-    "third-3.txt",
-    "fourth-3.txt",
-    "fifth-3.txt",
-    "sixth-3.txt",
-]
+files_dir=os.listdir("moves-test")
+files= [ f for f in files_dir if f.endswith(".txt") and not f.startswith("bad-moves-")]
 def get_fens(board: chess.Board):
     fens = []
     for m in board.legal_moves:
@@ -20,7 +14,7 @@ def get_fens(board: chess.Board):
     
 
 def get_boards():
-
+    os.makedirs("moves-test/non-valid/",exist_ok=True)
     for file in files:
 
         with open(f"moves-test/{file}", "r", encoding="utf-8") as f:
@@ -40,11 +34,13 @@ def get_boards():
                     if fen[:-1] not in move_fen:
                         bad_moves.append(line.strip())
             if bad_moves:
+                
                 with open(f"moves-test/non-valid/bad-moves-{file}", "w", encoding="utf-8") as bad_file:
                     for move in bad_moves:
                         bad_file.write(f"{move}\n")
                 print(f"Bad moves in {file}:", len(bad_moves))
-                
+                return
+            else: print("Passed:", file)               
 if __name__ == "__main__":
     get_boards()
     print("Finished checking moves")

@@ -97,7 +97,7 @@ void EvaluateFen(size_t depth, std::string fen, const std::vector<size_t> &quant
     {
         std::cout << "there isnt enough data to test if it actually captures what you want :(\n";
     }
-    std::vector<PositionalInfo> positions = {PositionalInfo{.board = api.BuildFromFEN(fen), .from = {0, 0}, .to = {0, 0},.previous_fen=""}};
+    std::vector<PositionalInfo> positions = {PositionalInfo{.board = api.BuildFromFEN(fen), .from = {0, 0}, .to = {0, 0}, .previous_fen = ""}};
     std::cout << "Testing fen:     " << fen << "\n";
     std::cout << "Expected epochs: " << depth << "\n";
     std::cout << "Name:            " << name << "\n";
@@ -109,10 +109,8 @@ void EvaluateFen(size_t depth, std::string fen, const std::vector<size_t> &quant
 
         positions = GetAllPossiblePositions(positions);
         std::ofstream file;
-        std::filesystem::remove(std::format("moves-test/{}-{}.txt", name, epoch + 1));
         file.open(
-            std::format("moves-test/{}-{}.txt", name, epoch + 1),
-            std::ios_base::app);
+            std::format("moves-test/{}-{}.txt", name, epoch + 1));
 
         for (PositionalInfo &info : positions)
         {

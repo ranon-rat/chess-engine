@@ -124,8 +124,9 @@ BitWiseBoard BoardAPI::MakeMove(BoardCoordinates from, BoardCoordinates to, cons
 
         new_board.zobrist = GetZobrist(new_board);
         new_board.attacked_squares = getAttackedSquares(new_board);
+        new_board.potenital_attacks=getPotentialAttacks(new_board);
         // so we need to first define the enemy mask
-        uint64_t enemy_mask = board.white_to_move ? board.black_pieces : board.white_pieces;
+        uint64_t enemy_mask = new_board.white_to_move ? board.white_pieces : board.black_pieces;
 
         // here we are going to calculate the squares that we could attack :)
         // okay here goes some basic shit :)

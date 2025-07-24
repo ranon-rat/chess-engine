@@ -47,7 +47,27 @@ MaxMovesArray BoardAPI::GetMoves(BoardCoordinates piece, const BitWiseBoard &boa
     {
         return moves;
     }
+    // i just need to check a really simple thing
+    uint64_t king_mask = (board.white_to_move ? board.white_pieces : board.black_pieces) & board.kings;
+    uint64_t piece_mask = (1ULL) << (piece.y * 8 + piece.x);
     MaxMovesArray filtered_moves = {};
+
+    // i check if the piece in on the piece_mask
+    if (!(piece_mask & board.potenital_attacks) && !(king_mask & board.attacked_squares))
+    {
+        if (piece_info.piece != KING)
+            return moves;
+
+        for (size_t i = 0; i < moves.size(); i++)
+        {
+            BoardCoordinates &move = moves[i];
+            uint64_t piece_mask = (1ull) << (move.y * 8 + move.x);
+            if (piece_mask & board.attacked_squares)
+                continue;
+            filtered_moves.emplace_back(move);
+        }
+        return filtered_moves;
+    }
     for (size_t i = 0; i < moves.size(); i++)
     {
         BoardCoordinates &move = moves[i];
@@ -67,7 +87,10 @@ void BoardAPI::lineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
     // the rook and the bishop
     for (auto move : m_possible_moves[piece])
     { // i first create the vector
-
+        int max_how_deep = filter == Line ? 3 : 1;
+        int max_how_deep_friend = filter == Line ? 2 : 1;
+        int found_friend = 0;
+        int found = 0;
         for (int8_t x = origin.x + move.x,
                     y = origin.y + move.y;
              x < 8 && x >= 0 &&
@@ -81,17 +104,25 @@ void BoardAPI::lineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
             };
             if (FriendSquares(coords, board, is_white))
             {
-                if (filter == Defendable)
+
+                if (filter != Legal)
                 {
                     moves.emplace_back(coords);
+                    found_friend++;
                 }
-                break;
+                if (filter == Legal || found_friend >= max_how_deep_friend)
+                {
+                    break;
+                }
             }
 
             moves.emplace_back(coords);
             if (EnemySquares(coords, board, is_white))
             {
-
+                found++;
+            }
+            if (found >= max_how_deep)
+            {
                 break;
             }
         }
@@ -100,6 +131,10 @@ void BoardAPI::lineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoa
 
 void BoardAPI::oneLineMoves(Pieces piece, BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, TypeFilter filter)
 {
+    if (filter == TypeFilter::Line)
+    {
+        return;
+    }
 
     // this is only for the queen
     // the rook and the bishop
@@ -179,10 +214,9 @@ void BoardAPI::pawnMoves(BoardCoordinates origin, const BitWiseBoard &board, Max
 
 void BoardAPI::castlingMoves(BoardCoordinates origin, const BitWiseBoard &board, MaxMovesArray &moves, bool is_white, uint64_t attack_mask, TypeFilter filter)
 {
-    if (filter != Legal)
+    if (filter != Legal || board.king_check)
         return;
-    if (board.king_check)
-        return;
+
     bool can_castle = is_white ? board.white_can_castle_kingside || board.white_can_castle_queenside : board.black_can_castle_kingside || board.black_can_castle_queenside;
     if (!can_castle)
         return;
@@ -247,8 +281,5 @@ void BoardAPI::castlingMoves(BoardCoordinates origin, const BitWiseBoard &board,
                 continue;
             moves.emplace_back(v.safe_castling);
         }
-        // path is full of  problems?
-
-        // 0 check 1 not check but the line is attacked 2 the destiny is attacked, you will be on check :)
     }
 }

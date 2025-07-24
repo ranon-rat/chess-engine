@@ -38,7 +38,7 @@ void ChessGame::DrawBoardPieces()
     {
         for (int i = 0; i < 8; i++)
         {
-            uint64_t is_attacked_mask = bitwise_board.attacked_squares;
+            uint64_t is_attacked_mask = bitwise_board.potenital_attacks;
             uint64_t position_mask = 1ull << (j * 8 + i);
             bool is_attacked = is_attacked_mask & position_mask;
 
@@ -127,14 +127,14 @@ void ChessGame::SelectPieces()
                         to.x = x % 8;
                         to.y = x / 8;
                         bitwise_board = board.MakeMove(from, to, bitwise_board);
-
+                        
                         pieces = board.GetPieces(bitwise_board);
                         ready_to_promote = board.IsReadyToPromote(bitwise_board);
                         game_state = board.CheckBoardState(bitwise_board);
                         std::cout << board.GetFen(bitwise_board) << "\n";
-                        std::cout << "to y " << static_cast<int>(to.y) << "\n";
-                        std::cout << "to x " << static_cast<int>(to.x) << "\n";
-
+                        std::cout << "to y:         " << static_cast<int>(to.y) << "\n";
+                        std::cout << "to x:         " << static_cast<int>(to.x) << "\n";
+                        std::cout<< "king in check: "<<(bitwise_board.king_check?"true":"false")<<"\n";
                         not_selected = true;
                     }
                     break;

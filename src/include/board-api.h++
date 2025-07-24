@@ -67,7 +67,7 @@ private: // FEN BS
     void fenFromColor(const BitWiseBoard &board, std::string &fen_color);
     void fenFromCastlingRights(const BitWiseBoard &board, std::string &fen_castling);
     void fenFromEnPassant(const BitWiseBoard &board, std::string &fen_en_passant);
-    bool thereIsPawnNearEnPassant(const BitWiseBoard &board,const BoardCoordinates &origin);
+    bool thereIsPawnNearEnPassant(const BitWiseBoard &board, const BoardCoordinates &origin);
 
 private:
     // this is for the rook, bishop, and queen
@@ -81,6 +81,8 @@ private:
 
 private: //  simulation shit
     uint64_t getAttackedSquares(const BitWiseBoard &board, std::optional<bool> is_white = std::nullopt);
+    uint64_t getPotentialAttacks(const BitWiseBoard &board, std::optional<bool> is_white = std::nullopt);
+
     bool movementIsLegal(const BoardCoordinates &from, const BoardCoordinates &to, const BitWiseBoard &board);
 
 private:

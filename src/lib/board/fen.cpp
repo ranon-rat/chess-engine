@@ -176,6 +176,7 @@ BitWiseBoard BoardAPI::BuildFromFEN(const std::string &fen)
     board.half_move = parts.halfmove_clock;
     board.complete_move = parts.fullmove_number;
     board.attacked_squares = getAttackedSquares(board);
+    board.potenital_attacks = getPotentialAttacks(board);
     board.zobrist = GetZobrist(board);
 
     return board;

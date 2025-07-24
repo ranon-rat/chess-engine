@@ -38,9 +38,16 @@ BitWiseBoard BoardAPI::Promotion(BoardCoordinates from, const BitWiseBoard &boar
         break;
     }
     new_board.white_to_move = !white_to_move;
-    
+
     new_board.attacked_squares = getAttackedSquares(new_board);
-    new_board.zobrist=GetZobrist(new_board);
+    new_board.zobrist = GetZobrist(new_board);
+    new_board.potenital_attacks = getPotentialAttacks(new_board);
+    uint64_t enemy_mask = new_board.white_to_move ? board.white_pieces : board.black_pieces;
+
+    // here we are going to calculate the squares that we could attack :)
+    // okay here goes some basic shit :)
+
+    new_board.king_check = board.kings & enemy_mask & new_board.attacked_squares;
     //
     return new_board;
 }
