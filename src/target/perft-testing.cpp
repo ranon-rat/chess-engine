@@ -6,7 +6,7 @@
 #include <fstream>
 #include <filesystem>
 #include <array>
-
+#include <chrono>
 BoardAPI api;
 struct PositionalInfo
 {
@@ -106,20 +106,28 @@ void EvaluateFen(size_t depth, std::string fen, const std::vector<size_t> &quant
 
     for (size_t epoch = 0; epoch < depth; epoch++)
     {
+        auto start = std::chrono::high_resolution_clock::now();
 
         positions = GetAllPossiblePositions(positions);
-        std::ofstream file;
-        file.open(
-            std::format("moves-test/{}-{}.txt", name, epoch + 1));
+        auto end = std::chrono::high_resolution_clock::now();
 
-        for (PositionalInfo &info : positions)
-        {
+        // std::ofstream file;
+        // file.open(
+        //     std::format("moves-test/{}-{}.txt", name, epoch + 1));
+        //
+        // for (PositionalInfo &info : positions)
+        //{
+        //
+        //    file << api.GetFen(info.board) << "," << BoardCoordinate2String(info.from) << "," << BoardCoordinate2String(info.to) << "," << info.previous_fen << "\n";
+        //}
+        // file.close();
 
-            file << api.GetFen(info.board) << "," << BoardCoordinate2String(info.from) << "," << BoardCoordinate2String(info.to) << "," << info.previous_fen << "\n";
-        }
-        file.close();
-
-        std::cout << "Depth: " << epoch + 1 << " Result:" << positions.size() << " positions | passed: " << (positions.size() == quantity[epoch] ? "✅" : "⁉️") << " expected:" << quantity[epoch] << "\n";
+        std::cout << "Depth: " << epoch + 1
+                  << " Result:" << positions.size()
+                  << " positions | passed: " << (positions.size() == quantity[epoch] ? "✅" : "⁉️")
+                  << " expected:" << quantity[epoch]
+                  << " duration: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()
+                  << " ms\n";
     }
     std::cout << "-----------------------------------\n\n";
 }
@@ -166,6 +174,6 @@ int main()
 
     for (const auto &eval : fen_eval)
     {
-        EvaluateFen(3, eval.fen, eval.quantity, eval.name);
+        EvaluateFen(4, eval.fen, eval.quantity, eval.name);
     }
 }
