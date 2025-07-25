@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <array>
 
-
 struct TypePiece
 {
     Pieces piece;
@@ -20,7 +19,11 @@ class MaxMovesArray
 {
 private:
     size_t m_size = 0;
+
     BoardCoordinates m_coords[28];
+
+public:
+    uint64_t movement_map = 0;
 
 public:
     MaxMovesArray()
@@ -29,6 +32,7 @@ public:
     MaxMovesArray(const MaxMovesArray &other)
     {
         m_size = other.m_size;
+        movement_map = other.movement_map;
         for (size_t i = 0; i < other.m_size; i++)
         {
             m_coords[i] = other.m_coords[i];
@@ -41,6 +45,7 @@ public:
         {
             return *this;
         }
+        movement_map=other.movement_map;
         this->m_size = other.m_size;
         for (size_t i = 0; i < other.m_size; i++)
         {
@@ -51,6 +56,7 @@ public:
     void emplace_back(const BoardCoordinates &coords)
     {
         m_coords[m_size] = coords;
+        movement_map|=1ULL<<(coords.y*8+coords.x);
         m_size++;
     }
     size_t size()

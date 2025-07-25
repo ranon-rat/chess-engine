@@ -64,8 +64,8 @@ def execute():
     INCLUDE_FLAGS = mmake.join_with_flag(include_paths, "-I")
     LINK_FLAGS = mmake.join_with_flag(lib_paths, "-L")
     STATIC_LIBRARY = " ".join(static_libs)
-    COMPILER_FLAGS = f"-Wall -Wextra -std=c++{CPP_VERSION}"
-    IGNORE_FLAGS = "-Wno-unused-parameter -Wno-type-limits -O2 "
+    COMPILER_FLAGS = f"-Wall -Wextra -std=c++{CPP_VERSION} -Werror -O2"
+    IGNORE_FLAGS = ""  
     
     # Files to watch for changes
     static_watch_files = [join(MOONMAKE_DIR, "dependencies", "lib", a) for a in static_a_files]

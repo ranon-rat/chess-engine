@@ -18,12 +18,7 @@ uint64_t BoardAPI::getAttackedSquares(const BitWiseBoard &board, std::optional<b
             }
 
             MaxMovesArray moves = this->GetMoves(piece_coords, board, enemy_to_move, TypeFilter::Defendable);
-            for (size_t i = 0; i < moves.size(); i++)
-            {
-                BoardCoordinates move_coords = moves[i];
-                uint64_t mask = (1ULL) << ((move_coords.y * 8) + move_coords.x);
-                attack_mask |= mask;
-            }
+            attack_mask |= moves.movement_map;
         }
     }
     return attack_mask;
@@ -50,16 +45,10 @@ uint64_t BoardAPI::getPotentialAttacks(const BitWiseBoard &board, std::optional<
 
             MaxMovesArray moves = this->GetMoves(piece_coords, board, enemy_to_move, TypeFilter::Line);
             // we are going to check if first it actually hits on here;
-            uint64_t new_mask_attack = 0;
-            for (size_t i = 0; i < moves.size(); i++)
+
+            if (moves.movement_map & our_king)
             {
-                BoardCoordinates move_coords = moves[i];
-                uint64_t mask = (1ULL) << ((move_coords.y * 8) + move_coords.x);
-                new_mask_attack |= mask;
-            }
-            if (new_mask_attack & our_king)
-            {
-                attack_mask |= new_mask_attack;
+                attack_mask |= moves.movement_map;
             }
         }
     }

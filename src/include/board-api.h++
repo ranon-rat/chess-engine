@@ -45,7 +45,7 @@ public:
     BitWiseBoard BuildFromFEN(const std::string &fen);
     std::string GetFen(const BitWiseBoard &board);
     MaxMovesArray GetMoves(BoardCoordinates piece, const BitWiseBoard &board, std::optional<bool> is_white = std::nullopt, TypeFilter filter = Legal); // esto deberia de retornarme un uint64_t con los movimientos legales de la pieza
-    BitWiseBoard MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, TypeGame game = TypeGame::Bot);                      // i make reference to the board in that specific square
+    BitWiseBoard MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, TypeGame game = TypeGame::Bot);                       // i make reference to the board in that specific square
     // so this one, will be used to getting general information from the board :)
     TypePiece GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &board);
     bool IsReadyToPromote(const BitWiseBoard &board);
@@ -92,10 +92,10 @@ private: //  simulation shit
     bool movementIsLegal(const BoardCoordinates &from, const BoardCoordinates &to, const BitWiseBoard &board);
 
 private:
-    void moveRook(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask);
-    void movePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction);
+    void moveRook(BoardCoordinates from, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask);
+    void movePawn(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, uint64_t initial_mask, uint64_t target_mask, int8_t direction);
     void moveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask);
-    void eatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask, int8_t direction);
+    void eatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, int8_t direction);
     void eatRook(BoardCoordinates to, uint64_t target_mask, BitWiseBoard &new_board, const BitWiseBoard &board);
 
 private:

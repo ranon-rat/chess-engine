@@ -181,6 +181,8 @@ void GeneralEvaluation()
 }
 int main()
 {
+    GeneralEvaluation();
+    /*
     struct Eval_t
     {
         std::string fen;
@@ -201,4 +203,6 @@ int main()
         .name = "basic-board"};
 
     EvaluateFen(5, eval.fen, eval.quantity, eval.name);
+    */
+    return 0;
 }
