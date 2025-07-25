@@ -1,6 +1,20 @@
 #include "board-api.h++"
 #define BLACK_SIDE 0xff00000000000000
 #define WHITE_SIDE 0x00000000000000ff
+#define BLACK_SIDE_PRE 0x00ff000000000000
+#define WHITE_SIDE_PRE 0x000000000000ff00
+
+bool BoardAPI::CanPromote(const BoardCoordinates &from, const BoardCoordinates &to, const BitWiseBoard &board)
+{
+    const uint64_t from_mask = (1ULL) << (from.y * 8 + from.x);
+    const uint64_t to_mask = (1ULL) << (to.y * 8 + to.x);
+    const uint64_t friend_mask = board.white_to_move ? board.white_pieces : board.black_pieces;
+    const uint64_t pre_mask = board.white_to_move ? WHITE_SIDE_PRE : BLACK_SIDE_PRE;
+    const uint64_t finish_mask = board.white_to_move ? WHITE_SIDE : BLACK_SIDE;
+
+    return (pre_mask & from_mask & board.pawns) && (to_mask & finish_mask);
+}
+
 BitWiseBoard BoardAPI::Promotion(BoardCoordinates from, const BitWiseBoard &board, Pieces new_piece, std::optional<bool> is_white)
 {
     const TypePiece piece = GetPieceFromCoord(from, board);

@@ -71,6 +71,6 @@ bool BoardAPI::IsChecked(BoardCoordinates from, BoardCoordinates to, const BitWi
 bool BoardAPI::movementIsLegal(const BoardCoordinates &from, const BoardCoordinates &to, const BitWiseBoard &board)
 {
     MaxMovesArray legal_moves = GetMoves(from, board, board.white_to_move);
-    uint64_t to_mask= (1ULL << (to.y * 8 + to.x));
+    uint64_t to_mask = (1ULL << (to.y * 8 + to.x));
     return legal_moves.movement_map & to_mask;
 }

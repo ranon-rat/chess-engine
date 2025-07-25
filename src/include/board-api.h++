@@ -49,6 +49,7 @@ public:
     // so this one, will be used to getting general information from the board :)
     TypePiece GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &board);
     bool IsReadyToPromote(const BitWiseBoard &board);
+    bool CanPromote(const BoardCoordinates &from,const BoardCoordinates &to, const BitWiseBoard &board);
     BitWiseBoard Promotion(BoardCoordinates from, const BitWiseBoard &board, Pieces new_piece, std::optional<bool> is_white = std::nullopt); // so you select the new piece :)
     GameStates CheckBoardState(const BitWiseBoard &board);
 
