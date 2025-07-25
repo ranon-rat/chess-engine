@@ -6,7 +6,7 @@ int main()
 
     std::cout << "Hello, World!" << std::endl;
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+    InitWindow(screenWidth, screenHeight, "Chess game killer epic God of time");
     SetTargetFPS(60); // Set our game to run at 60 frames-per-second
     // Initialize the board
     ChessGame game;
