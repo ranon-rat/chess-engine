@@ -16,56 +16,23 @@ struct PositionalInfo
     std::string previous_fen;
 };
 
-void ExecuteMoves(const BitWiseBoard &board, BoardCoordinates from, MaxMovesArray &to_moves, std::vector<PositionalInfo> &new_positions)
-{
-    static Pieces possible_pieces[] = {Pieces::KNIGHT, Pieces::BISHOP, Pieces::ROOK, Pieces::QUEEN};
-    for (size_t i = 0; i < to_moves.size(); i++)
-    {
-        const BoardCoordinates to = to_moves[i];
-        BitWiseBoard new_board = api.MakeMove(from, to, board, TypeGame::Bot);
 
-        if (api.IsReadyToPromote(new_board))
-        {
-            for (size_t j = 0; j < 4; j++)
-            {
-                Pieces p = possible_pieces[j];
-                BitWiseBoard promotion_board = api.Promotion(to, new_board, p);
-                new_positions.emplace_back(PositionalInfo{
-                    .board = promotion_board,
-                    .from = from,
-                    .to = to,
-                    .previous_fen = api.GetFen(board),
-                });
-            }
-            continue;
-        }
-        new_positions.emplace_back(PositionalInfo{
-            .board = new_board,
-            .from = from,
-            .to = to,
-            .previous_fen = api.GetFen(board),
-
-        });
-    }
-}
 void EvaluatePossiblePosition(const BitWiseBoard &board, std::vector<PositionalInfo> &new_positions)
 {
     if (api.CheckBoardState(board) != GameStates::CONTINUE)
     {
         return;
     }
-    for (int8_t y = 0; y < 8; y++)
+    Movements legal_moves = api.GetLegalMoves(board);
+    for (Move m : legal_moves)
     {
-        for (int8_t x = 0; x < 8; x++)
-        {
-            BoardCoordinates from = {
-                .x = x,
-                .y = y,
-            };
-            MaxMovesArray moves = api.GetMoves(from,
-                                               board);
-            ExecuteMoves(board, from, moves, new_positions);
-        }
+        BitWiseBoard new_board=api.EvalBoard(m,board);
+        new_positions.emplace_back(PositionalInfo{
+            .board = new_board,
+            .from = m.from,
+            .to = m.to,
+            .previous_fen = api.GetFen(board),
+        });
     }
 }
 
@@ -180,6 +147,8 @@ void GeneralEvaluation()
 }
 int main()
 {
+    GeneralEvaluation();
+    /*
     struct Eval_t
     {
         std::string fen;
@@ -199,6 +168,6 @@ int main()
         .name = "basic-board"};
 
     EvaluateFen(5, eval.fen, eval.quantity, eval.name);
-
+*/
     return 0;
 }
