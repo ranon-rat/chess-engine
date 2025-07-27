@@ -29,8 +29,7 @@ void ExecuteMoves(const BitWiseBoard &board, BoardCoordinates from, MaxMovesArra
             for (size_t j = 0; j < 4; j++)
             {
                 Pieces p = possible_pieces[j];
-                BitWiseBoard promotion_board = new_board;
-                api.Promotion(to, promotion_board, p);
+                BitWiseBoard promotion_board = api.Promotion(to, new_board, p);
                 new_positions.emplace_back(PositionalInfo{
                     .board = promotion_board,
                     .from = from,

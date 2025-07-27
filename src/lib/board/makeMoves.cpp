@@ -5,9 +5,9 @@ BitWiseBoard BoardAPI::EvalBoard(Move move, const BitWiseBoard &board)
 {
     BitWiseBoard new_board = MakeMove(move.from, move.to, board, TypeGame::Bot);
     if (move.promotion != Pieces::NONE)
-        Promotion(move.to, new_board, move.promotion);
+       return Promotion(move.to, new_board, move.promotion);
     return new_board;
-    
+
 }
 
 BitWiseBoard BoardAPI::MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, TypeGame game)

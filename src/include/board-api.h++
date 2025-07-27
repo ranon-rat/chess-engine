@@ -53,7 +53,7 @@ public:
     TypePiece GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &board);
     bool IsReadyToPromote(const BitWiseBoard &board);
     bool CanPromote(const BoardCoordinates &from, const BoardCoordinates &to, const BitWiseBoard &board);
-    void Promotion(BoardCoordinates from,  BitWiseBoard &board, Pieces new_piece); // so you select the new piece :)
+    BitWiseBoard Promotion(BoardCoordinates from,  const BitWiseBoard &board, Pieces new_piece); // so you select the new piece :)
     GameStates CheckBoardState(const BitWiseBoard &board);
     Movements GetLegalMoves(const BitWiseBoard &board);
 

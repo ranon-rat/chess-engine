@@ -38,7 +38,7 @@ void ChessGame::DrawBoardPieces()
     {
         for (int i = 0; i < 8; i++)
         {
-            uint64_t is_attacked_mask = bitwise_board.potenital_attacks;
+            uint64_t is_attacked_mask = bitwise_board.attacked_squares;
             uint64_t position_mask = 1ull << (j * 8 + i);
             bool is_attacked = is_attacked_mask & position_mask;
 
@@ -102,7 +102,7 @@ void ChessGame::SelectPieces()
     if (we_are_white != bitwise_board.white_to_move)
     {
         Move *m = engine.SelectMovement(bitwise_board);
-        if (m != nullptr)
+        if (m)
         {
             bitwise_board = api.EvalBoard(*m, bitwise_board);
             pieces = api.GetPieces(bitwise_board);
@@ -194,7 +194,7 @@ void ChessGame::PromotionPart()
     {
         return;
     }
-    api.Promotion(to, bitwise_board, new_piece);
+    bitwise_board = api.Promotion(to, bitwise_board, new_piece);
     pieces = api.GetPieces(bitwise_board);
     game_state = api.CheckBoardState(bitwise_board);
     std::cout << api.GetFen(bitwise_board) << "\n";
