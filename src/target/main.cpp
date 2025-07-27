@@ -9,7 +9,7 @@ int main()
     InitWindow(screenWidth, screenHeight, "Chess game killer epic God of time");
     SetTargetFPS(60); // Set our game to run at 60 frames-per-second
     // Initialize the board
-    ChessGame game;
+    ChessGame game("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
         game.Update();

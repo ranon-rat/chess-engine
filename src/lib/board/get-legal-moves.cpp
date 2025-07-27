@@ -47,7 +47,7 @@ Movements BoardAPI::GetLegalMoves(const BitWiseBoard &board)
         for (int8_t x = 0; x < 8; x++)
         {
             BoardCoordinates from = {.x = x, .y = y};
-            MaxMovesArray to_moves = GetMoves(from, board);
+            MaxMovesArray to_moves = GetMoves(from, board,TypeFilter::Legal);
             if (to_moves.size() == 0)
                 continue;
 
