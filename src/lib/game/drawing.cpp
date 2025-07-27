@@ -103,7 +103,12 @@ void ChessGame::SelectPieces()
     {
         Move *m = engine.SelectMovement(bitwise_board);
         if (m != nullptr)
+        {
             bitwise_board = api.EvalBoard(*m, bitwise_board);
+            pieces = api.GetPieces(bitwise_board);
+            game_state = api.CheckBoardState(bitwise_board);
+            return;
+        }
     }
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
