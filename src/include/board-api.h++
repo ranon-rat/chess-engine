@@ -11,7 +11,9 @@
 #include "PiecesAndMoves.h++"
 #include "BoardTypes.h++"
 
-typedef std::array<std::vector<Move>, Pieces::PIECE_COUNT - 1> ArrayPieces;
+typedef std::array<std::vector<PiecesDireciton>, Pieces::PIECE_COUNT - 1> ArrayPieces;
+typedef std::vector<Move> Movements;
+
 ArrayPieces InitPossibleMoves();
 enum class TypeGame
 {
@@ -44,14 +46,15 @@ public:
     std::array<TypePiece, 64> GetPieces(BitWiseBoard &board); // this will return the pieces in the board
     BitWiseBoard BuildFromFEN(const std::string &fen);
     std::string GetFen(const BitWiseBoard &board);
-    MaxMovesArray GetMoves(BoardCoordinates piece, const BitWiseBoard &board, std::optional<bool> is_white = std::nullopt, TypeFilter filter = Legal); // esto deberia de retornarme un uint64_t con los movimientos legales de la pieza
+    MaxMovesArray GetMoves(BoardCoordinates piece, const BitWiseBoard &board, TypeFilter filter = Legal, std::optional<bool> is_white = std::nullopt); // esto deberia de retornarme un uint64_t con los movimientos legales de la pieza
     BitWiseBoard MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, TypeGame game = TypeGame::Bot);                       // i make reference to the board in that specific square
     // so this one, will be used to getting general information from the board :)
     TypePiece GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &board);
     bool IsReadyToPromote(const BitWiseBoard &board);
-    bool CanPromote(const BoardCoordinates &from,const BoardCoordinates &to, const BitWiseBoard &board);
+    bool CanPromote(const BoardCoordinates &from, const BoardCoordinates &to, const BitWiseBoard &board);
     BitWiseBoard Promotion(BoardCoordinates from, const BitWiseBoard &board, Pieces new_piece, std::optional<bool> is_white = std::nullopt); // so you select the new piece :)
     GameStates CheckBoardState(const BitWiseBoard &board);
+    Movements GetLegalMoves(const BitWiseBoard &board);
 
 public:
     // obviously this is information is useful for knowing what its happening here :)
@@ -98,6 +101,10 @@ private:
     void moveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, uint64_t initial_mask, uint64_t target_mask);
     void eatPawnEnPassant(BoardCoordinates from, BoardCoordinates to, BitWiseBoard &new_board, const BitWiseBoard &board, int8_t direction);
     void eatRook(BoardCoordinates to, uint64_t target_mask, BitWiseBoard &new_board, const BitWiseBoard &board);
+
+private:
+    void getLegalFromPawn(const BitWiseBoard &board, Movements &output, const BoardCoordinates &from,  MaxMovesArray &to_moves);
+    void getLegalFromRest(const BitWiseBoard &board, Movements &output, const BoardCoordinates &from,  MaxMovesArray &to_moves);
 
 private:
     const ArrayPieces m_possible_moves = InitPossibleMoves(); // this is the vector of possible moves

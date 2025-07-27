@@ -14,6 +14,11 @@ struct BoardCoordinates
     int8_t x = 0;
     int8_t y = 0;
 };
+struct Move{
+    BoardCoordinates from;
+    BoardCoordinates to;
+    Pieces promotion=UNKOWN;
+};
 // this class is just for storing the ovements and not having to store anything in the heap
 class MaxMovesArray
 {

@@ -24,7 +24,7 @@ enum GameStates
 
 };
 
-struct Move
+struct PiecesDireciton
 {
     int x;
     int y;

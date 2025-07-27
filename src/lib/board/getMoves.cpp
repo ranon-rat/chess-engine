@@ -1,5 +1,5 @@
 #include "board-api.h++"
-MaxMovesArray BoardAPI::GetMoves(BoardCoordinates piece, const BitWiseBoard &board, std::optional<bool> is_white, TypeFilter filter)
+MaxMovesArray BoardAPI::GetMoves(BoardCoordinates piece, const BitWiseBoard &board, TypeFilter filter, std::optional<bool> is_white)
 {
     // checking to//
     // now we need to check if the piece is a pawn or not
@@ -257,11 +257,11 @@ void BoardAPI::castlingMoves(BoardCoordinates origin, const BitWiseBoard &board,
                 .x = new_x,
                 .y = origin.y,
             };
-            if (i <= 2 && (attack_mask & mask))//  its being attacked?
+            if (i <= 2 && (attack_mask & mask)) //  its being attacked?
                 break;
             if ((OcuppiedSquares(new_coords, board))) // the square is occupied
                 break;
-            if (i != v.distance)// we havent arrived to our point :)
+            if (i != v.distance) // we havent arrived to our point :)
                 continue;
             moves.emplace_back(v.safe_castling);
         }

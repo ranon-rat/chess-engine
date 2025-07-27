@@ -17,7 +17,7 @@ uint64_t BoardAPI::getAttackedSquares(const BitWiseBoard &board, std::optional<b
                 continue;
             }
 
-            MaxMovesArray moves = this->GetMoves(piece_coords, board, enemy_to_move, TypeFilter::Defendable);
+            MaxMovesArray moves = this->GetMoves(piece_coords, board, TypeFilter::Defendable, enemy_to_move);
             attack_mask |= moves.movement_map;
         }
     }
@@ -43,7 +43,7 @@ uint64_t BoardAPI::getPotentialAttacks(const BitWiseBoard &board, std::optional<
                 continue;
             }
 
-            MaxMovesArray moves = this->GetMoves(piece_coords, board, enemy_to_move, TypeFilter::Line);
+            MaxMovesArray moves = this->GetMoves(piece_coords, board, TypeFilter::Line, enemy_to_move);
             // we are going to check if first it actually hits on here;
 
             if (moves.movement_map & our_king)
@@ -70,7 +70,7 @@ bool BoardAPI::IsChecked(BoardCoordinates from, BoardCoordinates to, const BitWi
 
 bool BoardAPI::movementIsLegal(const BoardCoordinates &from, const BoardCoordinates &to, const BitWiseBoard &board)
 {
-    MaxMovesArray legal_moves = GetMoves(from, board, board.white_to_move);
+    MaxMovesArray legal_moves = GetMoves(from, board,TypeFilter::Legal, board.white_to_move);
     uint64_t to_mask = (1ULL << (to.y * 8 + to.x));
     return legal_moves.movement_map & to_mask;
 }
