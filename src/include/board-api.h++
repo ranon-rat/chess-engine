@@ -48,11 +48,12 @@ public:
     std::string GetFen(const BitWiseBoard &board);
     MaxMovesArray GetMoves(BoardCoordinates piece, const BitWiseBoard &board, TypeFilter filter = Legal, std::optional<bool> is_white = std::nullopt); // esto deberia de retornarme un uint64_t con los movimientos legales de la pieza
     BitWiseBoard MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, TypeGame game = TypeGame::Bot);                       // i make reference to the board in that specific square
+    BitWiseBoard EvalBoard(Move move, const BitWiseBoard&board);
     // so this one, will be used to getting general information from the board :)
     TypePiece GetPieceFromCoord(BoardCoordinates from, const BitWiseBoard &board);
     bool IsReadyToPromote(const BitWiseBoard &board);
     bool CanPromote(const BoardCoordinates &from, const BoardCoordinates &to, const BitWiseBoard &board);
-    BitWiseBoard Promotion(BoardCoordinates from, const BitWiseBoard &board, Pieces new_piece, std::optional<bool> is_white = std::nullopt); // so you select the new piece :)
+    void Promotion(BoardCoordinates from,  BitWiseBoard &board, Pieces new_piece); // so you select the new piece :)
     GameStates CheckBoardState(const BitWiseBoard &board);
     Movements GetLegalMoves(const BitWiseBoard &board);
 
@@ -104,10 +105,11 @@ private:
 
 private:
     void getLegalFromPawn(const BitWiseBoard &board, Movements &output, const BoardCoordinates &from,  MaxMovesArray &to_moves);
-    void getLegalFromRest(const BitWiseBoard &board, Movements &output, const BoardCoordinates &from,  MaxMovesArray &to_moves);
+    void getLegalFromRest( Movements &output, const BoardCoordinates &from,  MaxMovesArray &to_moves);
 
 private:
     const ArrayPieces m_possible_moves = InitPossibleMoves(); // this is the vector of possible moves
 };
+
 
 #endif

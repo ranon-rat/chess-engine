@@ -1,5 +1,15 @@
 #include "board-api.h++"
 #include <cmath>
+
+BitWiseBoard BoardAPI::EvalBoard(Move move, const BitWiseBoard &board)
+{
+    BitWiseBoard new_board = MakeMove(move.from, move.to, board, TypeGame::Bot);
+    if (move.promotion != Pieces::NONE)
+        Promotion(move.to, new_board, move.promotion);
+    return new_board;
+    
+}
+
 BitWiseBoard BoardAPI::MakeMove(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, TypeGame game)
 {
     BitWiseBoard new_board = board;
@@ -40,7 +50,7 @@ BitWiseBoard BoardAPI::MakeMove(BoardCoordinates from, BoardCoordinates to, cons
         new_board.bishops |= target_mask;
         break;
     case Pieces::ROOK:
-        moveRook(from,  new_board, board, piece_mask, target_mask);
+        moveRook(from, new_board, board, piece_mask, target_mask);
         break;
     case Pieces::QUEEN:
         new_board.queens &= ~piece_mask;

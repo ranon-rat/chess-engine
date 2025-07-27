@@ -99,6 +99,12 @@ void ChessGame::SelectPieces()
     {
         return;
     }
+    if (we_are_white != bitwise_board.white_to_move)
+    {
+        Move *m = engine.SelectMovement(bitwise_board);
+        if (m != nullptr)
+            bitwise_board = api.EvalBoard(*m, bitwise_board);
+    }
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
         double currentTime = GetTime();
@@ -117,7 +123,7 @@ void ChessGame::SelectPieces()
                     {
                         from.x = x % 8;
                         from.y = x / 8;
-                        possible_moves = board.GetMoves(from, bitwise_board);
+                        possible_moves = api.GetMoves(from, bitwise_board);
                         std::cout << possible_moves.size() << " possible moves" << "\n";
 
                         not_selected = false;
@@ -126,15 +132,16 @@ void ChessGame::SelectPieces()
                     {
                         to.x = x % 8;
                         to.y = x / 8;
-                        bitwise_board = board.MakeMove(from, to, bitwise_board,TypeGame::User);
-                        
-                        pieces = board.GetPieces(bitwise_board);
-                        ready_to_promote = board.IsReadyToPromote(bitwise_board);
-                        game_state = board.CheckBoardState(bitwise_board);
-                        std::cout << board.GetFen(bitwise_board) << "\n";
+                        bitwise_board = api.MakeMove(from, to, bitwise_board, TypeGame::User);
+
+                        pieces = api.GetPieces(bitwise_board);
+                        ready_to_promote = api.IsReadyToPromote(bitwise_board);
+                        game_state = api.CheckBoardState(bitwise_board);
+                        std::cout << api.GetFen(bitwise_board) << "\n";
                         std::cout << "to y:         " << static_cast<int>(to.y) << "\n";
                         std::cout << "to x:         " << static_cast<int>(to.x) << "\n";
-                        std::cout<< "king in check: "<<(bitwise_board.king_check?"true":"false")<<"\n";
+                        std::cout << "king in check: " << (bitwise_board.king_check ? "true" : "false") << "\n";
+
                         not_selected = true;
                     }
                     break;
@@ -182,10 +189,10 @@ void ChessGame::PromotionPart()
     {
         return;
     }
-    bitwise_board = board.Promotion(to, bitwise_board, new_piece);
-    pieces = board.GetPieces(bitwise_board);
-    game_state = board.CheckBoardState(bitwise_board);
-    std::cout << board.GetFen(bitwise_board) << "\n";
+    api.Promotion(to, bitwise_board, new_piece);
+    pieces = api.GetPieces(bitwise_board);
+    game_state = api.CheckBoardState(bitwise_board);
+    std::cout << api.GetFen(bitwise_board) << "\n";
 
     ready_to_promote = false;
 }

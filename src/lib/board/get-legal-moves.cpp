@@ -26,7 +26,7 @@ void BoardAPI::getLegalFromPawn(const BitWiseBoard &board, Movements &output, co
         }
     }
 }
-void BoardAPI::getLegalFromRest(const BitWiseBoard &board, Movements &output, const BoardCoordinates &from, MaxMovesArray &to_moves)
+void BoardAPI::getLegalFromRest( Movements &output, const BoardCoordinates &from, MaxMovesArray &to_moves)
 {
     for (size_t i = 0; i < to_moves.size(); i++)
     {
@@ -41,7 +41,7 @@ void BoardAPI::getLegalFromRest(const BitWiseBoard &board, Movements &output, co
 
 Movements BoardAPI::GetLegalMoves(const BitWiseBoard &board)
 {
-    std::vector<Move> output;
+    Movements output;
     for (int8_t y = 0; y < 8; y++)
     {
         for (int8_t x = 0; x < 8; x++)
@@ -59,7 +59,8 @@ Movements BoardAPI::GetLegalMoves(const BitWiseBoard &board)
                 getLegalFromPawn(board, output, from, to_moves);
                 continue;
             }
-            getLegalFromRest(board, output, from, to_moves);
+            getLegalFromRest( output, from, to_moves);
         }
     }
+    return output;
 }

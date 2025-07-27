@@ -3,7 +3,7 @@
 
 ArrayPieces InitPossibleMoves()
 {
-    std::array<std::vector<Move>, Pieces::PIECE_COUNT - 1> moves;
+    ArrayPieces moves;
     moves[Pieces::KNIGHT] = {
         {2, 1}, // up right
         {2, -1},

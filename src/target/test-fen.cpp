@@ -3,7 +3,6 @@
 #include <iostream>
 #include <format>
 BoardAPI api;
-
 int main()
 {
 
