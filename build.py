@@ -1,11 +1,10 @@
 #https://github.com/ranon-rat/moonmake
 import moonmake as mmake
-from os.path import join
 import platform
 import sys
 
 dir_path = mmake.get_dir(__file__)
-
+def join (*dir, separator="/"): return f"{separator}".join(dir)
 def get_raylib_url():
     """Determines the Raylib download URL based on the operating system."""
     system = platform.system()
@@ -49,10 +48,7 @@ def execute():
         join( MOONMAKE_DIR, "lib")
     ]
     
-    # Header files
-    headers = [join(dir_path, "src", "include", f) 
-               for f in mmake.discover(join(dir_path, "src", "include"), ".h++")]
-    
+ 
     # Static libraries
     static_a_files = mmake.discover(join(".", MOONMAKE_DIR, "dependencies", "lib"), ".a")
     static_libs = [f"-l{mmake.strip_lib_prefix(a).replace('.a', '')}" for a in static_a_files]
@@ -65,8 +61,8 @@ def execute():
     LINK_FLAGS = mmake.join_with_flag(lib_paths, "-L")
     STATIC_LIBRARY = " ".join(static_libs)
     COMPILER_FLAGS = f"-Wall -Wextra -std=c++{CPP_VERSION} -Werror -O2"
-    IGNORE_FLAGS = ""  
-    
+    IGNORE_FLAGS = "-Wno-unused-parameter -Wno-return-type"  
+    OBJ_FLAGS= "-MMD -MP"
     # Files to watch for changes
     static_watch_files = [join(MOONMAKE_DIR, "dependencies", "lib", a) for a in static_a_files]
     
@@ -103,7 +99,7 @@ def execute():
         target_bin, 
         target_obj, 
         f"g++ $< -o $@ {COMPILER_FLAGS} {LINK_FLAGS} {STATIC_LIBRARY} -l{PROJECT_NAME}",
-        extra_dependencies=[lib_static, *static_watch_files, *headers]
+        dependency_file=True
     )
     
     # Rule to compile target object files
@@ -111,7 +107,7 @@ def execute():
         target_obj, 
         [join(".", "src", "target", f) for f in target_files],
         f"g++ -c $< -o $@ {COMPILER_FLAGS} {INCLUDE_FLAGS} {IGNORE_FLAGS}",
-        extra_dependencies=[lib_static, *static_watch_files, *headers]
+        dependency_file=True
     )
     
     # Rule to create the static library
@@ -125,8 +121,8 @@ def execute():
     builder.watch(
         lib_obj, 
         [join(".", "src", "lib", f) for f in lib_files],
-        f"g++ {COMPILER_FLAGS} {IGNORE_FLAGS} -c $< -o $@ {INCLUDE_FLAGS}",
-        extra_dependencies=[*headers]
+        f"g++ {COMPILER_FLAGS} {IGNORE_FLAGS} -c $< -o $@ {INCLUDE_FLAGS} {OBJ_FLAGS}",
+        dependency_file=True
     )
     
     # Execute all build rules
