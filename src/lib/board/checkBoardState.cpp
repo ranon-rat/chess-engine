@@ -1,4 +1,8 @@
+#include <cstdint>
 #include "board-api.h++"
+#include "BitWiseBoard.h++"
+#include "PiecesAndMoves.h++"
+#include "BoardTypes.h++"
 bool BoardAPI::IsReadyToPromote(const BitWiseBoard &board)
 {
     return PROMOTION_LINES & board.pawns;

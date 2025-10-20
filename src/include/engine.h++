@@ -1,6 +1,8 @@
 #ifndef CHESS_ENGINE_HPP
 #define CHESS_ENGINE_HPP
 #include "board-api.h++"
+#include "BoardTypes.h++"
+#include "BitWiseBoard.h++"
 class Engine
 {
 public:
@@ -28,7 +30,7 @@ public:
     
     Move *SelectMovement(const BitWiseBoard &board);
 private:
-    float evaluate_pieces_positions(const BitWiseBoard &board) {}
+    float evaluate_pieces_positions(const BitWiseBoard &board);
 
 };
 #endif

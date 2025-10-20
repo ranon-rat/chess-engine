@@ -1,4 +1,8 @@
+#include "BitWiseBoard.h++"
+#include "BoardTypes.h++"
+#include "PiecesAndMoves.h++"
 #include "board-api.h++"
+#include <cstdint>
 
 bool BoardAPI::EnemySquares(BoardCoordinates from, const BitWiseBoard &board, bool is_white)
 {

@@ -1,6 +1,5 @@
-#include <board-api.h++>
-#include <bitset>
-
+#include "board-api.h++"
+#include "PiecesAndMoves.h++"
 ArrayPieces InitPossibleMoves()
 {
     ArrayPieces moves;

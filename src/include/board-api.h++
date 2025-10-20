@@ -5,9 +5,7 @@
 #include <string>
 #include <array>
 #include <optional>
-#include <algorithm>
 #include "BitWiseBoard.h++"
-#include "raylib/raylib.h"
 #include "PiecesAndMoves.h++"
 #include "BoardTypes.h++"
 

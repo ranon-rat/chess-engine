@@ -1,5 +1,13 @@
-#include "board-api.h++"
 #include <format>
+#include <string>
+#include <vector>
+#include <cstdint>
+#include <cstddef>
+#include <cctype>
+#include "BoardTypes.h++"
+#include "PiecesAndMoves.h++"
+#include "board-api.h++"
+#include "BitWiseBoard.h++"
 BoardAPI::FenParts BoardAPI::getFenParts(const std::string &str)
 {
     std::vector<std::string> parts;
@@ -283,9 +291,9 @@ bool BoardAPI::thereIsPawnNearEnPassant(const BitWiseBoard &board, const BoardCo
                                                .y = next_y,
                                            },
                                            board);
-            for (size_t i = 0; i < moves.size(); i++)
+            for (const auto &move: moves)
             {
-                if (moves[i].x == origin.x && moves[i].y == origin.y)
+                if (move.x == origin.x && move.y == origin.y)
                     return true;
             }
         }
@@ -300,9 +308,9 @@ bool BoardAPI::thereIsPawnNearEnPassant(const BitWiseBoard &board, const BoardCo
                                                .y = next_y,
                                            },
                                            board);
-            for (size_t i = 0; i < moves.size(); i++)
+            for (const auto &move : moves)
             {
-                if (moves[i].x == origin.x && moves[i].y == origin.y)
+                if (move.x == origin.x && move.y == origin.y)
                     return true;
             }
         }

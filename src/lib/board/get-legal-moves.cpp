@@ -1,12 +1,15 @@
+#include "BitWiseBoard.h++"
+#include "BoardTypes.h++"
+#include "PiecesAndMoves.h++"
 #include "board-api.h++"
+#include <cstdint>
 
 void BoardAPI::getLegalFromPawn(const BitWiseBoard &board, Movements &output, const BoardCoordinates &from, MaxMovesArray &to_moves)
 {
     static Pieces possible_pieces[] = {Pieces::KNIGHT, Pieces::BISHOP, Pieces::ROOK, Pieces::QUEEN};
 
-    for (size_t i = 0; i < to_moves.size(); i++)
+    for (const auto &to: to_moves)
     {
-        BoardCoordinates to = to_moves[i];
         if (!CanPromote(from, to, board))
         {
             output.emplace_back(Move{
@@ -28,9 +31,8 @@ void BoardAPI::getLegalFromPawn(const BitWiseBoard &board, Movements &output, co
 }
 void BoardAPI::getLegalFromRest( Movements &output, const BoardCoordinates &from, MaxMovesArray &to_moves)
 {
-    for (size_t i = 0; i < to_moves.size(); i++)
+    for (const auto &to:to_moves)
     {
-        BoardCoordinates to = to_moves[i];
         output.emplace_back(Move{
             .from = from,
             .to = to,

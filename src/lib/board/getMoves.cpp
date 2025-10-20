@@ -1,4 +1,11 @@
+#include "BitWiseBoard.h++"
+#include "BoardTypes.h++"
+#include "PiecesAndMoves.h++"
 #include "board-api.h++"
+#include <array>
+#include <cstddef>
+#include <cstdint>
+#include <optional>
 MaxMovesArray BoardAPI::GetMoves(BoardCoordinates piece, const BitWiseBoard &board, TypeFilter filter, std::optional<bool> is_white)
 {
     // checking to//
@@ -58,9 +65,8 @@ MaxMovesArray BoardAPI::GetMoves(BoardCoordinates piece, const BitWiseBoard &boa
         if (piece_info.piece != KING)
             return moves;
 
-        for (size_t i = 0; i < moves.size(); i++)
+        for (const auto &move:moves)
         {
-            BoardCoordinates &move = moves[i];
             uint64_t piece_mask = (1ull) << (move.y * 8 + move.x);
             if (piece_mask & board.attacked_squares)
                 continue;
@@ -68,9 +74,8 @@ MaxMovesArray BoardAPI::GetMoves(BoardCoordinates piece, const BitWiseBoard &boa
         }
         return filtered_moves;
     }
-    for (size_t i = 0; i < moves.size(); i++)
+    for (const auto &move :moves)
     {
-        BoardCoordinates &move = moves[i];
         if (IsChecked(piece, move, board, from_white))
             continue;
         filtered_moves.emplace_back(move);

@@ -1,8 +1,8 @@
 #ifndef BOARDTYPES_HPP
 #define BOARDTYPES_HPP
-#include "PiecesAndMoves.h++"
 #include <cstdint>
-#include <array>
+#include <cstddef>
+#include "PiecesAndMoves.h++"
 
 struct TypePiece
 {
@@ -79,6 +79,13 @@ public:
     const BoardCoordinates &operator[](size_t index) const
     {
         return m_coords[index];
+    }
+
+    BoardCoordinates* begin(){
+        return m_coords;
+    }
+    BoardCoordinates *end(){
+        return m_coords+m_size;
     }
 };
 #endif

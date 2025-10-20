@@ -1,5 +1,10 @@
+#include <cstddef>
+#include <cstdint>
 #include <iostream>
 
+#include "BoardTypes.h++"
+#include "PiecesAndMoves.h++"
+#include "board-api.h++"
 #include "game.h++"
 #include "raylib/raylib.h"
 void ChessGame::DrawCheckBoardSquares()

@@ -1,4 +1,8 @@
+#include "BitWiseBoard.h++"
+#include "BoardTypes.h++"
+#include "PiecesAndMoves.h++"
 #include "board-api.h++"
+#include <cstdint>
 #define BLACK_SIDE 0xff00000000000000
 #define WHITE_SIDE 0x00000000000000ff
 #define PRE_PROMOTION_LINE 0x00ff00000000ff00

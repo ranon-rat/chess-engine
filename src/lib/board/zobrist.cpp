@@ -1,4 +1,9 @@
+#include "BitWiseBoard.h++"
+#include "BoardTypes.h++"
+#include "PiecesAndMoves.h++"
 #include "board-api.h++"
+#include <cstddef>
+#include <cstdint>
 #include <random>
 
 struct ZobristTable

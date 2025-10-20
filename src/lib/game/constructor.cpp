@@ -1,5 +1,6 @@
 #include "game.h++"
 #include <iostream>
+#include <string>
 ChessGame::ChessGame(std::string fen)
 {
     // test

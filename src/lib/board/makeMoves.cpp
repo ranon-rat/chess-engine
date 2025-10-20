@@ -1,5 +1,9 @@
+#include "BitWiseBoard.h++"
+#include "BoardTypes.h++"
+#include "PiecesAndMoves.h++"
 #include "board-api.h++"
 #include <cmath>
+#include <cstdint>
 
 BitWiseBoard BoardAPI::EvalBoard(Move move, const BitWiseBoard &board)
 {
@@ -239,7 +243,7 @@ void BoardAPI::moveKing(BoardCoordinates from, BoardCoordinates to, BitWiseBoard
     }
 
     // we need to know if this is on the king side :)
-    bool king_side = std::signbit(from.x - to.x); // we get the difference here
+    bool king_side =(from.x - to.x)< 0; // we get the difference here
     int x = 7 * king_side;
     // we get the masks
     uint64_t origin_rook_mask = (1ULL << ((from.y * 8) + x));

@@ -1,9 +1,14 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
+#include <array>
 #include <string>
+#include "BitWiseBoard.h++"
+#include "BoardTypes.h++"
+#include "PiecesAndMoves.h++"
 #include "board-api.h++"
 #include "engine.h++"
+#include "raylib/raylib.h"
 #define screenWidth 800
 #define screenHeight 450
 #define SQUARE_SIZE 50

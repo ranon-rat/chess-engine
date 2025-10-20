@@ -1,6 +1,12 @@
-#include "board-api.h++"
+
 #include <iostream>
 #include <bitset>
+#include <array>
+#include <cstdint>
+#include "board-api.h++"
+#include "PiecesAndMoves.h++"
+#include "BoardTypes.h++"
+#include "BitWiseBoard.h++"
 
 std::array<TypePiece, 64> BoardAPI::GetPieces(BitWiseBoard &board)
 {

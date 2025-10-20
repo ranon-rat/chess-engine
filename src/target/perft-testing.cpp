@@ -1,4 +1,8 @@
+#include "BitWiseBoard.h++"
+#include "BoardTypes.h++"
+#include "PiecesAndMoves.h++"
 #include "board-api.h++"
+#include <cstddef>
 #include <vector>
 #include <iostream>
 #include <string>
