@@ -1,5 +1,8 @@
+#include "BitWiseBoard.h++"
+#include "BoardTypes.h++"
 #include "board-api.h++"
-#include <bitset>
+#include <cstdint>
+#include <optional>
 uint64_t BoardAPI::getAttackedSquares(const BitWiseBoard &board, std::optional<bool> is_white)
 {
     uint64_t attack_mask = 0;

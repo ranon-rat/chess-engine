@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <string>
 #include <array>
+
 #include <optional>
 #include "BitWiseBoard.h++"
 #include "PiecesAndMoves.h++"
