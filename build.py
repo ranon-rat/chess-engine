@@ -60,7 +60,7 @@ def execute():
     INCLUDE_FLAGS = mmake.join_with_flag(include_paths, "-I")
     LINK_FLAGS = mmake.join_with_flag(lib_paths, "-L")
     STATIC_LIBRARY = " ".join(static_libs)
-    COMPILER_FLAGS = f"-Wall -Wextra -std=c++{CPP_VERSION} -Werror -O2"
+    COMPILER_FLAGS = f"-g -Wall -Wextra -std=c++{CPP_VERSION} -Werror -O2"
     IGNORE_FLAGS = "-Wno-unused-parameter -Wno-return-type"  
     OBJ_FLAGS= "-MMD -MP"
     # Files to watch for changes

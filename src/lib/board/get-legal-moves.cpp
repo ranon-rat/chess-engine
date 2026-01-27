@@ -44,6 +44,7 @@ void BoardAPI::getLegalFromRest( Movements &output, const BoardCoordinates &from
 Movements BoardAPI::GetLegalMoves(const BitWiseBoard &board)
 {
     Movements output;
+    
     for (int8_t y = 0; y < 8; y++)
     {
         for (int8_t x = 0; x < 8; x++)
@@ -52,9 +53,7 @@ Movements BoardAPI::GetLegalMoves(const BitWiseBoard &board)
             MaxMovesArray to_moves = GetMoves(from, board,TypeFilter::Legal);
             if (to_moves.size() == 0)
                 continue;
-
             /// i should verify if from is mask
-
             uint64_t from_mask(1ull << (y * 8 + x));
             if (from_mask & board.pawns)
             {

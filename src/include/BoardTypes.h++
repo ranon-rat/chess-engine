@@ -17,6 +17,7 @@ struct BoardCoordinates
 struct Move{
     BoardCoordinates from;
     BoardCoordinates to;
+    // i must think of this, do i use this?
     Pieces promotion=UNKOWN;
 };
 // this class is just for storing the ovements and not having to store anything in the heap
