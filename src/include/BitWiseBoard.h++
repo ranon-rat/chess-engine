@@ -25,25 +25,25 @@ struct BitWiseBoard {
   count_pieces rooks_c{0, 0};
   count_pieces queens_c{0, 0};
 
-  uint64_t pawns = initialize_board;
-  uint64_t knights = initialize_board;
-  uint64_t bishops = initialize_board;
-  uint64_t rooks = initialize_board;
-  uint64_t queens = initialize_board;
-  uint64_t kings = initialize_board; // obviously 2 kings but we need to store
-                                     // the position of both
+  uint64_t pawns{0ull};
+  uint64_t knights{0ull};
+  uint64_t bishops{0ull};
+  uint64_t rooks{0ull};
+  uint64_t queens{0ull};
+  uint64_t kings{0ull}; // obviously 2 kings but we need to store
+                        // the position of both
 
   // now i should add a new little thing :)
-  uint64_t enpassant = initialize_board;
+  uint64_t enpassant {0ull};
   //  then i need to check on the utilized squares
-  uint64_t white_pieces = initialize_board;
-  uint64_t black_pieces = initialize_board;
+  uint64_t white_pieces {0ull};
+  uint64_t black_pieces = {0ull};
   // attacked squares
-  uint64_t attacked_squares =
-      initialize_board; // this is for the attacked squares of the opponent
-                        // pieces :)
-  uint64_t potenital_attacks = initialize_board;
-  uint64_t defended_squares = initialize_board;
+  uint64_t attacked_squares{0ull}; // this is for the attacked squares of the
+                                   // opponent pieces :)
+  uint64_t potenital_attacks{0ull};
+  uint64_t defended_squares{0ull};
+  uint64_t pawns_attack_squares{0ull};
   // some basic rights
   bool white_to_move : 1 = true;
   // castling bs :)

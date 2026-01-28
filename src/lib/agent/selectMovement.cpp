@@ -15,26 +15,25 @@ std::optional<Move> Engine::SelectMovement(const BitWiseBoard &board) {
 
   auto alpha = int{-1'000'000'000};
   auto beta = int{1'000'000'000};
-  auto depth = int{4};
+  auto depth = int{5};
   auto best_index{0uz};
   for (auto i{0uz}; i < moves.size(); i++) {
     BitWiseBoard new_board = api.EvalBoard(moves[i], board);
-    int eval = -search(new_board, depth - 1, -beta, -alpha); // ✅ Negamax
+    int eval = -search(new_board, depth, -beta, -alpha); // ✅ Negamax
 
     if (eval > alpha) {
       best_index = i;
-      alpha = std::max(alpha, eval);
+      alpha = eval;
     }
   }
   return moves[best_index];
 }
 
-int Engine::search(const BitWiseBoard &board, size_t depth, int alpha,
-                   int beta) {
+int Engine::search(const BitWiseBoard &board, int depth, int alpha, int beta) {
   GameStates game_state = api.CheckBoardState(board);
 
   if (game_state == CHECKMATE) {
-    return -100000000;
+    return -100000 + depth; // Prefer faster mates
   }
   if (game_state == DRAW) {
     return 0;

@@ -26,5 +26,6 @@ int Engine::count_material(const BitWiseBoard &board, bool white_to_move) {
   material += board.bishops_c[white_to_move] * BISHOP_VALUE;
   material += board.rooks_c[white_to_move] * ROOK_VALUE;
   material += board.queens_c[white_to_move] * QUEEN_VALUE;
+
   return material;
 }

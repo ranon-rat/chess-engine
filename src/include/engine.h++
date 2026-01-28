@@ -34,7 +34,7 @@ public:
   std::optional<Move> SelectMovement(const BitWiseBoard &board);
 
 private:
-  int search(const BitWiseBoard &board, size_t depth, int alpha, int beta);
+  int search(const BitWiseBoard &board, int depth, int alpha, int beta);
   int evaluate(const BitWiseBoard &board);
   int evaluate_pieces_positions(const BitWiseBoard &board);
   int evaluate_move(const BitWiseBoard &board, const Move &);
