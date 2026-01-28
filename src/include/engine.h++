@@ -2,6 +2,7 @@
 #define CHESS_ENGINE_HPP
 #include "BitWiseBoard.h++"
 #include "BoardTypes.h++"
+#include "PiecesAndMoves.h++"
 #include "board-api.h++"
 #include <cstddef>
 #include <optional>
@@ -30,12 +31,14 @@ public:
   y puedo multiplicarlo por
   */
 
-  std::optional<Move>SelectMovement(const BitWiseBoard &board);
+  std::optional<Move> SelectMovement(const BitWiseBoard &board);
 
 private:
   int search(const BitWiseBoard &board, size_t depth, int alpha, int beta);
   int evaluate(const BitWiseBoard &board);
   int evaluate_pieces_positions(const BitWiseBoard &board);
+  int evaluate_move(const BitWiseBoard &board, const Move &);
+  int getPieceValue(Pieces piece, const BoardCoordinates coords);
 
   int count_material(const BitWiseBoard &board, bool white);
 };

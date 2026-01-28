@@ -13,18 +13,15 @@ std::optional<Move> Engine::SelectMovement(const BitWiseBoard &board) {
   if (moves.size() == 0)
     return std::nullopt;
 
-  int alpha = -1000000000;
-  int beta = 1000000000;
-  int depth = 4;
+  auto alpha = int{-1'000'000'000};
+  auto beta = int{1'000'000'000};
+  auto depth = int{4};
   auto best_index{0uz};
-  auto best_eval{-1000000000}; // ✅ Inicializar con el peor valor
-
   for (auto i{0uz}; i < moves.size(); i++) {
     BitWiseBoard new_board = api.EvalBoard(moves[i], board);
     int eval = -search(new_board, depth - 1, -beta, -alpha); // ✅ Negamax
 
-    if (eval > best_eval) {
-      best_eval = eval;
+    if (eval > alpha) {
       best_index = i;
       alpha = std::max(alpha, eval);
     }
@@ -48,7 +45,11 @@ int Engine::search(const BitWiseBoard &board, size_t depth, int alpha,
   }
 
   Movements moves = api.GetLegalMoves(board);
-
+  std::sort(moves.begin(), moves.end(),
+            [this, board](const Move &m1, const Move &m2) {
+              return evaluate_move(board, m1) > evaluate_move(board, m2);
+              //
+            });
   for (auto move : moves) {
     int result = -search(api.EvalBoard(move, board), depth - 1, -beta, -alpha);
 
@@ -59,23 +60,4 @@ int Engine::search(const BitWiseBoard &board, size_t depth, int alpha,
   }
 
   return alpha;
-}
-
-int Engine::evaluate(const BitWiseBoard &board) {
-  int white_eval = count_material(board, true);
-  int black_eval = count_material(board, false);
-  int evaluation = white_eval - black_eval;
-  int perspective = board.white_to_move ? 1 : -1;
-  int is_check = board.king_check ? -100 : 0;
-
-  return evaluation * perspective - is_check;
-}
-int Engine::count_material(const BitWiseBoard &board, bool white_to_move) {
-  int material{0};
-  material += board.pawns_c[white_to_move] * PAWN_VALUE;
-  material += board.knights_c[white_to_move] * KNIGHT_VALUE;
-  material += board.bishops_c[white_to_move] * BISHOP_VALUE;
-  material += board.rooks_c[white_to_move] * ROOK_VALUE;
-  material += board.queens_c[white_to_move] * QUEEN_VALUE;
-  return material;
 }
