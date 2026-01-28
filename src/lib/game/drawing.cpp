@@ -146,7 +146,7 @@ void ChessGame::SelectPieces() {
             ready_to_promote = api.IsReadyToPromote(bitwise_board);
 
             if (ready_to_promote) {
-              auto move_opt = api.whereIsPromotion(bitwise_board);
+              auto move_opt = api.WhereIsPromotion(bitwise_board);
               if (move_opt.has_value()) {
                 auto move = move_opt.value();
                 std::cout << "promotion in: x:" << static_cast<int>(move.x)

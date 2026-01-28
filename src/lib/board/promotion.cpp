@@ -14,27 +14,10 @@ bool BoardAPI::CanPromote(const BoardCoordinates &from,
                           const BitWiseBoard &board) {
   const uint64_t from_mask = (1ULL) << (from.y * 8 + from.x);
   const uint64_t to_mask = (1ULL) << (to.y * 8 + to.x);
+
+  // is in pre promotion line and is a pawn
   return (PRE_PROMOTION_LINE & from_mask & board.pawns) &&
          (to_mask & PROMOTION_LINE);
-}
-
-std::optional<BoardCoordinates>
-BoardAPI::whereIsPromotion(const BitWiseBoard &board) {
-  // now i need to check something
-  if (!IsReadyToPromote(board)) {
-    return std::nullopt;
-  }
-  uint64_t friend_mask =
-      board.white_to_move ? board.white_pieces : board.black_pieces;
-  int8_t search_y = board.white_to_move ? 0 : 7;
-  for (int8_t search_x{0}; search_x < 7; search_x++) {
-
-    uint64_t mask = 1ULL << (search_y * 8 + search_x);
-    if (board.pawns & mask & friend_mask) {
-      return BoardCoordinates{.x = search_x, .y = search_y};
-    }
-  }
-  return std::nullopt;
 }
 
 BitWiseBoard BoardAPI::Promotion(BoardCoordinates from,
@@ -95,3 +78,24 @@ BitWiseBoard BoardAPI::Promotion(BoardCoordinates from,
   //
   return new_board;
 }
+
+// this can be useful for external utilities
+std::optional<BoardCoordinates>
+BoardAPI::WhereIsPromotion(const BitWiseBoard &board) {
+  // now i need to check something
+  if (!IsReadyToPromote(board)) {
+    return std::nullopt;
+  }
+  uint64_t friend_mask =
+      board.white_to_move ? board.white_pieces : board.black_pieces;
+  int8_t search_y = board.white_to_move ? 0 : 7;
+  for (int8_t search_x{0}; search_x < 7; search_x++) {
+
+    uint64_t mask = 1ULL << (search_y * 8 + search_x);
+    if (board.pawns & mask & friend_mask) {
+      return BoardCoordinates{.x = search_x, .y = search_y};
+    }
+  }
+  return std::nullopt;
+}
+

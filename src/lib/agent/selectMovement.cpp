@@ -4,8 +4,7 @@
 #include "engine.h++"
 #include <algorithm>
 #include <board-api.h++>
-#include <cstddef>
-#include <cstdlib>
+
 #include <optional>
 
 std::optional<Move> Engine::SelectMovement(const BitWiseBoard &board) {

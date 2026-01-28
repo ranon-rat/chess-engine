@@ -4,7 +4,6 @@
 #include "BoardTypes.h++"
 #include "PiecesAndMoves.h++"
 #include "board-api.h++"
-#include <cstddef>
 #include <optional>
 
 class Engine {
