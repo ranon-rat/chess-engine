@@ -1,79 +1,88 @@
 #include "BitWiseBoard.h++"
 #include "BoardTypes.h++"
+#include "PiecesAndMoves.h++"
 #include "board-api.h++"
 #include <cstdint>
 #include <optional>
-uint64_t BoardAPI::getAttackedSquares(const BitWiseBoard &board, std::optional<bool> is_white)
-{
-    uint64_t attack_mask = 0;
-    bool enemy_to_move = !is_white.value_or(board.white_to_move);
-    for (int8_t y = 0; y < 8; y++)
-    {
-        for (int8_t x = 0; x < 8; x++)
-        {
-            BoardCoordinates piece_coords = {
-                .x = x,
-                .y = y,
-            };
-            if (!FriendSquares(piece_coords, board, enemy_to_move))
-            {
-                continue;
-            }
+#include <tuple>
+std::tuple<uint64_t, uint64_t>
+BoardAPI::getAttackedSquares(const BitWiseBoard &board,
+                             std::optional<bool> is_white) {
+  uint64_t attack_mask{0ull};
+  uint64_t pawn_attack_mask{0ull};
+  bool enemy_to_move = !is_white.value_or(board.white_to_move);
+  for (int8_t y = 0; y < 8; y++) {
+    for (int8_t x = 0; x < 8; x++) {
+      BoardCoordinates piece_coords = {
+          .x = x,
+          .y = y,
+      };
+      if (!FriendSquares(piece_coords, board, enemy_to_move)) {
+        continue;
+      }
 
-            MaxMovesArray moves = this->GetMoves(piece_coords, board, TypeFilter::Defendable, enemy_to_move);
-            attack_mask |= moves.movement_map;
-        }
+      MaxMovesArray moves = this->GetMoves(
+          piece_coords, board, TypeFilter::Defendable, enemy_to_move);
+
+      attack_mask |= moves.movement_map;
+      if (GetPieceFromCoord(piece_coords, board).piece == Pieces::PAWN) {
+        pawn_attack_mask |= moves.movement_map;
+      }
     }
-    return attack_mask;
+  }
+  return {attack_mask, pawn_attack_mask};
 }
 
-uint64_t BoardAPI::getPotentialAttacks(const BitWiseBoard &board, std::optional<bool> is_white)
-{
-    uint64_t attack_mask = 0;
-    bool white_to_move = is_white.value_or(board.white_to_move);
-    bool enemy_to_move = !white_to_move;
-    uint64_t our_king = (white_to_move ? board.white_pieces : board.black_pieces) & board.kings;
-    for (int8_t y = 0; y < 8; y++)
-    {
-        for (int8_t x = 0; x < 8; x++)
-        {
-            BoardCoordinates piece_coords = {
-                .x = x,
-                .y = y,
-            };
-            if (!FriendSquares(piece_coords, board, enemy_to_move))
-            {
-                continue;
-            }
+uint64_t BoardAPI::getPotentialAttacks(const BitWiseBoard &board,
+                                       std::optional<bool> is_white) {
+  uint64_t attack_mask = 0;
+  bool white_to_move = is_white.value_or(board.white_to_move);
+  bool enemy_to_move = !white_to_move;
+  uint64_t our_king =
+      (white_to_move ? board.white_pieces : board.black_pieces) & board.kings;
+  for (int8_t y = 0; y < 8; y++) {
+    for (int8_t x = 0; x < 8; x++) {
+      BoardCoordinates piece_coords = {
+          .x = x,
+          .y = y,
+      };
+      if (!FriendSquares(piece_coords, board, enemy_to_move)) {
+        continue;
+      }
 
-            MaxMovesArray moves = this->GetMoves(piece_coords, board, TypeFilter::Line, enemy_to_move);
-            // we are going to check if first it actually hits on here;
+      MaxMovesArray moves =
+          this->GetMoves(piece_coords, board, TypeFilter::Line, enemy_to_move);
+      // we are going to check if first it actually hits on here;
 
-            if (moves.movement_map & our_king)
-            {
-                attack_mask |= moves.movement_map;
-            }
-        }
+      if (moves.movement_map & our_king) {
+        attack_mask |= moves.movement_map;
+      }
     }
-    return attack_mask;
+  }
+  return attack_mask;
 }
 
 // this
-bool BoardAPI::IsChecked(BoardCoordinates from, BoardCoordinates to, const BitWiseBoard &board, bool from_white)
-{
-    BitWiseBoard new_board = MakeMove(from, to, board, TypeGame::Simulation);
-    // first i get the attacked squares
-    uint64_t attacked_squares = getAttackedSquares(new_board, from_white);
-    // then i make the friendly mask
-    uint64_t friendly_mask = from_white ? new_board.white_pieces : new_board.black_pieces;
-    uint64_t king_mask = new_board.kings;
+bool BoardAPI::IsChecked(BoardCoordinates from, BoardCoordinates to,
+                         const BitWiseBoard &board, bool from_white) {
+  BitWiseBoard new_board = MakeMove(from, to, board, TypeGame::Simulation);
+  // first i get the attacked squares
+  const auto [attacked_squares, _] = getAttackedSquares(new_board, from_white);
+  // then i make the friendly mask
+  uint64_t friendly_mask =
+      from_white ? new_board.white_pieces : new_board.black_pieces;
+  uint64_t king_mask = new_board.kings;
 
-    return attacked_squares & friendly_mask & king_mask; // if this gives any value it will return true :) its an intersection basically (a()b()c)
+  return attacked_squares & friendly_mask &
+         king_mask; // if this gives any value it will return true :) its an
+                    // intersection basically (a()b()c)
 }
 
-bool BoardAPI::movementIsLegal(const BoardCoordinates &from, const BoardCoordinates &to, const BitWiseBoard &board)
-{
-    MaxMovesArray legal_moves = GetMoves(from, board,TypeFilter::Legal, board.white_to_move);
-    uint64_t to_mask = (1ULL << (to.y * 8 + to.x));
-    return legal_moves.movement_map & to_mask;
+bool BoardAPI::movementIsLegal(const BoardCoordinates &from,
+                               const BoardCoordinates &to,
+                               const BitWiseBoard &board) {
+  MaxMovesArray legal_moves =
+      GetMoves(from, board, TypeFilter::Legal, board.white_to_move);
+  uint64_t to_mask = (1ULL << (to.y * 8 + to.x));
+  return legal_moves.movement_map & to_mask;
 }

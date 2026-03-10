@@ -175,9 +175,11 @@ BitWiseBoard BoardAPI::BuildFromFEN(const std::string &fen) {
   selectColorFen(board, parts.active_color);
   castlingRightsFen(board, parts.castling_availability);
   enPassantFen(board, parts.en_passant_target_square);
+  auto [attack_mask, attack_pawn_mask]= getAttackedSquares(board);
   board.half_move = parts.halfmove_clock;
   board.complete_move = parts.fullmove_number;
-  board.attacked_squares = getAttackedSquares(board);
+  board.attacked_squares=attack_mask;
+  board.pawns_attack_squares=attack_pawn_mask;
   board.potenital_attacks = getPotentialAttacks(board);
   board.zobrist = GetZobrist(board);
 

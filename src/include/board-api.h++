@@ -3,6 +3,7 @@
 #include <array>
 #include <cstdint>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include "BitWiseBoard.h++"
@@ -166,10 +167,14 @@ private:
   void castlingMoves(BoardCoordinates origin, const BitWiseBoard &board,
                      MaxMovesArray &moves, bool is_white, uint64_t attack_mask,
                      TypeFilter filter);
+//  simulation shit
+private: 
 
-private: //  simulation shit
-  uint64_t getAttackedSquares(const BitWiseBoard &board,
-                              std::optional<bool> is_white = std::nullopt);
+         // attack mask, pawn attack mask
+  std::tuple<uint64_t, uint64_t>
+  getAttackedSquares(const BitWiseBoard &board,
+                     std::optional<bool> is_white = std::nullopt);
+  // the name is explicit
   uint64_t getPotentialAttacks(const BitWiseBoard &board,
                                std::optional<bool> is_white = std::nullopt);
 

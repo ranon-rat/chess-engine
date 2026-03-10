@@ -134,7 +134,9 @@ BitWiseBoard BoardAPI::MakeMove(BoardCoordinates from, BoardCoordinates to,
     new_board.white_to_move = !board.white_to_move;
 
     new_board.zobrist = GetZobrist(new_board);
-    new_board.attacked_squares = getAttackedSquares(new_board);
+    auto [attack_pawn_mask, attack_mask] = getAttackedSquares(new_board);
+    new_board.attacked_squares = attack_mask;
+    new_board.pawns_attack_squares=attack_pawn_mask;
     new_board.potenital_attacks = getPotentialAttacks(new_board);
     // so we need to first define the enemy mask
     uint64_t new_friend_mask =

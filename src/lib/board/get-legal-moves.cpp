@@ -11,7 +11,7 @@ void BoardAPI::getLegalFromPawn(const BitWiseBoard &board, Movements &output, co
     for (const auto &to: to_moves)
     {
         if (!CanPromote(from, to, board))
-        {
+        {  
             output.emplace_back(Move{
                 .from = from,
                 .to = to,
@@ -42,7 +42,7 @@ void BoardAPI::getLegalFromRest( Movements &output, const BoardCoordinates &from
 }
 
 Movements BoardAPI::GetLegalMoves(const BitWiseBoard &board)
-{
+{  // aqui estoy segur oque podria llegar a utilizar un 
     Movements output;
     
     for (int8_t y = 0; y < 8; y++)

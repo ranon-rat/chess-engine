@@ -44,6 +44,7 @@ struct BitWiseBoard {
   uint64_t potenital_attacks{0ull};
   uint64_t defended_squares{0ull};
   uint64_t pawns_attack_squares{0ull};
+  
   // some basic rights
   bool white_to_move : 1 = true;
   // castling bs :)
